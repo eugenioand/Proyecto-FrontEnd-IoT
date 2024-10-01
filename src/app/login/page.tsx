@@ -8,6 +8,7 @@ import Image from 'next/image';
 const logos = {
     unibarranquilla: {
         src: '/assets/images/logos/IUB_logo_sh_sm.png',
+        src_md: '/assets/images/logos/IUB_logo_sh_md.png',
         alt: 'Logo de la Institución Universitaria de Barranquilla',
         width: 42,
         height: 26,
@@ -15,7 +16,8 @@ const logos = {
         height_md: 102,
     },
     ua: {
-        src:'/assets/images/logos/UA_logo_sh_sm.png',
+        src: '/assets/images/logos/UA_logo_sh_sm.png',
+        src_md:'/assets/images/logos/UA_logo_sh_md.png',
         alt: 'Logo de la Universidad del Atlantico',
         width: 27,
         height: 36,
@@ -24,6 +26,7 @@ const logos = {
     },
     uniguajira: {
         src: '/assets/images/logos/UniGuajira_logo_sh_sm.png',
+        src_md: '/assets/images/logos/UniGuajira_logo_sh_md.png',
         alt: 'Logo de la Universidad de La Guajira',
         width: 40,
         height: 30,
@@ -85,20 +88,35 @@ const Login = () => {
             <div className='relative hidden flex-col items-center justify-center md:flex h-screen md:w-3/5'>
                 <div className='absolute inset-0 bg-[url("/assets/images/bg_working.png")] bg-cover bg-center'></div>
                 <div className='absolute inset-0 bg-blue2 opacity-76'></div>
-                <div className='relative flex justify-center items-center mx-8 space-x-5'>
-                    <Image src='/assets/images/logos/IUB_logo_sh_md.png' alt='Logo de la Institución Universitaria de Barranquilla' width={148} height={102} />
-                    <hr className='w-1 h-5 bg-white' />
-                    <Image src='/assets/images/logos/UA_logo_sh_md.png' alt='Logo de la Universidad del Atlantico' width={102} height={156} />
-                    <hr className='w-1 h-5 bg-white' />
-                    <Image src='/assets/images/logos/UniGuajira_logo_sh_md.png' alt='Logo de la Universidad de La Guajira' width={159} height={156} />
-                </div>
+                {visibleLogo ? (
+                    <div className={`
+                            relative flex self-center justify-center  items-center 
+                            transition-opacity duration-300 ${fade ? 'opacity-100' : 'opacity-0'}
+                        `}>
+                        <Image
+                            src={logos[visibleLogo].src_md}
+                            alt={logos[visibleLogo].alt}
+                            width={logos[visibleLogo].width_md}
+                            height={logos[visibleLogo].height_md}
+                        />
+                    </div>
+                ) : (
+                    <div className='relative flex justify-center items-center mx-8 space-x-5'>
+                        <Image src='/assets/images/logos/IUB_logo_sh_md.png' alt='Logo de la Institución Universitaria de Barranquilla' width={148} height={102} />
+                        <hr className='w-1 h-5 bg-white' />
+                        <Image src='/assets/images/logos/UA_logo_sh_md.png' alt='Logo de la Universidad del Atlantico' width={102} height={156} />
+                        <hr className='w-1 h-5 bg-white' />
+                        <Image src='/assets/images/logos/UniGuajira_logo_sh_md.png' alt='Logo de la Universidad de La Guajira' width={159} height={156} />
+                    </div>
+                )}
+                
                 <p id='subtitle' className='relative text-lg font-normal mt-8 px-20 text-center text-white'>El monitoreo empieza aquí. Gracias por ser parte de la protección de nuestros humedales.</p>
             </div>
             <div className='md:relative md:w-2/5 md:h-screen md:justify-center md:bg-white'>
                 <form id='login' action='#' method='POST' onSubmit={handleLogin} className='flex flex-col justify-center md:h-full text-center'>
                     {visibleLogo ? (
                         <div className={`
-                            flex self-center justify-center  items-center max-w-20 mt-[3.2rem] py-[0.62rem] px-[1.25rem] rounded-[3.125rem] bg-blue1 md:hidden
+                            flex self-center justify-center  items-center max-w-20 min-w-20 mt-[3.2rem] py-[0.62rem] px-[1.25rem] rounded-[3.125rem] bg-blue1 md:hidden
                             transition-opacity duration-300 ${fade ? 'opacity-100' : 'opacity-0'}
                         `}>
                             <Image
