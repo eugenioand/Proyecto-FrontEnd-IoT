@@ -55,9 +55,26 @@ const Login = () => {
     //     </form>
     //     </div>
     // </div>
-        <div className="">
-            <div id='login' className='flex flex-col text-center'>
-                <div className='flex justify-center items-center py-[0.62rem] px-[1.25rem] mx-[6.38rem] mb-[9.8rem] mt-[3.2rem] rounded-[3.125rem] bg-blue1 gap-x-5'>
+        <div className="flex flex-col h-screen md:flex-row md:items-center md:justify-center">
+            <div className='relative hidden flex-col items-center justify-center md:flex h-screen md:w-3/5'>
+                <div className='absolute inset-0 bg-[url("/assets/images/bg_working.png")] bg-cover bg-center'></div>
+                <div className='absolute inset-0 bg-blue2 opacity-76'></div>
+                <div className='relative flex justify-center items-center space-x-5'>
+                    <Image src='/assets/images/logos/IUB_logo_sh_sm.png' alt='Logo de la Institución Universitaria de Barranquilla' width={42} height={26} />
+                    <hr className='w-1 h-5 bg-white' />
+                    <Image src='/assets/images/logos/UA_logo_sh_sm.png' alt='Logo de la Universidad del Atlantico' width={27} height={36} />
+                    <hr className='w-1 h-5 bg-white' />
+                    <Image src='/assets/images/logos/UniGuajira_logo_sh_sm.png' alt='Logo de la Universidad de La Guajira' width={40} height={37} />
+                </div>
+                <p id='subtitle' className='relative text-sm font-normal mt-8 text-center text-white'>El monitoreo empieza aquí. Gracias por ser parte de la protección de nuestros humedales.</p>
+            </div>
+            <div id='login' className='flex flex-col text-center md:relative md:w-2/5 md:h-screen md:justify-center md:bg-white'>
+                <div className='
+                    flex self-center justify-center items-center max-w-[20rem] min-w-[12rem]
+                    py-[0.62rem] px-[1.25rem] mt-[3.2rem] mx-[6.38rem] rounded-[3.125rem] bg-blue1 gap-x-5
+                    sm:min-w-[25rem]
+                    md:hidden
+                '>
                     <Image src='/assets/images/logos/IUB_logo_sh_sm.png' alt='Logo de la Institución Universitaria de Barranquilla' width={42} height={26} />
                     <hr className='w-1 h-5 bg-white' />
                     <Image src='/assets/images/logos/UA_logo_sh_sm.png' alt='Logo de la Universidad del Atlantico' width={27} height={36} />
@@ -65,8 +82,8 @@ const Login = () => {
                     <Image src='/assets/images/logos/UniGuajira_logo_sh_sm.png' alt='Logo de la Universidad de La Guajira' width={40} height={37} />
                 </div>
                 <div>
-                    <h2 className='text-4xl font-medium'>Inicio de sesión</h2>
-                    <p id='subtile' className='text-sm font-normal mx-[3.62rem]'>El monitoreo empieza aquí. Gracias por ser parte de la protección de nuestros humedales.</p>
+                    <h2 className='text-4xl font-medium mt-[9.8rem] md:mt-0 md:mb-20'>Inicio de sesión</h2>
+                    <p id='subtile' className='text-sm font-normal mx-[3.62rem] md:hidden'>El monitoreo empieza aquí. Gracias por ser parte de la protección de nuestros humedales.</p>
                 </div>
                 <div className='flex flex-col space-y-4 mt-[3.87rem] mx-[1.88rem]'>
                     <input
