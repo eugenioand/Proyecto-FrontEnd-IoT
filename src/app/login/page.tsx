@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
@@ -42,39 +42,30 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [visibleLogo, setVisibleLogo] = useState<string | null>(null);
-    const [fade, setFade] = useState(false);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
-    useEffect(() => {
-        if (visibleLogo) {
-            setFade(true);
-        } else {
-            setFade(false);
-        }
-    }, [visibleLogo]);
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
-        setError("");
+        setError(null);
         setIsButtonDisabled(false);
     };
 
     const handleDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const domain = e.target.value;
+        let newLogo = null;
 
         if (domain.includes('@unibarranquilla.edu.co')) {
-            setVisibleLogo('unibarranquilla');
+            newLogo = 'unibarranquilla';
         } else if (domain.includes('@uniatlantico.edu.co')) {
-            setVisibleLogo('ua');
+            newLogo = 'ua';
         } else if (domain.includes('@uniguajira.edu.co')) {
-            setVisibleLogo('uniguajira');
-        } else {
-            setVisibleLogo(null); // Hide all logos
+            newLogo = 'uniguajira';
         }
+
+        setVisibleLogo(newLogo);
         setEmail(domain);
-        setError("");
+        setError(null);
         setIsButtonDisabled(false);
-        console.log(e.target.value);
     }
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -85,13 +76,11 @@ const Login = () => {
             const response = await axios.post('/api/auth', { email, password});
             localStorage.setItem('token', response.data.token);
             router.push('/')
-        } catch (error) {
+        } catch (err) {
             // validate if message exists, if not, set a default message
-            // setError(error.message || 'Correo o contraseña incorrectos');
-            setError('Correo o contraseña incorrectos');
+            setError(err.response?.data?.message || 'Correo o contraseña incorrectos');
+            setIsButtonDisabled(false);
         }
-        // console.log('Email:', email);
-        // console.log('Password:', password);
     };
 
     return (
@@ -100,10 +89,7 @@ const Login = () => {
                 <div className='absolute inset-0 bg-[url("/assets/images/bg_working.png")] bg-cover bg-center'></div>
                 <div className='absolute inset-0 bg-blue2 opacity-76'></div>
                 {visibleLogo ? (
-                    <div className={`
-                            relative flex self-center justify-center  items-center 
-                            transition-opacity duration-300 ${fade ? 'opacity-100' : 'opacity-0'}
-                        `}>
+                    <div className='relative flex self-center justify-center  items-center transition-opacity duration-300 opacity-100'>
                         <Image
                             src={logos[visibleLogo].src_md}
                             alt={logos[visibleLogo].alt}
@@ -121,15 +107,17 @@ const Login = () => {
                     </div>
                 )}
                 
-                <p id='subtitle' className='relative text-lg font-normal mt-8 px-20 text-center text-white'>El monitoreo empieza aquí. Gracias por ser parte de la protección de nuestros humedales.</p>
+                <p id='subtitle' className='relative text-lg font-normal mt-8 px-20 text-center text-white'>
+                    El monitoreo empieza aquí. Gracias por ser parte de la protección de nuestros humedales.
+                </p>
             </div>
             <div className='md:relative md:w-2/5 md:h-screen md:justify-center md:bg-white'>
                 <form id='login' action='#' method='POST' onSubmit={handleLogin} className='flex flex-col justify-center md:h-full text-center'>
                     {visibleLogo ? (
-                        <div className={`
+                        <div className='
                             flex self-center justify-center  items-center max-w-20 min-w-20 mt-[3.2rem] py-[0.62rem] px-[1.25rem] rounded-[3.125rem] bg-blue1 md:hidden
-                            transition-opacity duration-300 ${fade ? 'opacity-100' : 'opacity-0'}
-                        `}>
+                            transition-opacity duration-300 opacity-100
+                        '>
                             <Image
                                 src={logos[visibleLogo].src}
                                 alt={logos[visibleLogo].alt}
@@ -154,7 +142,7 @@ const Login = () => {
                     
                     <div>
                         <h2 className='text-4xl font-medium mt-[9.8rem] md:mt-0 md:mb-20'>Inicio de sesión</h2>
-                        <p id='subtile' className='text-sm font-normal mx-[3.62rem] md:hidden'>El monitoreo empieza aquí. Gracias por ser parte de la protección de nuestros humedales.</p>
+                        <p id='subtile' className='text-sm font-normal mx-[3.62rem] mt-5 md:hidden'>El monitoreo empieza aquí. Gracias por ser parte de la protección de nuestros humedales.</p>
                     </div>
                     <div className='flex flex-col space-y-4 mt-[3.87rem] mx-[1.88rem]'>
                         <input
