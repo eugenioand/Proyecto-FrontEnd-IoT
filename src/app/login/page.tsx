@@ -43,6 +43,7 @@ const Login = () => {
     const [error, setError] = useState<string | null>(null);
     const [visibleLogo, setVisibleLogo] = useState<string | null>(null);
     const [fade, setFade] = useState(false);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
     useEffect(() => {
         if (visibleLogo) {
@@ -51,6 +52,12 @@ const Login = () => {
             setFade(false);
         }
     }, [visibleLogo]);
+
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(e.target.value);
+        setError("");
+        setIsButtonDisabled(false);
+    };
 
     const handleDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const domain = e.target.value;
@@ -65,11 +72,15 @@ const Login = () => {
             setVisibleLogo(null); // Hide all logos
         }
         setEmail(domain);
+        setError("");
+        setIsButtonDisabled(false);
         console.log(e.target.value);
     }
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsButtonDisabled(true);
+        
         try {
             const response = await axios.post('/api/auth', { email, password});
             localStorage.setItem('token', response.data.token);
@@ -156,14 +167,35 @@ const Login = () => {
                         <input
                             type='password'
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={handlePasswordChange}
                             placeholder='Contraseña'
                             className='border-2 border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-600'
                         />
-                        {error && <p className="text-red-500 mb-4">{error}</p>}
-                        <button className='bg-indigo-600 text-white rounded-md py-2 px-4'>Iniciar sesión</button>
+                        <a href="#" className='text-sm text-end mt-5 text-blue-600'>¿Has olvidado tu contraseña?</a>
+                        {error && (
+                            <div className="flex items-center bg-red-100 border border-red-400 border-l-4 text-red-700 px-4 py-3 rounded mt-4 w-full shadow-sm">
+                                <svg
+                                    className="fill-current w-6 h-6 mr-2"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path d="M10 15a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm.93-10.36a1.07 1.07 0 00-1.86 0L3.14 16.3c-.4.77.15 1.7.93 1.7h12.86c.78 0 1.33-.93.93-1.7L10.93 4.64zM9 8h2v4H9V8zm0 6h2v2H9v-2z" />
+                                </svg>
+                                <p>{error}</p>
+                            </div>
+                        )}
+                        <button
+                            type="submit"
+                            className={`p-2 mb-4 w-full rounded transition-transform duration-300 transform ${isButtonDisabled
+                                    ? "bg-gray-400 cursor-not-allowed"
+                                    : "bg-blue-500 hover:bg-blue-600 text-white"
+                                }`}
+                            disabled={isButtonDisabled}
+                        >
+                            Iniciar sesión
+                        </button>
+                        {/* <button className='bg-indigo-600 text-white rounded-md py-2 px-4'>Iniciar sesión</button> */}
                     </div>
-                    <a href="#" className='text-sm'>¿Has olvidado tu contraseña?</a>
                 </form>
             </div>
         </div>
