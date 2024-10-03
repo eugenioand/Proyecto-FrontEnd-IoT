@@ -35,13 +35,14 @@ const logos = {
     },
 };
 
+type LogoKeys = 'unibarranquilla' | 'ua' | 'uniguajira';
 
 const Login = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const [visibleLogo, setVisibleLogo] = useState<string | null>(null);
+    const [visibleLogo, setVisibleLogo] = useState<LogoKeys | null>(null);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +53,7 @@ const Login = () => {
 
     const handleDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const domain = e.target.value;
-        let newLogo = null;
+        let newLogo: LogoKeys | null = null;
 
         if (domain.includes('@unibarranquilla.edu.co')) {
             newLogo = 'unibarranquilla';
@@ -77,8 +78,13 @@ const Login = () => {
             localStorage.setItem('token', response.data.token);
             router.push('/')
         } catch (err) {
-            // validate if message exists, if not, set a default message
-            setError(err.response?.data?.message || 'Correo o contraseña incorrectos');
+            if (axios.isAxiosError(err)) {
+                // validate if message exists, if not, set a default message
+                setError(err.response?.data?.message || 'Correo o contraseña incorrectos');
+            } else {
+                // set a default message
+                setError('Algo salió mal, por favor intenta de nuevo');
+            }
             setIsButtonDisabled(false);
         }
     };
