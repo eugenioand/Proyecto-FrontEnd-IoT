@@ -6,15 +6,23 @@ const dashboardData = [
         id: 1,
         name: 'Humedal 1',
         location: 'Ubicación 1',
-        status: 'warning',
+        ph: 7.5,
+        oxygen: 5,
+        turbidity: 10,
         flow: { in: 10, out: 8 },
+        status: 'warning',
+        lastUpdated: '2021-10-01 12:00:00',
     },
     {
         id: 2,
         name: 'Humedal 2',
         location: 'Ubicación 2',
-        status: 'good',
+        ph: 2.5,
+        oxygen: 3,
+        turbidity: 30,
         flow: { in: 10, out: 8 },
+        status: 'good',
+        lastUpdated: '2021-10-01 12:00:00',
     },
     // Agrega más humedales aquí
 ];
@@ -31,7 +39,11 @@ const Dashboard = () => {
                             key={wetland.id}
                             name={wetland.name}
                             location={wetland.location}
-                            status={wetland.status}
+                            ph={wetland.ph}
+                            oxygen={wetland.oxygen}
+                            turbidity={wetland.turbidity}
+                            status={wetland.status as 'good' | 'warning' | 'alert'}
+                            lastUpdated={wetland.lastUpdated}
                         />
                     ))}
                 </div>
