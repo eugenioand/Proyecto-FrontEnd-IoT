@@ -13,6 +13,7 @@ const config: Config = {
         foreground: "var(--foreground)",
         blue1: "var(--bg-blue-1)",
         blue2: "var(--bg-blue-2)",
+        blue3: "var(--bg-blue-3)",
       },
     },
   },
