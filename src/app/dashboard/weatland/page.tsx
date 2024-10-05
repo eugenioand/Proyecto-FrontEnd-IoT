@@ -4,7 +4,7 @@ import WetlandCard from "@/components/WetlandCard";
 const dashboardData = [
     {
         id: 1,
-        name: 'Humedal 1',
+        name: 'Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1Humedal 1',
         location: 'Ubicación 1',
         ph: 7.5,
         oxygen: 5,
@@ -19,12 +19,55 @@ const dashboardData = [
         location: 'Ubicación 2',
         ph: 2.5,
         oxygen: 3,
-        turbidity: 30,
+        turbidity: 10,
         flow: { in: 10, out: 8 },
         status: 'good',
         lastUpdated: '2021-10-01 12:00:00',
     },
-    // Agrega más humedales aquí
+    {
+        id: 2,
+        name: 'Humedal 2',
+        location: 'Ubicación 2',
+        ph: 2.5,
+        oxygen: 3,
+        turbidity: 10,
+        flow: { in: 10, out: 8 },
+        status: 'good',
+        lastUpdated: '2021-10-01 12:00:00',
+    },
+    {
+        id: 2,
+        name: 'Humedal 2',
+        location: 'Ubicación 2',
+        ph: 2.5,
+        oxygen: 3,
+        turbidity: 10,
+        flow: { in: 10, out: 8 },
+        status: 'good',
+        lastUpdated: '2021-10-01 12:00:00',
+    },
+    {
+        id: 2,
+        name: 'Humedal 2',
+        location: 'Ubicación 2',
+        ph: 2.5,
+        oxygen: 3,
+        turbidity: 10,
+        flow: { in: 10, out: 8 },
+        status: 'good',
+        lastUpdated: '2021-10-01 12:00:00',
+    },
+    {
+        id: 2,
+        name: 'Humedal 2',
+        location: 'Ubicación 2',
+        ph: 2.5,
+        oxygen: 3,
+        turbidity: 10,
+        flow: { in: 10, out: 8 },
+        status: 'good',
+        lastUpdated: '2021-10-01 12:00:00',
+    },
 ];
 
 
@@ -32,8 +75,8 @@ const Dashboard = () => {
     return (
         <div>
             <Header />
-            <main className="flex">
-                <div className="flex flex-wrap justify-center p-4">
+            <main className="flex w-full">
+                <div className="flex flex-wrap w-full justify-center p-4 gap-10">
                     {dashboardData.map((wetland) => (
                         <WetlandCard
                             key={wetland.id}

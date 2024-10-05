@@ -1,3 +1,5 @@
+import ProgressBar from "./ProgressBar";
+
 interface WetlandCardProps {
     name: string;
     location: string;
@@ -18,11 +20,18 @@ const WetlandCard: React.FC<WetlandCardProps> = ({ name, location, status, oxyge
     };
     
     return (
-        <div className={`flex flex-col border-l-4 p-4 rounded-lg shadow-md min-w-[25rem]`}>
+        <div className="
+            flex flex-col p-4 rounded-lg shadow-md w-80 min-w-64 h-[13rem]
+            md:w-[25rem] md:h-[13rem]
+        ">
             <div>
                 <div className="flex flex-row justify-between">
-                    <h3 className="text-xl font-normal">{name}</h3>
-                    <div className={`w-5 h-5 rounded-lg ${statusColor[status]}`}></div>
+                    <h3 className="
+                        text-lg font-normal w-[90%] overflow-hidden text-ellipsis whitespace-nowrap
+                        md:text-xl
+                        " title={name}
+                    >{name}</h3>
+                    <div className={`w-5 h-5 rounded-full ${statusColor[status]}`}></div>
                 </div>
                 <p className="text-sm text-gray-500">{location}</p>
             </div>
@@ -31,18 +40,30 @@ const WetlandCard: React.FC<WetlandCardProps> = ({ name, location, status, oxyge
                 <div>
                     <p className="text-xs font-medium text-gray-600">pH</p>
                     <p className="text-xl font-normal">{ph}</p>
+                    <ProgressBar value={ph} max={73} label="pH" color="blue" />
                 </div>
                 <div>
                     <p className="text-xs font-medium text-gray-600">Oxígeno Disuelto</p>
-                    <p className="text-[0.5rem] font-normal text-right">{oxygen} mg/L</p>
+                    <div className="flex flex-row items-baseline">
+                        <p className="text-xl font-normal">{oxygen}</p>
+                        <span className="text-[0.5rem] font-normal text-right">mg/L</span>
+                    </div>
+                    <ProgressBar value={oxygen} max={10} label="Oxígeno Disuelto" color="orange" />
                 </div>
                 <div>
                     <p className="text-xs font-medium text-gray-600">Turbidez</p>
-                    <p className="text-[0.5rem] font-normal text-right">{turbidity} NTU</p>
+                    <div className="flex flex-row items-baseline">
+                        <p className="text-xl font-normal">{turbidity}</p>
+                        <span className="text-[0.5rem] font-normal text-right">NTU</span>
+                    </div>
+                    <ProgressBar value={turbidity} max={15} label="Turbidez" color="green" />
                 </div>
             </div>
 
-            <div className="text-xs text-gray-500 mb-4 text-right">Última actualización: {lastUpdated}</div>
+            <div className="
+                text-xs text-gray-500 text-right
+                md:mt-[0.44rem]
+            ">Última actualización: {lastUpdated}</div>
         </div>
     );
 }
