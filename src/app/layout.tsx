@@ -14,9 +14,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <html lang="es">
       <body>
-        <main>
-          {children}
-        </main>
+        {children}
       </body>
     </html>
   );

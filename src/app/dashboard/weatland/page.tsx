@@ -1,4 +1,3 @@
-import Header from "@/components/Header";
 import WetlandCard from "@/components/WetlandCard";
 
 const dashboardData = [
@@ -73,26 +72,22 @@ const dashboardData = [
 
 const Dashboard = () => {
     return (
-        <div>
-            <Header />
-            <main className="flex w-full">
-                <div className="flex flex-wrap w-full justify-center p-4 gap-10">
-                    {dashboardData.map((wetland) => (
-                        <WetlandCard
-                            key={wetland.id}
-                            name={wetland.name}
-                            location={wetland.location}
-                            ph={wetland.ph}
-                            oxygen={wetland.oxygen}
-                            turbidity={wetland.turbidity}
-                            status={wetland.status as 'good' | 'warning' | 'alert'}
-                            lastUpdated={wetland.lastUpdated}
-                        />
-                    ))}
-                </div>
-            </main>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3  gap-10 w-full mx-auto mt-5 sm:mt-10 lg:mt-24">
+            {dashboardData.map((wetland) => (
+                <WetlandCard
+                    key={wetland.id}
+                    name={wetland.name}
+                    location={wetland.location}
+                    ph={wetland.ph}
+                    oxygen={wetland.oxygen}
+                    turbidity={wetland.turbidity}
+                    status={wetland.status as 'good' | 'warning' | 'alert'}
+                    lastUpdated={wetland.lastUpdated}
+                />
+            ))}
         </div>
+        // <div className="flex justify-center p-4">
+        // </div>
     );
 };
-
 export default Dashboard;
