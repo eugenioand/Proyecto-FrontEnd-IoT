@@ -72,7 +72,7 @@ const dashboardData = [
 
 const Dashboard = () => {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3  gap-10 w-full mx-auto mt-5 sm:mt-10 lg:mt-24">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3  gap-10 w-full mx-auto">
             {dashboardData.map((wetland) => (
                 <WetlandCard
                     key={wetland.id}
