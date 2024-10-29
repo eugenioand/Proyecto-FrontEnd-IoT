@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import {
     Dialog,
     DialogPanel,
@@ -14,21 +15,25 @@ import {
     ArrowPathIcon,
     Bars3Icon,
     ChartPieIcon,
-    CursorArrowRaysIcon,
+    // CursorArrowRaysIcon,
     FingerPrintIcon,
     SquaresPlusIcon,
     XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
+import { 
+    ChevronDownIcon,
+    // PhoneIcon,
+    // PlayCircleIcon
+} from '@heroicons/react/20/solid';
 
 import Image from "next/image";
 
-const navigation = [
-    { name: 'Inicio', href: '#' },
-    { name: 'Maps', href: '#' },
-    { name: 'Administración', href: '#' },
-    { name: 'Reportes', href: '#' },
-]
+// const navigation = [
+//     { name: 'Inicio', href: '#' },
+//     { name: 'Maps', href: '#' },
+//     { name: 'Administración', href: '#' },
+//     { name: 'Reportes', href: '#' },
+// ]
 
 
 const subAdminNav = [
@@ -41,8 +46,10 @@ const subAdminNav = [
 
 
 const Navbar = () => {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const pathname = usePathname();
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+    console.log(pathname);
     return (
         <>
             <nav aria-label="Global" className="flex items-center justify-between mx-auto max-w-7xl w-full lg:px-8">
@@ -58,6 +65,13 @@ const Navbar = () => {
                         />
                     </a>
                 </div>
+                {
+                    pathname == '/dashboard/map' && (
+                        <div className='lg:hidden'>
+                            <input type="text" placeholder='Buscar humedales...' className='px-4 py-2 rounded-md placeholder-gray-400 text-black' />
+                        </div>
+                    )
+                }
                 <div className="flex lg:hidden">
                     <button
                         type="button"
@@ -69,7 +83,7 @@ const Navbar = () => {
                     </button>
                 </div>
                 <PopoverGroup className="hidden lg:flex lg:space-x-12">
-                    <a href="#" className="text-sm font-semibold leading-6 text-white">
+                    <a href="/dashboard/wetland" className="text-sm font-semibold leading-6 text-white">
                         Inicio
                     </a>
                     <a href="map" className="text-sm font-semibold leading-6 text-white">
@@ -105,7 +119,7 @@ const Navbar = () => {
                             </div>
                         </PopoverPanel>
                     </Popover>
-                    <a href="reports" className="text-sm font-semibold leading-6 text-white">
+                    <a href="/dashboard/report" className="text-sm font-semibold leading-6 text-white">
                         Reportes
                     </a>
                 </PopoverGroup>
@@ -140,7 +154,7 @@ const Navbar = () => {
                         <div className="-my-6 divide-y divide-gray-500/10">
                             <div className="space-y-2 py-6">
                                 <a
-                                    href="#"
+                                    href="/dashboard/wetland"
                                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                 >
                                     Inicio
@@ -171,7 +185,7 @@ const Navbar = () => {
                                 </Disclosure>
                                 
                                 <a
-                                    href="#"
+                                    href="/dashboard/report"
                                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                 >
                                     Reportes

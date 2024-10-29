@@ -7,7 +7,7 @@ interface ProgressBarProps {
     color?: string;
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ value, max = 100, label, color = 'blue' }) => {
+const ProgressBar: React.FC<ProgressBarProps> = ({ value, max = 100, color = 'blue' }) => {
     const widthPercentage = (value / max) * 100;
 
     return (

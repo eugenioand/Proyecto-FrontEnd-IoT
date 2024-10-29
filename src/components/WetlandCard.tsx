@@ -21,9 +21,9 @@ const WetlandCard: React.FC<WetlandCardProps> = ({ name, location, status, oxyge
     
     return (
         <div className="
-            flex flex-col p-4 rounded-lg shadow-md w-72 min-w-64 h-[12rem] bg-white
-            md:w-[20rem]
-            lg:w-[25rem] lg:h-[13rem]
+            flex flex-col p-4 rounded-lg shadow-md w-full min-w-64 h-[12rem] bg-white
+            md:w-[22rem]
+            cursor-pointer
         ">
             <div>
                 <div className="flex flex-row justify-between">
@@ -63,7 +63,7 @@ const WetlandCard: React.FC<WetlandCardProps> = ({ name, location, status, oxyge
 
             <div className="
                 text-xs text-gray-500 text-right
-                lg:mt-[0.44rem]
+                
             ">Última actualización: {lastUpdated}</div>
         </div>
     );
