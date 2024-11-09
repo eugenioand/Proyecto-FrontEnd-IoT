@@ -1,20 +1,28 @@
-// import type { Metadata } from "next";
 // import localFont from "next/font/local";
-"use client";
 import "../styles/globals.css";
-import useAuth from "@/hooks/useAuth";
+import type { Metadata } from "next";
+import { ReactNode } from "react";
+// import useAuth from "@/hooks/useAuth";
+// import { AuthProvider } from "@/hooks/AuthProvider";
+import { UIProvider } from "@/context/UIContext";
 
 type LayoutProps = {
-    children: React.ReactNode;
+  children: ReactNode;
+};
+
+export const metadata: Metadata = {
+  title: "Gestion de Humedales IoT",
+  description: "Gestiona tus humedales IoT de forma sencilla y segura.",
 };
 
 export default function Layout({ children }: LayoutProps) {
-  useAuth();
-
+  // useAuth();
   return (
     <html lang="es">
       <body>
-        {children}
+          <UIProvider>
+            {children}
+          </UIProvider>
       </body>
     </html>
   );
