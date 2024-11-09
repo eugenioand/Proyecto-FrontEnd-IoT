@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useUI } from "@/context/UIContext";
 import IconButton from "@/components/IconButton";
 import { SettingsIcon } from "@/assets/Icons";
@@ -31,7 +31,7 @@ const ColumnSelector = ({ columns, selectedColumns, onSelect }: ColumnSelectorPr
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (isOpen && !event.target.closest(`#${componentId}`)) {
+            if (isOpen && !(event.target as Element).closest(`#${componentId}`)) {
                 setActiveComponent(componentId, false);
             }
         };
@@ -40,7 +40,7 @@ const ColumnSelector = ({ columns, selectedColumns, onSelect }: ColumnSelectorPr
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [isOpen, setActiveComponent]);
+    }, [isOpen, setActiveComponent, componentId]);
 
     return (
         <div className="relative inline-block text-left">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState} from 'react';
-import { useAuth } from '@/hooks/AuthProvider';
+// import { useAuth } from '@/hooks/AuthProvider';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
@@ -39,7 +39,7 @@ const logos = {
 type LogoKeys = 'unibarranquilla' | 'ua' | 'uniguajira';
 
 const Login = () => {
-    const { login } = useAuth();
+    // const { login } = useAuth();
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -77,8 +77,9 @@ const Login = () => {
         
         try {
             const response = await axios.post('/api/auth', { email, password});
-            // localStorage.setItem('token', response.data.token);
-            login(response.data.token);
+            localStorage.setItem('token', response.data.token);
+            // login(response.data.token);
+            console.log('Login successful');
             router.push('/')
         } catch (err) {
             if (axios.isAxiosError(err)) {

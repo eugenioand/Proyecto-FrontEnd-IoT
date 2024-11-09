@@ -11,6 +11,15 @@ interface User {
     status: number;
 }
 
+interface ApiUser {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+    created_at: string;
+    status: number;
+}
+
 interface UseUserDataProps {
     searchTerm: string;
     searchBy: 'name' | 'email';
@@ -59,7 +68,7 @@ const useUserData = ({
             try {
                 const response = await api.get(`/api/users?${params.toString()}`);
                 const data = response.data;
-                setUsers(data.map((user: any) => ({
+                setUsers(data.map((user: ApiUser) => ({
                     id: user.id,
                     name: user.name,
                     email: user.email,

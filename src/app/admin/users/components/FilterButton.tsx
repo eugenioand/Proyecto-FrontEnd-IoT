@@ -6,7 +6,7 @@ import { SearchIcon, PlusIcon } from "@/assets/Icons";
 interface Option {
     id: string;
     label: string;
-    length: number;
+    length?: number;
 }
 
 interface FilterOptionProps {
@@ -44,7 +44,7 @@ const FilterButton = ({ options, label, onSelect }: FilterOptionProps) => {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [isOpen, setActiveComponent]);
+    }, [isOpen, setActiveComponent, componentId]);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
@@ -94,7 +94,7 @@ const FilterButton = ({ options, label, onSelect }: FilterOptionProps) => {
                                         onChange={() => handleCheckboxChange(option.id)}
                                     />
                                     <span>{option.label}</span>
-                                    <span className="ml-auto flex h-4 items-center justify-center font-mono text-xs">{option.length}</span>
+                                    <span className="ml-auto flex h-4 items-center justify-center font-mono text-xs">{option.length || 0}</span>
                                 </label>
                             ))
                         ) : (

@@ -10,6 +10,18 @@ interface User {
     status: number;
 }
 
+interface ApiUser {
+    id: number;
+    first_name: string;
+    second_name: string;
+    last_name: string;
+    second_last_name: string;
+    email: string;
+    role: string;
+    created_at: string;
+    status: number;
+}
+
 interface Filters {
     searchTerm?: string;
     roleFilter?: string;
@@ -29,6 +41,8 @@ interface UserStore {
     filters: Filters;
     loading: boolean;
     error: string | null;
+    passwordVisible: boolean;
+    togglePasswordVisibility: () => void;
     fetchUsers: () => Promise<void>;
     setFilters: (filters: Partial<Filters>) => void;
     openModal: () => void;
@@ -52,6 +66,8 @@ const useUserStore = create<UserStore>((set, get) => ({
     },
     loading: false,
     error: null,
+    passwordVisible: false,
+    togglePasswordVisibility: () => set((state) => ({ passwordVisible: !state.passwordVisible })),
     fetchUsers: async () => {
         set({ loading: true, error: null });
         const { filters } = get();
@@ -70,7 +86,7 @@ const useUserStore = create<UserStore>((set, get) => ({
         try {
             const response = await api.get('/api/users', { params: new URLSearchParams(params) });
             const data = response.data.data;
-            set({ users: data.map((user: any) => ({
+            set({ users: data.map((user: ApiUser) => ({
                 id: user.id,
                 name: `${user.first_name} ${user.second_name} ${user.last_name} ${user.second_last_name}`,
                 email: user.email,

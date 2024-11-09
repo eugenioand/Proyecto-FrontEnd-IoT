@@ -1,6 +1,6 @@
-import React, { FormEvent, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useUI } from "@/context/UIContext";
 

@@ -22,7 +22,7 @@ const UserList = () => {
 
 
     const openModal = () => setFilters({ isModalOpen: true });
-    const closeModal = () => setFilters({ isModalOpen: false });
+    // const closeModal = () => setFilters({ isModalOpen: false });
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const searchTerm = e.target.value;
@@ -70,16 +70,16 @@ const UserList = () => {
                     <FilterButton
                         label="Roles"
                         options={[
-                            { id: 'admin', label: 'Admin' },
-                            { id: 'user', label: 'Usuario' },
+                            { id: 'admin', label: 'Admin', length: users.filter(user => user.role === 'admin').length },
+                            { id: 'user', label: 'Usuario', length: users.filter(user => user.role === 'user').length },
                         ]}
                         onSelect={handleSelectRoles}
                     />
                     <FilterButton
                         label="Estados"
                         options={[
-                            { id: 'active', label: 'Activo' },
-                            { id: 'inactive', label: 'Inactivo' },
+                            { id: 'active', label: 'Activo', length: users.filter(user => user.status === 1).length },
+                            { id: 'inactive', label: 'Inactivo', length: users.filter(user => user.status === 0).length }
                         ]}
                         onSelect={handleSelectStatuses}
                     />

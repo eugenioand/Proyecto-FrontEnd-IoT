@@ -23,12 +23,15 @@ interface TableProps {
 }
 
 const Table = ({ data, totalRecords, recordsPerPage, currentPage, onPageChange, onEdit, onDelete, loading, visibleColumns }: TableProps) => {
-    const columns = [
+    const columns: { key: keyof User; label: string }[] = [
         { key: 'name', label: 'Nombre' },
         { key: 'email', label: 'Correo' },
         { key: 'role', label: 'Rol' },
         { key: 'createdAt', label: 'Fecha de Creación' },
     ];
+
+    // TODO:
+    console.log(data, totalRecords, recordsPerPage, currentPage, onPageChange, onEdit, onDelete, loading, visibleColumns);
 
     return (
             <table className="min-w-full divide-y divide-gray-200">

@@ -10,8 +10,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(response.data, { status: response.status });
 
     } catch (error) {
-        console.error('Error en la solicitud POST /api/users', error.response?.data || error.message);
         if (axios.isAxiosError(error)) {
+            console.error('Error en la solicitud POST /api/users', error.response?.data || error.message);
             if (error.response) {
                 return NextResponse.json(
                     { error: error.response.data?.message || "Error en la solicitud externa" },

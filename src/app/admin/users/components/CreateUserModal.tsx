@@ -30,6 +30,7 @@ type State = {
     currentPage: number;
     loading: boolean;
     error: string | null;
+    passwordVisible: boolean;
 };
 
 type Action =
@@ -54,6 +55,7 @@ const initialState: State = {
     currentPage: 1,
     loading: false,
     error: null,
+    passwordVisible: false,
 };
 
 const reducer = (state: State, action: Action): State => {
@@ -82,7 +84,7 @@ const CreateUserModal = () => {
     // const { activeComponent, setActiveComponent } = useUI();
     // const componentId = 'createUserModal';
     // const isOpen = activeComponent.createUserModal === true;
-    const { filters, closeModal } = useUserStore();
+    const { filters, closeModal, passwordVisible, togglePasswordVisibility } = useUserStore();
     const isOpen = filters.isModalOpen;
     const [state, dispatch] = useReducer(reducer, initialState);
     const isLargeScreen = useMediaQuery('(min-width: 640px)');
@@ -238,13 +240,15 @@ const CreateUserModal = () => {
                                         />
                                         <Input
                                             label="Contraseña"
-                                            type="password"
+                                            type={passwordVisible ? "text" : "password"}
                                             value={state.formData.password}
                                             onChange={(e) => handleInputChange('password', e.target.value)}
                                             placeholder="********"
                                             required
                                             error={state.errors.password}
                                             disabled={state.loading}
+                                            showPasswordToggle
+                                            onTogglePasswordVisibility={togglePasswordVisibility}
                                         />
                                         <div>
                                             <label className="block mb-2 text-sm font-medium text-gray-700">Elegir Rol</label>
@@ -316,20 +320,33 @@ interface InputProps {
     error?: string;
     disabled?: boolean;
     className?: string;
+    showPasswordToggle?: boolean;
+    onTogglePasswordVisibility?: () => void;
 }
 
-const Input = ({ label, type, value, onChange, placeholder = "", required = false, error, disabled = false, className = "" }: InputProps) => (
+const Input = ({ label, type, value, onChange, placeholder = "", required = false, error, disabled = false, className = "", showPasswordToggle = false, onTogglePasswordVisibility }: InputProps) => (
     <div className={`flex flex-col ${className}`}>
         <label className="mb-1 text-sm font-medium text-gray-700">{label}</label>
-        <input
-            type={type}
-            value={value}
-            onChange={onChange}
-            placeholder={placeholder}
-            required={required}
-            disabled={disabled}
-            className={`border ${error ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500`}
-        />
+        <div className="relative">
+            <input
+                type={type}
+                value={value}
+                onChange={onChange}
+                placeholder={placeholder}
+                required={required}
+                disabled={disabled}
+                className={`border ${error ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500`}
+            />
+            {showPasswordToggle && (
+                <button
+                    type="button"
+                    onClick={onTogglePasswordVisibility}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 focus:outline-none"
+                >
+                    {type === "password" ? <EyeIcon className="h-5 w-5" /> : <EyeSlashIcon className="h-5 w-5" />}
+                </button>
+            )}
+        </div>
         {error && <span className="mt-1 text-xs text-red-500">{error}</span>}
     </div>
 );
