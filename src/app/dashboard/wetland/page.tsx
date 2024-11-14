@@ -72,19 +72,21 @@ const dashboardData = [
 
 const Dashboard = () => {
     return (
+        <div className="flex-grow mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3  gap-10 w-full mx-auto">
             {dashboardData.map((wetland) => (
                 <WetlandCard
-                    key={wetland.id}
-                    name={wetland.name}
-                    location={wetland.location}
-                    ph={wetland.ph}
-                    oxygen={wetland.oxygen}
-                    turbidity={wetland.turbidity}
-                    status={wetland.status as 'good' | 'warning' | 'alert'}
-                    lastUpdated={wetland.lastUpdated}
+                key={wetland.id}
+                name={wetland.name}
+                location={wetland.location}
+                ph={wetland.ph}
+                oxygen={wetland.oxygen}
+                turbidity={wetland.turbidity}
+                status={wetland.status as 'good' | 'warning' | 'alert'}
+                lastUpdated={wetland.lastUpdated}
                 />
             ))}
+            </div>
         </div>
         // <div className="flex justify-center p-4">
         // </div>
