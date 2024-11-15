@@ -99,7 +99,7 @@ const TableComponent = ({ filters }: TableProps) => {
         setData([]);
         setTotalResults(0);
         setTotalPages(0);
-        setErrorMessage( 'No hay Data'|| 'Error desconocido al cargar los datos');
+        setErrorMessage( 'No hay Data');
       }
     } catch (error) {
       console.error('Error fetching data:', error);
