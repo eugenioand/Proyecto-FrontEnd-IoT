@@ -5,6 +5,7 @@ export interface FiltersProps {
       sensor?: string;
       startDate?: string;
       endDate?: string;
+      typeSensor?: string;
     };
     onFilterChange: (filters: any) => void;
     compareMode: boolean;

@@ -1,16 +1,16 @@
 "use client"
 
-import { Filters } from "@/reports/components";
-import { Table } from "@/reports/components";
+
+import { Table, Filters,Charts } from "@/reports/components";
 import { useState } from "react";
 
  export default function ReportPage () {
 
     const [view, setView] = useState<'table' | 'charts'>('table');
     const [filters, setFilters] = useState({
-      humedal: 'Humedal 1',
-      nodo: 'Seccion 1',
-      sensor: 'Oxigeno Disuelto'
+      humedal: '0',
+      nodo: '',
+      sensor: ''
     });
     const [compareMode, setCompareMode] = useState(false);
     const [secondHumedal, setSecondHumedal] = useState('Humedal 2');
@@ -77,14 +77,15 @@ import { useState } from "react";
                 </div>
               </div>
               
-              {/* {compareMode ? (
+              {/* compareMode ? (
                 <ComparisonChart 
                   filters={filters}
                   secondHumedal={secondHumedal}
                 />
-              ) : (
+              ) : ( */
                 <Charts filters={filters} />
-              )} */}
+              // )
+              }
             </div>
           )}
         </div> 
