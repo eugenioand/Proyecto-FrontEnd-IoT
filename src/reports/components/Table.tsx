@@ -117,6 +117,11 @@ const TableComponent = ({ filters }: TableProps) => {
   const columns: ColumnDef<DataRow>[] = useMemo(
     () => [
       {
+        accessorKey:'ID',
+        header: 'ID',
+        cell: (cell) => cell.row.index + 1,
+      },
+      {
         accessorKey: 'fecha',
         header: 'Fecha',
       },
@@ -174,7 +179,7 @@ const TableComponent = ({ filters }: TableProps) => {
       {loading ? (
         <div className="text-center">Cargando datos...</div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto overflow-y-auto max-h-[570px]">
           <table className="min-w-full divide-y divide-gray-200">
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (

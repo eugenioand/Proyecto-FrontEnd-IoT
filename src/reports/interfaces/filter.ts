@@ -6,9 +6,11 @@ export interface FiltersProps {
       startDate?: string;
       endDate?: string;
       typeSensor?: string;
+      title:string;
     };
     onFilterChange: (filters: any) => void;
     compareMode: boolean;
     secondHumedal: string;
     onSecondHumedalChange: (humedal: string) => void;
+    view: string;
   }
