@@ -27,9 +27,9 @@ export function Charts({ filters }: ChartsProps) {
         setLoading(true);
         const response = await fetch(url);
         const json = await response.json();
-        const data = json.data.map(entry => entry.sensor).filter(Boolean); // Filtra para ignorar entradas sin sensor
-        const xAxisData = data.map(sensor => sensor.register_date);
-        const seriesData = data.map(sensor => sensor.value);
+        const data = json.data.map((entry: { sensor: { register_date: string; value: number } }) => entry.sensor).filter(Boolean); // Filtra para ignorar entradas sin sensor
+        const xAxisData = data.map((sensor: { register_date: string; value: number }) => sensor.register_date);
+        const seriesData = data.map((sensor: { register_date: string; value: number }) => sensor.value);
       
         
         if (seriesData.length > 0) {
@@ -121,7 +121,7 @@ export function Charts({ filters }: ChartsProps) {
 
         <div className="mt-4 flex justify-between text-sm text-gray-600">
           <div>Valor Min: {Math.min(...chartData.seriesData).toFixed(1)}°C</div>
-          <div>Valor Promedio: {(chartData.seriesData.reduce((a, b) => a + b, 0) / chartData.seriesData.length).toFixed(1)}°C</div>
+          <div>Valor Promedio: {(chartData.seriesData.reduce((a: number, b: number) => a + b, 0) / chartData.seriesData.length).toFixed(1)}°C</div>
           <div>Valor Max: {Math.max(...chartData.seriesData).toFixed(1)}°C</div>
         </div>
       </div>

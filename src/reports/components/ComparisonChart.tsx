@@ -5,11 +5,15 @@ interface ComparisonChartProps {
     humedal: string;
     nodo: string;
     sensor: string;
+    startDate?: string;
+    endDate?: string;
   };
   filters2: {
     humedal: string;
     nodo: string;
     sensor: string;
+    startDate?: string;
+    endDate?: string;
   };
   secondHumedal: string;
 }
@@ -34,9 +38,9 @@ export function ComparisonChart({
         setLoading(true);
         const response = await fetch(url);
         const json = await response.json();
-        const data = json.data.map(entry => entry.sensor).filter(Boolean); // Filtra para ignorar entradas sin sensor
-        const xAxisData = data.map(sensor => sensor.register_date);
-        const seriesData = data.map(sensor => sensor.value);
+        const data = json.data.map((entry: { sensor: any }) => entry.sensor).filter(Boolean); // Filtra para ignorar entradas sin sensor
+        const xAxisData = data.map((sensor: { register_date: string }) => sensor.register_date);
+        const seriesData = data.map((sensor: { value: number }) => sensor.value);
         
         if (seriesData.length > 0) {
           setChartData({ xAxisData, seriesData });
@@ -65,9 +69,9 @@ export function ComparisonChart({
         setLoading(true);
         const response = await fetch(url);
         const json = await response.json();
-        const data = json.data.map(entry => entry.sensor).filter(Boolean); // Filtra para ignorar entradas sin sensor
-        const xAxisData = data.map(sensor => sensor.register_date);
-        const seriesData = data.map(sensor => sensor.value);
+        const data = json.data.map((entry: { sensor: any }) => entry.sensor).filter(Boolean); // Filtra para ignorar entradas sin sensor
+        const xAxisData = data.map((sensor: { register_date: string }) => sensor.register_date);
+        const seriesData = data.map((sensor: { value: number }) => sensor.value);
         
         if (seriesData.length > 0) {
           setChartData2({ xAxisData, seriesData });
@@ -95,12 +99,7 @@ export function ComparisonChart({
     },
      tooltip: {
       trigger: 'axis',
-      formatter: function (params) {
-        if (!chartData.seriesData || chartData.seriesData.length === 0) {
-          return 'No hay datos para comparar. Por favor, selecciona otro sensor.';
-        }
-        return params.map(param => `${param.marker} ${param.seriesName}: ${param.value}`).join('<br/>');
-      }
+      
     },
     xAxis: {
       type: 'category',
@@ -248,7 +247,7 @@ export function ComparisonChart({
               </div>
               <div className="flex justify-between">
                 <span>Valor promedio:</span>
-                <span>{(chartData.seriesData.reduce((a, b) => a + b, 0) / chartData.seriesData.length).toFixed(1)}°C</span>
+                <span>{(chartData.seriesData.reduce((a: number, b: number) => a + b, 0) / chartData.seriesData.length).toFixed(1)}°C</span>
               </div>
               <div className="flex justify-between">
                 <span>Valor máximo:</span>
@@ -266,7 +265,7 @@ export function ComparisonChart({
               </div>
               <div className="flex justify-between">
                 <span>Valor promedio:</span>
-                <span>{(chartData.seriesData.reduce((a, b) => a + b, 0) / chartData2.seriesData.length).toFixed(1)}°C</span>
+                <span>{(chartData2.seriesData.reduce((a: number, b: number) => a + b, 0) / chartData2.seriesData.length).toFixed(1)}°C</span>
               </div>
               <div className="flex justify-between">
                 <span>Valor máximo:</span>
