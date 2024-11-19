@@ -64,7 +64,10 @@ export function CreateDialog<T>({ schema, onSubmit, defaultValues, fields, title
                     <DialogDescription>{description}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-4">
+                    <form 
+                        onSubmit={form.handleSubmit(handleSubmit)}
+                        className="flex flex-col gap-4"
+                    >
                         {fields.map((field) => (
                             <FormField
                                 key={field.name as string}

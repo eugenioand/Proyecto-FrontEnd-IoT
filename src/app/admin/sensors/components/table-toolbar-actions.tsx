@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/tooltip"
 import { Kbd } from "@/components/kbd"
 
-import CreateSensorDialog  from "./create-dialog"
+import { CreateSensorDialog }  from "./create-dialog"
 import DeleteSensorsDialog from "./delete-dialog"
 
 interface SensorsTableToolbarActionsProps {
@@ -57,11 +57,11 @@ export function SensorsTableToolbarActions({
                             }
                         >
                             <DownloadIcon className="mr-2 size-4" aria-hidden="true" />
-                            Export
+                            Exportar
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent className="flex items-center gap-2 border bg-accent font-semibold text-foreground dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/40">
-                        Export csv
+                        Exportar csv
                         <div>
                             <Kbd variant="outline">⇧</Kbd> <Kbd variant="outline">E</Kbd>
                         </div>

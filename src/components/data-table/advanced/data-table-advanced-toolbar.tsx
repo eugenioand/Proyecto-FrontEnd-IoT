@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import type { DataTableFilterField } from "@/types";
+import type { DataTableFilterField, DataTableFilterOption } from "@/types";
 import { CaretSortIcon, PlusIcon } from "@radix-ui/react-icons";
 import isEqual from "lodash.isequal";
 
@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DataTableFilterCombobox } from "@/components/data-table/advanced/data-table-filter-combobox";
 import { DataTableColumnsVisibility } from "@/components/data-table/data-table-columns-visibility";
-import type { SearchParams } from "@/app/_lib/validations";
+import type { SearchParams } from "@/lib/validations";
 
 import { useTableInstanceContext } from "../table-instance-provider";
 import { DataTableFilterItem } from "./data-table-filter-item";
@@ -136,7 +136,7 @@ export function DataTableAdvancedToolbar<TData>({
       )}
       {...props}
     >
-      <div className="flex flex-col items-end justify-between gap-3 sm:flex-row sm:items-center">
+      <div className="flex flex-col items-end justify-end gap-3 sm:flex-row sm:items-center">
         <div className="flex items-center gap-2">
           {children}
           {(options.length > 0 && selectedOptions.length > 0) ||
@@ -150,7 +150,7 @@ export function DataTableAdvancedToolbar<TData>({
                 className="mr-2 size-4 shrink-0"
                 aria-hidden="true"
               />
-              Filter
+              Filtro
             </Button>
           ) : (
             <DataTableFilterCombobox
@@ -203,7 +203,7 @@ export function DataTableAdvancedToolbar<TData>({
                     className="mr-2 size-4 opacity-50"
                     aria-hidden="true"
                   />
-                  Add filter
+                  Añadir filtro
                 </Button>
               </DataTableFilterCombobox>
             ) : null}

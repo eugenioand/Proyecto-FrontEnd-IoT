@@ -48,16 +48,15 @@ const subAdminNav = [
 const Navbar = () => {
     const pathname = usePathname();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-    console.log(pathname);
+    
     return (
         <>
             <nav aria-label="Global" className="flex items-center justify-between mx-auto max-w-7xl w-full lg:px-8">
                 <div className="flex lg:flex-1">
                     <a href="#" className="-m-1.5 p-1.5">
-                        <span className="sr-only">Fabian Company</span>
+                        <span className="sr-only">Company</span>
                         <Image
-                            alt="Logo de Fabian Company"
+                            alt="Company"
                             src="/assets/images/logos/IUB_logo_sh_md.png"
                             width={80}
                             height={59}
@@ -132,9 +131,9 @@ const Navbar = () => {
                 <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white p-[0.63rem] sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
                     <div className="flex items-center justify-between">
                         <a href="#" className="-m-1.5 p-1.5">
-                            <span className="sr-only">Fabian Company</span>
+                            <span className="sr-only">Company</span>
                             <Image
-                                alt="Logo de Fabian Company"
+                                alt="Company"
                                 src="/assets/images/logos/IUB_logo_sh_md_blue.png"
                                 width={80}
                                 height={59}

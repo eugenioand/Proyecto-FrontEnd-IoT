@@ -1,11 +1,26 @@
-import type { ReadonlyURLSearchParams } from "next/navigation"
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import type { ReadonlyURLSearchParams } from "next/navigation";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-import type { SearchParams } from "@/lib/validations"
+import type { SearchParams } from "@/lib/validations";
+
+import {
+  ValueIcon,
+  ValueNoneIcon
+} from "@radix-ui/react-icons";
+
+import {
+  Thermostat,
+  Water,
+  WaterDrop,
+  Science,
+  Waves,
+  ArrowForward,
+  ArrowBack,
+} from "@mui/icons-material"
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function formatDate(
@@ -17,7 +32,7 @@ export function formatDate(
     day: opts.day ?? "numeric",
     year: opts.year ?? "numeric",
     ...opts,
-  }).format(new Date(date))
+  }).format(new Date(date));
 }
 
 /**
@@ -30,39 +45,62 @@ export function composeEventHandlers<E>(
   { checkForDefaultPrevented = true } = {}
 ) {
   return function handleEvent(event: E) {
-    originalEventHandler?.(event)
+    originalEventHandler?.(event);
 
     if (
       checkForDefaultPrevented === false ||
       !(event as unknown as Event).defaultPrevented
     ) {
-      return ourEventHandler?.(event)
+      return ourEventHandler?.(event);
     }
-  }
+  };
 }
 
 export type Params = Partial<
   Record<keyof SearchParams, string | number | null | undefined>
->
+>;
 
 export function createQueryString(
   params: Params,
   searchParams: ReadonlyURLSearchParams
 ) {
-  const newSearchParams = new URLSearchParams(searchParams?.toString())
+  const newSearchParams = new URLSearchParams(searchParams?.toString());
 
   for (const [key, value] of Object.entries(params)) {
     if (value === null || value === undefined) {
-      newSearchParams.delete(key)
+      newSearchParams.delete(key);
     } else {
-      newSearchParams.set(key, String(value))
+      newSearchParams.set(key, String(value));
     }
   }
 
-  return newSearchParams.toString()
+  return newSearchParams.toString();
 }
 
 export function getIsMacOS() {
-  if (typeof navigator === "undefined") return false
-  return navigator.userAgent?.includes("Mac")
+  if (typeof navigator === "undefined") return false;
+  return navigator.userAgent?.includes("Mac");
+}
+
+export function getStatusIcon(status: string) {
+  const statusIcons = {
+    active: ValueIcon,
+    inactive: ValueNoneIcon,
+  };
+
+  return statusIcons[status];
+}
+
+export function getSensorTypes(type: string) {
+  const types = {
+    temperature: Thermostat,
+    humidity: WaterDrop,
+    ph: Science,
+    od: Water,
+    turbidity: Waves,
+    FlowRateInlet: ArrowForward,
+    FlowRateOut: ArrowBack,
+  };
+
+  return types[type];
 }
