@@ -51,19 +51,6 @@ const sensorSchema = z.object({
     ),
 });
 
-// Function to handle form submission
-async function handleSensorSubmit(data) {
-    try {
-        // Simulate an API call
-        console.log("Submitting sensor data:", data);
-        toast.success("Sensor creado exitosamente");
-        return { error: undefined };
-    } catch (error) {
-        toast.error("Error al crear el sensor");
-        return { error: "Ocurrió un error inesperado" };
-    }
-}
-
 export function CreateSensorDialog() {
     const [open, setOpen] = React.useState(false);
     const [isCreatePending, startCreateTransition] = React.useTransition();
