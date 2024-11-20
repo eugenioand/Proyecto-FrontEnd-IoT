@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import WetlandCard from "@/components/WetlandCard";
 import { getWetlands } from '@/lib/actions/dashboard/wetlands';
+import { Skeleton } from '@/components/ui/skeleton';
 import ErrorModal from '@/components/dialogs/ErrorModal';
 
 interface Wetland {
-    wetland_id: number;
+    id: number;
     name: string;
     location: string;
     status: 'good' | 'warning' | 'alert';
@@ -31,7 +32,7 @@ const Dashboard = () => {
         const fetchWetlands = async () => {
             setLoading(true);
             const result = await getWetlands();
-
+            console.log(result);
             if (result.error) {
                 setError(result.error);
             } else {
@@ -51,11 +52,12 @@ const Dashboard = () => {
     }
 
     return (
-        <div>
+        <div className='mx-auto max-w-7xl'>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 xl:justify-center  gap-10 w-full mx-auto">
                 {wetlands.map((wetland) => (
                     <WetlandCard
-                        key={wetland.wetland_id}
+                        key={wetland.id}
+                        id={wetland.id}
                         name={wetland.name}
                         location={wetland.location}
                         sensors={wetland.sensors}
@@ -73,10 +75,12 @@ const Dashboard = () => {
 
 const WetlandSkeleton = () => {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3  gap-10 w-full mx-auto">
-            {Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="w-full h-[12rem] bg-white rounded-lg shadow-md animate-pulse"></div>
-            ))}
+        <div className='mx-auto max-w-7xl'>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 xl:justify-center gap-10 w-full mx-auto">
+                {Array.from({ length: 6 }).map((_, index) => (
+                    <Skeleton key={index} className="w-full min-w-72 h-[12rem] md:w-[22rem] bg-white rounded-lg shadow-md" />
+                ))}
+            </div>
         </div>
     );
 }

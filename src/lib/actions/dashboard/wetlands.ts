@@ -9,7 +9,7 @@ export async function getWetlands() {
         const response = await axios.get(`${API_URL}/wetlands-overview`);
         // maps the response to { wetland_id, name, location, sensors, status, last_updated}
         const wetlands = response.data?.data.map((wetland: any) => ({
-            wetland_id: wetland.id,
+            id: wetland.wetland_id,
             name: wetland.name,
             location: wetland.location,
             sensors: wetland.sensors,
@@ -22,5 +22,14 @@ export async function getWetlands() {
             data: [],
             error: error.response?.data?.message || unknownError,
         };
+    }
+}
+
+export async function getWetland(id: string) {
+    try {
+        const response = await axios.get(`${API_URL}/wetlands-overview/${id}`);
+        return response.data;
+    } catch (error: any) {
+        return { error: error.response?.data?.message || unknownError };
     }
 }

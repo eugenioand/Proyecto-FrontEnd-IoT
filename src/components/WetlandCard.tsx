@@ -1,8 +1,10 @@
+import { useRouter } from "next/navigation";
+import { toast } from "sonner"
 import ProgressBar from "./ProgressBar";
 import { GlobeAmericasIcon, MapPinIcon } from "@heroicons/react/24/solid";
 
 interface WetlandCardProps {
-    key: number;
+    id: number;
     name: string;
     location: string;
     status: 'good' | 'warning' | 'alert';
@@ -20,7 +22,19 @@ interface WetlandCardProps {
 const colors = ['blue', 'orange', 'green', 'purple', 'red', 'yellow'];
 
 
-const WetlandCard: React.FC<WetlandCardProps> = ({ key, name, location, status, sensors, lastUpdated }) => {
+const WetlandCard: React.FC<WetlandCardProps> = ({ id, name, location, status, sensors, lastUpdated }) => {
+    const router = useRouter();
+
+    const handleClick = () => {
+        console.log('click');
+        console.log(id);
+        if (id) {
+            router.push(`/dashboard/wetland/${id}`);
+        } else {
+            toast.error(`Error al obtener la información del humedal ${name}`);
+        }
+    }
+
     const statusColor = {
         good: 'bg-green1 border-green1',
         warning: 'bg-yellow1 border-yellow1',
@@ -30,11 +44,15 @@ const WetlandCard: React.FC<WetlandCardProps> = ({ key, name, location, status, 
     let colorIndex = 0;
     
     return (
-        <div key={key} className="
-            flex flex-col p-4 rounded-lg shadow-md w-full min-w-72 h-[12rem] bg-white
+        <div 
+        key={id} 
+        className="
+            flex flex-col justify-self-center p-4 rounded-lg shadow-md w-full min-w-72 h-[12rem] bg-white
             md:w-[22rem] cursor-pointer
             hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out
-        ">
+        "
+        onClick={handleClick}
+        >
             <div>
                 <div className="flex flex-row justify-between">
                     <h3 className="
