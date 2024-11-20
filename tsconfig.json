@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    /* Base Options: */
+    "target": "es2022",
+    "moduleDetection": "force",
+
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,

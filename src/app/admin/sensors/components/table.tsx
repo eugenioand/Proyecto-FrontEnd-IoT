@@ -10,6 +10,8 @@ import { SensorsTableFloatingBar } from "./table-floating-bar";
 
 import { getStatusIcon, getSensorTypes } from "@/lib/utils";
 
+import { Sensor } from "@/types"
+
 interface SensorsTableProps {
   sensorsData: {
     data: Sensor[];
@@ -18,28 +20,18 @@ interface SensorsTableProps {
   };
 }
 
-type Sensor = {
-  id: number;
-  name: string;
-  type: string;
-  status: string;
-  // description: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export function SensorsTable({ sensorsData }: SensorsTableProps) {
   const columns = React.useMemo(() => getColumns(), []);
 
-  const sensorStatus = ["active", "inactive"];
+  const sensorStatus: Array<'active' | 'inactive'> = ["active", "inactive"];
   const sensorTypes = [
-    { label: "Temperatura", value: "temperature", code: "TMP" },
-    { label: "Humedad", value: "humidity", code: "HMD" },
-    { label: "pH", value: "ph", code: "PH" },
-    { label: "Oxígeno Disuelto", value: "od", code: "OD" },
-    { label: "Turbidez", value: "turbidity", code: "TBD" },
-    { label: "Caudal de Entrada", value: "FlowRateInlet", code: "FRI" },
-    { label: "Caudal de Salida", value: "FlowRateOut", code: "FRO" },
+    { label: "Temperatura", value: "temperature" as const, code: "TMP" },
+    { label: "Humedad", value: "humidity" as const, code: "HMD" },
+    { label: "pH", value: "ph" as const, code: "PH" },
+    { label: "Oxígeno Disuelto", value: "od" as const, code: "OD" },
+    { label: "Turbidez", value: "turbidity" as const, code: "TBD" },
+    { label: "Caudal de Entrada", value: "FlowRateInlet" as const, code: "FRI" },
+    { label: "Caudal de Salida", value: "FlowRateOut" as const, code: "FRO" },
   ]
   
 
@@ -61,7 +53,7 @@ export function SensorsTable({ sensorsData }: SensorsTableProps) {
     },
     {
       label: "Tipo",
-      value: "type",
+      value: "type_sensor",
       options: sensorTypes.map((types) => ({
         label: types.label[0]?.toUpperCase() + types.label.slice(1),
         code: types.code,
@@ -76,8 +68,11 @@ export function SensorsTable({ sensorsData }: SensorsTableProps) {
     data: sensorsData.data,
     columns,
     pageCount: sensorsData.pageCount,
+    totalCount: sensorsData.data.length,
+    currentPage: 1,
+    perPage: 10,
     defaultPerPage: 10,
-    defaultSort: "created_at.desc",
+    defaultSort: "purchase_date.desc",
     filterFields,
   });
 

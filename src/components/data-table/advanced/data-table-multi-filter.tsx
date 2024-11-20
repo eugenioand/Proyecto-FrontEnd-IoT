@@ -137,9 +137,7 @@ interface MultiFilterRowProps<TData> {
   >
   operator?: DataTableConfig["logicalOperators"][number]
   setOperator: React.Dispatch<
-    React.SetStateAction<
-      DataTableConfig["logicalOperators"][number] | undefined
-    >
+    React.SetStateAction<DataTableConfig["logicalOperators"][number]>
   >
 }
 
@@ -254,7 +252,7 @@ export function MultiFilterRow<TData>({
           value={operator?.value}
           onValueChange={(value) =>
             setOperator(
-              dataTableConfig.logicalOperators.find((o) => o.value === value)
+              dataTableConfig.logicalOperators.find((o) => o.value === value) ?? dataTableConfig.logicalOperators[0]
             )
           }
         >

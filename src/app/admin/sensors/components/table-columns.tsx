@@ -29,6 +29,8 @@ import { updateSensor } from "@/lib/actions/sensors"
 import DeleteSensorsDialog from "./delete-dialog"
 import { UpdateSensorSheet } from "./update-sheet"
 
+import { Sensor } from "@/types"
+
 export function getColumns(): ColumnDef<Sensor>[] {
   return [
     {
@@ -135,9 +137,8 @@ export function getColumns(): ColumnDef<Sensor>[] {
             <DeleteSensorsDialog
               open={showDeleteSensorDialog}
               onOpenChange={setShowDeleteSensorDialog}
-              sensors={[row.original]}
+              sensorId={[row.original.id]}
               showTrigger={false}
-              onSuccess={() => row.toggleSelected(false)}
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

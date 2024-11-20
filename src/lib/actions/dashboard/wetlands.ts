@@ -28,7 +28,7 @@ export async function getWetlands() {
 export async function getWetland(id: string) {
     try {
         const response = await axios.get(`${API_URL}/wetlands-overview/${id}`);
-        return response.data;
+        return response.data.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError };
     }

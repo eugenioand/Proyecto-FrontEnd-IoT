@@ -52,23 +52,21 @@ export function UpdateSensorSheet({
     resolver: zodResolver(sensorSchema),
     defaultValues: {
       name: sensor.name,
-      type_sensor: sensor.type_sensor,
-      status: sensor.status,
+      type_sensor: sensor.type_sensor.code,
+      status: sensor.status === "ACTIVE" ? "active" : "inactive",
       purchase_date: sensor.purchase_date,
     },
   })
 
   function onSubmit(values: SensorFormValues) {
-    toast.promise(
-      updateSensor(sensor.id, values),
-      {
-        loading: "Updating sensor...",
-        success: "Sensor updated successfully",
-        error: (err) => getErrorMessage(err),
-      }
-    ).then(() => {
-      onOpenChange(false)
-    })
+    updateSensor(values)
+      .then(() => {
+        toast.success("Sensor updated successfully")
+        onOpenChange(false)
+      })
+      .catch((err) => {
+        toast.error(getErrorMessage(err))
+      })
   }
 
   return (

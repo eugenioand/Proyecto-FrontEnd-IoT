@@ -8,9 +8,9 @@ import type {
   Operator,
   SearchParams,
   Sort,
-} from "@/app/_lib/validations"
+} from "@/lib/validations"
 
-import type { ViewItem } from "./data-table-views-dropdown"
+// import type { ViewItem } from "./data-table-views-dropdown"
 
 export const FILTERABLE_FIELDS: (keyof SearchParams)[] = [
   "title",
@@ -43,7 +43,7 @@ export function calcFilterParams<T = unknown>(
   return filterParams
 }
 
-export function calcViewSearchParamsURL(view: ViewItem) {
+export function calcViewSearchParamsURL(view: any) {
   const searchParamsObj: Params = {}
   const filterParams = view.filterParams
   if (!filterParams) return
@@ -51,7 +51,7 @@ export function calcViewSearchParamsURL(view: ViewItem) {
   for (const item of filterParams.filters ?? []) {
     if (FILTERABLE_FIELDS.includes(item.field)) {
       const value = item.isMulti ? `${item.value}~multi` : item.value
-      searchParamsObj[item.field] = value
+      searchParamsObj[item.field as keyof Params] = value
     }
   }
   if (filterParams.operator) {

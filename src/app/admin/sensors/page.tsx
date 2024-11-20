@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+// import { Suspense } from 'react';
 
 import { DataTableSkeleton } from '@/components/data-table/data-table-skeleton';
 import { DateRangePicker } from '@/components/date-range-picker';
@@ -10,12 +11,22 @@ import { Shell } from '@/components/shell';
 import { getSensors } from '@/lib/actions/sensors';
 
 const SensorsPage = () => {
-  const [sensorsData, setSensorsData] = React.useState(null);
+  interface SensorsData {
+    data: any[];
+    pageCount: number;
+    totalCount: number;
+    currentPage: number;
+    perPage: number;
+    error?: any;
+  }
+
+  const [sensorsData, setSensorsData] = React.useState<SensorsData | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
 
   React.useEffect(() => {
     const params = Object.fromEntries(searchParams.entries());
+    console.log('params', params);
     let updated = false;
 
     // Añadir parámetros por defecto si no están presentes
@@ -33,20 +44,31 @@ const SensorsPage = () => {
     }
 
     if (updated) {
+      console.log("update...");
       const newSearchParams = new URLSearchParams(params);
       router.replace(`${window.location.pathname}?${newSearchParams.toString()}`);
     } else {
+      console.log("no update...");
+      // Llamada asincrónica para obtener los sensores
       const fetchData = async () => {
-        const data = await getSensors(params);
-        setSensorsData(data);
+        const queryString = new URLSearchParams(params).toString();
+        console.log("Making API request with query string:", queryString);
+        try {
+          const data = await getSensors(params);
+          console.log('dataaaaaaaa', data);
+          setSensorsData(data);
+        } catch (error) {
+          console.error('Error fetching sensors:', error);
+        }
       };
+
       fetchData();
     }
-  }, [searchParams, router]);
+  }, [searchParams, router]); // Dependencias: cuando cambian searchParams o router
 
   if (!sensorsData) {
     return (
-      <Shell className='gap-2'>
+      <Shell className="gap-2">
         <DataTableSkeleton
           columnCount={5}
           cellWidths={['10rem', '40rem', '12rem', '12rem', '8rem']}
@@ -57,16 +79,22 @@ const SensorsPage = () => {
   }
 
   return (
-    <Shell className='gap-2'>
+    <Shell className="gap-2">
       <DateRangePicker
-        triggerSize='sm'
-        triggerClassName='ml-auto w-56 sm:w-60 mr-1'
-        className='w-auto p-0 dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50'
-        align='end'
+        triggerSize="sm"
+        triggerClassName="ml-auto w-56 sm:w-60 mr-1"
+        className="w-auto p-0 dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/50"
+        align="end"
       />
       <SensorsTable sensorsData={sensorsData} />
     </Shell>
   );
 };
+
+// const SensorsPageWrapper = () => (
+//   <Suspense fallback={<DataTableSkeleton columnCount={5} cellWidths={['10rem', '40rem', '12rem', '12rem', '8rem']} shrinkZero />}>
+//     <SensorsPage />
+//   </Suspense>
+// );
 
 export default SensorsPage;

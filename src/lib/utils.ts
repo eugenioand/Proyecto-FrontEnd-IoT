@@ -82,7 +82,7 @@ export function getIsMacOS() {
   return navigator.userAgent?.includes("Mac");
 }
 
-export function getStatusIcon(status: string) {
+export function getStatusIcon(status: 'active' | 'inactive') {
   const statusIcons = {
     active: ValueIcon,
     inactive: ValueNoneIcon,
@@ -91,16 +91,16 @@ export function getStatusIcon(status: string) {
   return statusIcons[status];
 }
 
-export function getSensorTypes(type: string) {
-  const types = {
-    temperature: Thermostat,
-    humidity: WaterDrop,
-    ph: Science,
-    od: Water,
-    turbidity: Waves,
-    FlowRateInlet: ArrowForward,
-    FlowRateOut: ArrowBack,
-  };
+const types = {
+  temperature: Thermostat,
+  humidity: WaterDrop,
+  ph: Science,
+  od: Water,
+  turbidity: Waves,
+  FlowRateInlet: ArrowForward,
+  FlowRateOut: ArrowBack,
+};
 
+export function getSensorTypes(type: keyof typeof types) {
   return types[type];
 }

@@ -25,3 +25,38 @@ export interface DataTableFilterOption<TData> {
   filterOperator?: string
   isMulti?: boolean
 }
+
+export interface Sensor {
+  id: number
+  name: string
+  type_sensor: {
+    name: string
+    code: string
+  }
+  status: string
+  purchase_date: Date
+  // created_at: string;
+  // updated_at: string;
+}
+
+export interface Wetland {
+  id: string;
+  name: string;
+  location: string;
+  status: string;
+  nodes: {
+    [key: string]: {
+      name: string;
+      location: string;
+      status: "good" | "warning" | "alert";
+      sensors: {
+        [key: string]: {
+          name: string;
+          unity: string;
+          value: number;
+          max: number;
+        };
+      };
+    };
+  };
+}

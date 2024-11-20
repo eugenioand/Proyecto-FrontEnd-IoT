@@ -28,7 +28,7 @@ const UserList = () => {
         }, 500);
 
         return () => clearTimeout(timeout);
-    }, [filters.searchTerm, filters.roleFilter, filters.statusFilter, filters.currentPage]);
+    }, [filters.searchTerm, filters.roleFilter, filters.statusFilter, filters.currentPage, fetchUsers]);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFilters({ ...filters, searchTerm: e.target.value, currentPage: 1 });

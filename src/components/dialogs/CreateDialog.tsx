@@ -18,16 +18,18 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { LoaderIcon } from "@/components/loader-icon"
 
-interface CreateDialogProps<T> {
+import { FieldValues, DefaultValues, Path } from "react-hook-form"
+
+interface CreateDialogProps<T extends FieldValues> {
     schema: any
     onSubmit: (data: T) => Promise<{ error?: string }>
-    defaultValues: T
+    defaultValues: DefaultValues<T>
     fields: Array<{ name: keyof T; label: string; type: string; placeholder?: string }>
     title: string
     description: string
 }
 
-export function CreateDialog<T>({ schema, onSubmit, defaultValues, fields, title, description }: CreateDialogProps<T>) {
+export function CreateDialog<T extends FieldValues>({ schema, onSubmit, defaultValues, fields, title, description }: CreateDialogProps<T>) {
     const [open, setOpen] = React.useState(false)
     const [isCreatePending, startCreateTransition] = React.useTransition()
 
@@ -72,12 +74,12 @@ export function CreateDialog<T>({ schema, onSubmit, defaultValues, fields, title
                             <FormField
                                 key={field.name as string}
                                 control={form.control}
-                                name={field.name as string}
-                                render={({ field }) => (
+                                name={field.name as Path<T>}
+                                render={({ field: controllerField }) => (
                                     <FormItem>
                                         <FormLabel>{field.label}</FormLabel>
                                         <FormControl>
-                                            <Input type={field.type} placeholder={field.placeholder} {...field} />
+                                            <Input type={field.type} placeholder={field.placeholder} {...controllerField} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

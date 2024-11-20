@@ -1,6 +1,6 @@
 "use client"
 
-import { type Sensor } from "@/db/schema"
+// import { type Sensor } from "@/db/schema"
 import { DownloadIcon } from "@radix-ui/react-icons"
 import { type Table } from "@tanstack/react-table"
 import { useHotkeys } from "react-hotkeys-hook"
@@ -19,7 +19,7 @@ import { CreateSensorDialog }  from "./create-dialog"
 import DeleteSensorsDialog from "./delete-dialog"
 
 interface SensorsTableToolbarActionsProps {
-    table: Table<Sensor>
+    table: Table<any>
 }
 
 export function SensorsTableToolbarActions({
@@ -36,10 +36,14 @@ export function SensorsTableToolbarActions({
         <div className="flex items-center gap-2">
             {table.getFilteredSelectedRowModel().rows.length > 0 ? (
                 <DeleteSensorsDialog
-                    sensors={table
+                    sensorId={table
                         .getFilteredSelectedRowModel()
                         .rows.map((row) => row.original)}
-                    onSuccess={() => table.toggleAllRowsSelected(false)}
+                    open={false}
+                    onOpenChange={function (open: boolean): void {
+                            throw new Error("Function not implemented.")
+                        } }
+                    showTrigger={false}             
                 />
             ) : null}
             <CreateSensorDialog />

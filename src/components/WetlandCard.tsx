@@ -80,7 +80,7 @@ const WetlandCard: React.FC<WetlandCardProps> = ({ id, name, location, status, s
                             value={sensor.value}
                             unit={sensor.unity}
                             max={sensor.max}
-                            color={color}
+                            color={color as 'blue' | 'orange' | 'green' | 'purple' | 'red' | 'yellow'}
                         />
                     );
                 })}

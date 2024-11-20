@@ -1,9 +1,11 @@
 {
-  "plugins": ["tailwindcss"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["tailwindcss", "@typescript-eslint"],
   "extends": ["next"],
   "rules": {
     "react/no-unescaped-entities": "off",
     "@next/next/no-page-custom-font": "off",
     "tailwindcss/no-custom-classname": "off"
+    
   }
 }

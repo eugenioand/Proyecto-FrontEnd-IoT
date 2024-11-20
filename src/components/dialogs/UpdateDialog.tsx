@@ -1,3 +1,4 @@
+"use client";
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -18,19 +19,30 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { LoaderIcon } from "@/components/loader-icon"
 
-interface UpdateDialogProps<T> {
-    schema: any
+import { FieldValues, DefaultValues, Path } from "react-hook-form"
+
+// Añadimos la restricción 'T extends FieldValues'
+interface UpdateDialogProps<T extends FieldValues> {
+    schema: any // Es posible que quieras especificar más este tipo, como 'z.ZodType'
     onSubmit: (data: T) => Promise<{ error?: string }>
-    defaultValues: T
+    defaultValues: DefaultValues<T>
     fields: Array<{ name: keyof T; label: string; type: string; placeholder?: string }>
     title: string
     description: string
 }
 
-export function UpdateDialog<T>({ schema, onSubmit, defaultValues, fields, title, description }: UpdateDialogProps<T>) {
+export function UpdateDialog<T extends FieldValues>({
+    schema,
+    onSubmit,
+    defaultValues,
+    fields,
+    title,
+    description,
+}: UpdateDialogProps<T>) {
     const [open, setOpen] = React.useState(false)
     const [isUpdatePending, startUpdateTransition] = React.useTransition()
 
+    // Aseguramos que 'T' es un tipo válido para react-hook-form
     const form = useForm<T>({
         resolver: zodResolver(schema),
         defaultValues,
@@ -69,12 +81,12 @@ export function UpdateDialog<T>({ schema, onSubmit, defaultValues, fields, title
                             <FormField
                                 key={field.name as string}
                                 control={form.control}
-                                name={field.name as string}
-                                render={({ field }) => (
+                                name={field.name as Path<T>}
+                                render={({ field: controllerField }) => (
                                     <FormItem>
                                         <FormLabel>{field.label}</FormLabel>
                                         <FormControl>
-                                            <Input type={field.type} placeholder={field.placeholder} {...field} />
+                                            <Input type={field.type} placeholder={field.placeholder} {...controllerField} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

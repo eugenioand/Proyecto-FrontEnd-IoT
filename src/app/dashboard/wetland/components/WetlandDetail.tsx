@@ -37,9 +37,9 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({ id, name, location, statu
                 <Map center={[51.505, -0.09]} zoom={-0.09}  />
             </div>
             <div className='grid grid-cols-1 gap-3 lg:gird-cols-3'>
-                {sensors.map((sensor) => (
-                    <PHIndicator value={sensor.name} />
-                ))}
+                {/* {sensors.map((sensor) => (
+                    
+                ))} */}
             </div>
         </div>
     );

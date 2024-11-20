@@ -30,15 +30,7 @@ import { LoaderIcon } from "@/components/loader-icon"
 
 import { deleteSensors, updateSensors } from "@/lib/actions/sensors"
 
-type Sensor = {
-    id: number;
-    name: string;
-    type: string;
-    status: string;
-    // description: string;
-    created_at: string;
-    updated_at: string;
-}
+import { Sensor } from "@/types"
 
 interface SensorsTableFloatingBarProps {
     table: Table<Sensor>
@@ -170,7 +162,7 @@ export function SensorsTableFloatingBar({ table }: SensorsTableFloatingBarProps)
                             </SelectContent>
                         </Select>
                         <Select
-                            onValueChange={(value: Sensor["type"]) => {
+                            onValueChange={(value: Sensor["type_sensor"]["code"]) => {
                                 setMethod("update-type")
 
                                 startTransition(async () => {
@@ -273,9 +265,9 @@ export function SensorsTableFloatingBar({ table }: SensorsTableFloatingBarProps)
                                             setMethod("delete")
 
                                             startTransition(async () => {
-                                                const { error } = await deleteSensors({
-                                                    ids: rows.map((row) => row.original.id),
-                                                })
+                                                const { error } = await deleteSensors(
+                                                    rows.map((row) => row.original.id)
+                                                )
 
                                                 if (error) {
                                                     toast.error(error)
