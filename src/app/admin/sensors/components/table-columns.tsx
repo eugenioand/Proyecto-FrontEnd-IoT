@@ -77,13 +77,13 @@ export function getColumns(): ColumnDef<Sensor>[] {
       ),
       cell: ({ row }) => {
         const type = row.original.type_sensor
-        // console.log(row.original)
+        console.log(row.original)
 
         return (
           <div className="flex space-x-2">
-            {type && <Badge variant="outline">{type}</Badge>}
+            {type.name && <Badge variant="outline">{type.code}</Badge>}
             <span className="max-w-[31.25rem] truncate font-medium">
-              {row.getValue("type_sensor")}
+              {type.name}
             </span>
           </div>
         )

@@ -1,29 +1,39 @@
 import ProgressBar from "./ProgressBar";
+import { GlobeAmericasIcon, MapPinIcon } from "@heroicons/react/24/solid";
 
 interface WetlandCardProps {
+    key: number;
     name: string;
     location: string;
     status: 'good' | 'warning' | 'alert';
-    oxygen: number;
-    ph: number;
-    // temperature: number;
-    turbidity: number;
-    // flow: { in: number, out: number };
+    sensors: {
+        [key: string]: {
+            name: string;
+            unity: string;
+            value: number;
+            max: number;
+        };
+    };
     lastUpdated: string;
 }
 
-const WetlandCard: React.FC<WetlandCardProps> = ({ name, location, status, oxygen, ph, turbidity, lastUpdated }) => {
+const colors = ['blue', 'orange', 'green', 'purple', 'red', 'yellow'];
+
+
+const WetlandCard: React.FC<WetlandCardProps> = ({ key, name, location, status, sensors, lastUpdated }) => {
     const statusColor = {
         good: 'bg-green1 border-green1',
         warning: 'bg-yellow1 border-yellow1',
         alert: 'bg-red1 border-red1',
     };
+
+    let colorIndex = 0;
     
     return (
-        <div className="
-            flex flex-col p-4 rounded-lg shadow-md w-full min-w-64 h-[12rem] bg-white
-            md:w-[22rem]
-            cursor-pointer
+        <div key={key} className="
+            flex flex-col p-4 rounded-lg shadow-md w-full min-w-72 h-[12rem] bg-white
+            md:w-[22rem] cursor-pointer
+            hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out
         ">
             <div>
                 <div className="flex flex-row justify-between">
@@ -34,37 +44,53 @@ const WetlandCard: React.FC<WetlandCardProps> = ({ name, location, status, oxyge
                     >{name}</h3>
                     <div className={`w-5 h-5 rounded-full ${statusColor[status]}`}></div>
                 </div>
-                <p className="text-sm text-gray-500">{location}</p>
+                <div className="flex gap-2 items-center">
+                    <MapPinIcon className="w-4 h-4 text-blue3" />           
+                    <p className="text-sm text-gray-500">{location}</p>
+                </div>
             </div>
 
             <div className="flex mt-4 gap-6 md:mt-[1.88rem]">
-                <div>
-                    <p className="text-xs font-medium text-gray-600">pH</p>
-                    <p className="text-xl font-normal">{ph}</p>
-                    <ProgressBar value={ph} max={73} label="pH" color="blue" />
-                </div>
-                <div>
-                    <p className="text-xs font-medium text-gray-600">Oxígeno Disuelto</p>
-                    <div className="flex flex-row items-baseline">
-                        <p className="text-xl font-normal">{oxygen}</p>
-                        <span className="text-[0.5rem] font-normal text-right">mg/L</span>
-                    </div>
-                    <ProgressBar value={oxygen} max={10} label="Oxígeno Disuelto" color="orange" />
-                </div>
-                <div>
-                    <p className="text-xs font-medium text-gray-600">Turbidez</p>
-                    <div className="flex flex-row items-baseline">
-                        <p className="text-xl font-normal">{turbidity}</p>
-                        <span className="text-[0.5rem] font-normal text-right">NTU</span>
-                    </div>
-                    <ProgressBar value={turbidity} max={15} label="Turbidez" color="green" />
-                </div>
+                {Object.values(sensors).map((sensor) => {
+                    const color = colors[colorIndex % colors.length];
+                    colorIndex++;
+                    return (
+                        <SensorSection
+                            key={sensor.name}
+                            title={sensor.name}
+                            label={sensor.name}
+                            value={sensor.value}
+                            unit={sensor.unity}
+                            max={sensor.max}
+                            color={color}
+                        />
+                    );
+                })}
             </div>
+            <div className="text-xs text-gray-500 text-right">Última actualización: {lastUpdated}</div>
+        </div>
 
-            <div className="
-                text-xs text-gray-500 text-right
-                
-            ">Última actualización: {lastUpdated}</div>
+    );
+}
+
+interface SensorSectionProps {
+    title: string;
+    label: string;
+    value: number;
+    unit: string;
+    max: number;
+    color: 'blue' | 'orange' | 'green' | 'purple' | 'red' | 'yellow';
+}
+
+const SensorSection: React.FC<SensorSectionProps> = ({ title, label, value, unit, max, color }) => {
+    return (
+        <div key={title}>
+            <p className="text-xs font-medium text-gray-600">{label}</p>
+            <div className="flex flex-row items-baseline">
+                <p className="text-xl font-normal">{value}</p>
+                <span className="text-[0.5rem] font-normal text-right">{unit}</span>
+            </div>
+            <ProgressBar value={value} max={max} label={label} color={color} />
         </div>
     );
 }
