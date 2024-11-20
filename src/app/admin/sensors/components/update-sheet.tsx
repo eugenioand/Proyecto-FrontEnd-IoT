@@ -84,7 +84,7 @@ export function UpdateSensorSheet({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Nombre</FormLabel>
                   <FormControl>
                     <Input placeholder="Sensor name" {...field} />
                   </FormControl>
@@ -97,7 +97,7 @@ export function UpdateSensorSheet({
               name="type_sensor"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Type</FormLabel>
+                  <FormLabel>Tipo</FormLabel>
                   <FormControl>
                     <Input placeholder="Sensor type" {...field} />
                   </FormControl>
@@ -121,8 +121,8 @@ export function UpdateSensorSheet({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem>
+                          <SelectItem value="ACTIVE">Activo</SelectItem>
+                          <SelectItem value="INACTIVE">Inactivo</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -136,7 +136,7 @@ export function UpdateSensorSheet({
               name="purchase_date"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Purchase Date</FormLabel>
+                  <FormLabel>Fecha de compra</FormLabel>
                   <FormControl>
                     <Input type="date" {...field} />
                   </FormControl>
@@ -145,7 +145,7 @@ export function UpdateSensorSheet({
               )}
             />
             <Button type="submit" className="w-full">
-              Update Sensor
+              Actualizar Sensor
             </Button>
           </form>
         </Form>

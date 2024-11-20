@@ -31,8 +31,16 @@ type Sensor = {
 export function SensorsTable({ sensorsData }: SensorsTableProps) {
   const columns = React.useMemo(() => getColumns(), []);
 
-  const status = ["active", "inactive"];
-  const types = ["temperature", "humidity", "ph", "od", "turbidity", "FlowRateInlet", "FlowRateOut"];
+  const sensorStatus = ["active", "inactive"];
+  const sensorTypes = [
+    { label: "Temperatura", value: "temperature", code: "TMP" },
+    { label: "Humedad", value: "humidity", code: "HMD" },
+    { label: "pH", value: "ph", code: "PH" },
+    { label: "Oxígeno Disuelto", value: "od", code: "OD" },
+    { label: "Turbidez", value: "turbidity", code: "TBD" },
+    { label: "Caudal de Entrada", value: "FlowRateInlet", code: "FRI" },
+    { label: "Caudal de Salida", value: "FlowRateOut", code: "FRO" },
+  ]
   
 
   const filterFields: DataTableFilterField<Sensor>[] = [
@@ -44,7 +52,7 @@ export function SensorsTable({ sensorsData }: SensorsTableProps) {
     {
       label: "Estado",
       value: "status",
-      options: status.map((status) => ({
+      options: sensorStatus.map((status) => ({
         label: status[0]?.toUpperCase() + status.slice(1),
         value: status,
         icon: getStatusIcon(status),
@@ -54,10 +62,11 @@ export function SensorsTable({ sensorsData }: SensorsTableProps) {
     {
       label: "Tipo",
       value: "type",
-      options: types.map((types) => ({
-        label: types[0]?.toUpperCase() + types.slice(1),
-        value: types,
-        icon: getSensorTypes(types),
+      options: sensorTypes.map((types) => ({
+        label: types.label[0]?.toUpperCase() + types.label.slice(1),
+        code: types.code,
+        value: types.code,
+        icon: getSensorTypes(types.value),
         withCount: true,
       })),
     },

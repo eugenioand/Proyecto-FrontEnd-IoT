@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers";
 
 import { fontMono, fontSans } from "@/lib/fonts";
-// import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/toaster";
 
 export const viewport: Viewport = {
   colorScheme: "dark light",
@@ -41,16 +41,17 @@ export default function Layout({ children }: LayoutProps) {
           fontMono.variable
         )}
       >
-        {/* <ThemeProvider
+        <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light" // system TODO: config all components to use system theme
           enableSystem
           disableTransitionOnChange
-        > */}
+        >
           <UIProvider>
             {children}
           </UIProvider>
-        {/* </ThemeProvider> */}
+        </ThemeProvider>
+        <Toaster richColors />
       </body>
     </html>
   );

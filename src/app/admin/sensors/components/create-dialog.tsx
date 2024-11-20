@@ -37,12 +37,26 @@ import {
 import { Kbd } from "@/components/kbd"
 
 import { createSensor } from "@/lib/actions/sensors";
+import { TooltipPortal } from "@radix-ui/react-tooltip";
+
+const sensorTypes = [
+    { label: "Temperatura", value: "temperature", code: "TMP" },
+    { label: "Humedad", value: "humidity", code: "HMD" },
+    { label: "pH", value: "ph", code: "PH" },
+    { label: "Oxígeno Disuelto", value: "od", code: "OD" },
+    { label: "Turbidez", value: "turbidity", code: "TBD" },
+    { label: "Caudal de Entrada", value: "FlowRateInlet", code: "FRI" },
+    { label: "Caudal de Salida", value: "FlowRateOut", code: "FRO" },
+]
+const sensorStatus = ["ACTIVE", "INACTIVE"] as const;
 
 // Define the schema for validation
 const sensorSchema = z.object({
     name: z.string().min(1, "El nombre es obligatorio"),
-    type: z.string().min(1, "El tipo de sensor es obligatorio"),
-    status: z.enum(["Activo", "Inactivo"], {
+    type: z.enum(sensorTypes.map((sensor) => sensor.code) as [string, ...string[]], {
+        required_error: "El tipo de sensor es obligatorio"
+    }),
+    status: z.enum(sensorStatus, {
         required_error: "El estado es obligatorio",
     }),
     purchaseDate: z.string().refine(
@@ -60,14 +74,21 @@ export function CreateSensorDialog() {
         defaultValues: {
             name: "",
             type: "",
-            status: "Activo",
+            status: sensorStatus[0],
             purchaseDate: "",
         },
     });
 
-    function handleSubmit(data) {
+    function handleSubmit(data: z.infer<typeof sensorSchema>) {
         startCreateTransition(async () => {
-            const { error } = await createSensor(data);
+            const payload = {
+                name: data.name,
+                type_sensor: data.type,
+                status: data.status,
+                purchase_date: data.purchaseDate,
+            }
+
+            const { error } = await createSensor(payload);
 
             if (error) {
                 toast.error(error);
@@ -113,7 +134,10 @@ export function CreateSensorDialog() {
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSubmit)}>
+                    <form 
+                        onSubmit={form.handleSubmit(handleSubmit)}
+                        className="flex flex-col gap-4"
+                    >
                         {/* Nombre */}
                         <FormField
                             control={form.control}
@@ -137,7 +161,37 @@ export function CreateSensorDialog() {
                                 <FormItem>
                                     <FormLabel>Tipo de sensor</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Ingrese el tipo de sensor" {...field} />
+                                        <Select
+                                            onValueChange={(value) => field.onChange(value)}
+                                            value={field.value}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Seleccione el tipo" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    {sensorTypes.map((sensorType) => (
+                                                        <SelectItem key={sensorType.code} value={sensorType.code}>
+                                                            {sensorType.label[0].toUpperCase() + sensorType.label.slice(1).toLowerCase()}
+                                                            <TooltipProvider>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger asChild>
+                                                                        <span className="ml-2 text-muted-foreground">
+                                                                            ({sensorType.code})
+                                                                        </span>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipPortal>
+                                                                        <TooltipContent side="right">
+                                                                            Código asociado: {sensorType.code}
+                                                                        </TooltipContent>
+                                                                    </TooltipPortal>
+                                                                </Tooltip>
+                                                            </TooltipProvider>
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -161,8 +215,12 @@ export function CreateSensorDialog() {
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    <SelectItem value="Activo">Activo</SelectItem>
-                                                    <SelectItem value="Inactivo">Inactivo</SelectItem>
+                                                    {sensorStatus.map((status) => (
+                                                        <SelectItem key={status} value={status}>
+                                                            {status[0].toUpperCase() + status.slice(1).toLowerCase()}
+                                                            {/* {status} */}
+                                                        </SelectItem>
+                                                    ))}
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>

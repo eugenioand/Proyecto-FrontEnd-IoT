@@ -58,19 +58,26 @@ export function getColumns(): ColumnDef<Sensor>[] {
     {
       accessorKey: "name",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Name" />
+        <DataTableColumnHeader column={column} title="Nombre" />
       ),
-      cell: ({ row }) => <div className="w-20">{row.getValue("name")}</div>,
+      cell: ({ row }) => {
+        const name = row.getValue("name") as string;
+        const formattedName = name
+          .toLowerCase()
+          .replace(/\b\w/g, (char) => char.toUpperCase());
+        return <div className="w-20">{formattedName}</div>;
+      },
       enableSorting: false,
       enableHiding: false,
     },
     {
       accessorKey: "type_sensor",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Type" />
+        <DataTableColumnHeader column={column} title="Tipo" />
       ),
       cell: ({ row }) => {
         const type = row.original.type_sensor
+        // console.log(row.original)
 
         return (
           <div className="flex space-x-2">
@@ -85,7 +92,7 @@ export function getColumns(): ColumnDef<Sensor>[] {
     {
       accessorKey: "status",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Status" />
+        <DataTableColumnHeader column={column} title="Estado" />
       ),
       cell: ({ row }) => {
         const status = row.original.status
@@ -94,7 +101,9 @@ export function getColumns(): ColumnDef<Sensor>[] {
 
         return (
           <div className="flex w-[6.25rem] items-center">
-            <span className="capitalize">{status}</span>
+            <span className="capitalize">
+              {status.toLowerCase() === "active" ? "Activo" : "Inactivo"}
+            </span>
           </div>
         )
       },
@@ -105,7 +114,7 @@ export function getColumns(): ColumnDef<Sensor>[] {
     {
       accessorKey: "purchase_date",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Purchase Date" />
+        <DataTableColumnHeader column={column} title="Fecha de compra" />
       ),
       cell: ({ cell }) => formatDate(cell.getValue() as Date),
     },
@@ -145,7 +154,7 @@ export function getColumns(): ColumnDef<Sensor>[] {
                 className="w-40 overflow-visible dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/40"
               >
                 <DropdownMenuItem onSelect={() => setShowUpdateSensorSheet(true)}>
-                  Edit
+                  Editar
                 </DropdownMenuItem>
                 {/* <DropdownMenuSub>
                   <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
@@ -185,7 +194,7 @@ export function getColumns(): ColumnDef<Sensor>[] {
                 <DropdownMenuItem
                   onSelect={() => setShowDeleteSensorDialog(true)}
                 >
-                  Delete
+                  Eliminar
                   <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
                 </DropdownMenuItem>
               </DropdownMenuContent>

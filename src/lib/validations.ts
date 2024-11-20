@@ -14,3 +14,4 @@ export const searchParamsSchema = z.object({
 })
 
 export type SearchParams = z.infer<typeof searchParamsSchema>
+
