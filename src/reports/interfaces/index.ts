@@ -1,0 +1,1 @@
+export type {FiltersProps} from './filter';
