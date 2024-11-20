@@ -13,7 +13,7 @@ export default function AdminLayout({ children }: LayoutProps) {
     return (
         <div className="flex flex-col min-h-screen bg-pageBackground">
             <Header />
-            <main className="flex flex-col flex-grow h-full w-full px-2 py-6">
+            <main className="flex flex-col  px-2 py-6">
                 {children}
             </main>
         </div>

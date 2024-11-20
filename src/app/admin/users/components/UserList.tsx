@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useUserStore from "@/stores/userStore";
 import Table from "./Table";
 import IconButton from "@/components/IconButton";
@@ -20,38 +20,30 @@ const UserList = () => {
     const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
     const [visibleColumns, setVisibleColumns] = useState<string[]>(['firstName', 'email', 'role', 'createdAt']);
 
-
     const openModal = () => setFilters({ isModalOpen: true });
-    // const closeModal = () => setFilters({ isModalOpen: false });
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const searchTerm = e.target.value;
-        setFilters({ ...filters, searchTerm, currentPage: 1 });
-
-        if (searchTimeout) {
-            clearTimeout(searchTimeout);
-        }
-
+    useEffect(() => {
         const timeout = setTimeout(() => {
             fetchUsers();
         }, 500);
 
-        setSearchTimeout(timeout);
+        return () => clearTimeout(timeout);
+    }, [filters.searchTerm, filters.roleFilter, filters.statusFilter, filters.currentPage, fetchUsers]);
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFilters({ ...filters, searchTerm: e.target.value, currentPage: 1 });
     };
 
     const handleSelectRoles = (selectedRoles: string[]) => {
         setFilters({ ...filters, roleFilter: selectedRoles.join(','), currentPage: 1 });
-        fetchUsers();
     };
 
     const handleSelectStatuses = (selectedStatuses: string[]) => {
         setFilters({ ...filters, statusFilter: selectedStatuses.join(','), currentPage: 1 });
-        fetchUsers();
     };
 
     const handlePageChange = (page: number) => {
         setFilters({ ...filters, currentPage: page });
-        fetchUsers();
     };
 
     return (
