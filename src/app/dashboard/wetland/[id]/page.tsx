@@ -52,10 +52,9 @@ export default function WetlandDetailPage({ params }: {
 
 const WetlandSkeleton = () => {
     return (
-        <div className="grid grid-cols-1 w-full mx-auto">
-            <Skeleton className="h-20" />
-            <Skeleton className="h-20" />
-            <Skeleton className="h-20" />
+        <div className="flex flex-col w-full gap-5">
+            <Skeleton className="h-72" />
+            <Skeleton className="h-52" />
         </div>
     );
 }

@@ -104,3 +104,68 @@ body {
     @apply px-4;
   }
 }
+
+@keyframes bubble {
+    0% {
+        transform: translateY(0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes flow-in {
+    0% {
+        transform: translateX(-10px);
+    }
+    100% {
+        transform: translateX(10px);
+    }
+}
+
+@keyframes flow-out {
+    0% {
+        transform: translateX(10px);
+    }
+    100% {
+        transform: translateX(-10px);
+    }
+}
+
+.animate-flow-in {
+    animation: flow-in 1s infinite alternate;
+}
+
+.animate-flow-out {
+    animation: flow-out 1s infinite alternate;
+}
+
+
+@keyframes pulse-skeleton {
+    0% {
+        background-color: #e0e0e0;
+    }
+    50% {
+        background-color: #f5f5f5;
+    }
+    100% {
+        background-color: #e0e0e0;
+    }
+}
+
+.animate-pulse-skeleton {
+    animation: pulse-skeleton 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
