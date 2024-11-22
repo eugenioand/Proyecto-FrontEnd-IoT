@@ -5,6 +5,7 @@ import WetlandCard from "@/components/WetlandCard";
 import { getWetlands } from '@/lib/actions/dashboard/wetlands';
 import { Skeleton } from '@/components/ui/skeleton';
 import ErrorModal from '@/components/dialogs/ErrorModal';
+import { useRouter } from "next/navigation";
 
 interface Wetland {
     id: number;
@@ -24,6 +25,7 @@ interface Wetland {
 
 
 const Dashboard = () => {
+    const router = useRouter();
     const [wetlands, setWetlands] = useState<Wetland[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -51,6 +53,7 @@ const Dashboard = () => {
     const handleCardClick = (id: number) => {
         setIsCardDisabled(true); // Deshabilitar todas las tarjetas
         console.log(`Tarjeta seleccionada: ${id}`);
+        router.push(`/dashboard/wetland/${id}`);
     };
 
     if (loading) {

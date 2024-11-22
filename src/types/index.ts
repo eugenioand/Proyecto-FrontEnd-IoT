@@ -60,3 +60,5 @@ export interface Wetland {
     };
   };
 }
+
+export type SelectedItem = { id: number; type: "node" | "sensor" };

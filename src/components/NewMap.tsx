@@ -1,7 +1,8 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon, LatLngBounds } from "leaflet";
-import Image from "next/image";
+import { useSelection } from "@/context/SelectionContext";
+import { useEffect, useState } from "react";
 
 interface MarkerItem {
     id: number | string;
@@ -14,7 +15,6 @@ interface MarkerItem {
 
 interface MapProps {
     items: MarkerItem[];
-    onSelectItem: (id: number | string) => void;
 }
 
 const AutoZoom = ({ bounds }: { bounds: LatLngBounds }) => {
@@ -23,14 +23,38 @@ const AutoZoom = ({ bounds }: { bounds: LatLngBounds }) => {
     return null;
 };
 
-const eye = <i className="fa fa-eye" aria-hidden="true"/>
-const eyeSlash = <i className="fa fa-eye-slash" aria-hidden="true"/>
+const eye = <i className="fa fa-eye" aria-hidden="true" />;
+const eyeSlash = <i className="fa fa-eye-slash" aria-hidden="true" />;
 
+const Map: React.FC<MapProps> = ({ items }) => {
+    const { selectedItem, setSelectedItem } = useSelection();
+    const [selectedMarker, setSelectedMarker] = useState<MarkerItem | null>(null);
+    
+    useEffect(() => {
+        if (selectedItem) {
+            const marker = items.find(item => item.id === selectedItem.id && item.type === selectedItem.type);
+            setSelectedMarker(marker || null);
+            console.log("################### Item seleccionado", selectedItem);
+        } else {
+            console.log("No hay item seleccionado", selectedItem);
+            setSelectedMarker(null);
+        }
+    }, [selectedItem, items]);
 
-const Map: React.FC<MapProps> = ({ items, onSelectItem }) => {
+    const isSelected = (item: MarkerItem) =>
+        selectedItem && selectedItem.id === item.id && selectedItem.type === item.type;
+
+    const toggle = (item: MarkerItem) => {
+        if (isSelected(item)) {
+            setSelectedItem(null);
+        } else {
+            setSelectedItem({ id: item.id, type: item.type || "generic" });
+        }
+    };
+
     const zoomLevels: Record<string, number> = {
-        node: 15,
-        sensor: 17,
+        node: 17,
+        sensor: 18,
         default: 14,
     };
 
@@ -38,26 +62,26 @@ const Map: React.FC<MapProps> = ({ items, onSelectItem }) => {
         node: new Icon({
             iconUrl: "/node-icon.svg",
             iconSize: [30, 50],
-            iconAnchor: [15, 50],
+            // iconAnchor: [15, 50],
             // popupAnchor: [0, -40],
         }),
         sensor: new Icon({
             iconUrl: "/sensor-icon.svg",
             iconSize: [20, 30],
-            iconAnchor: [10, 30],
-            popupAnchor: [0, -20],
+            iconAnchor: [10, 29],
+            // popupAnchor: [0, -20],
         }),
         generic: new Icon({
             iconUrl: "/generic-icon.svg",
             iconSize: [25, 41],
             iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
+            // popupAnchor: [1, -34],
         }),
         default: new Icon({
             iconUrl: "/default-icon.svg",
             iconSize: [25, 41],
             iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
+            // popupAnchor: [1, -34],
         }),
     };
 
@@ -69,7 +93,7 @@ const Map: React.FC<MapProps> = ({ items, onSelectItem }) => {
             className="h-full w-full"
             zoomControl={false}
             attributionControl={false}
-            style={{ zIndex: 1}}
+            style={{ zIndex: 1 }}
         >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <AutoZoom bounds={bounds} />
@@ -82,6 +106,13 @@ const Map: React.FC<MapProps> = ({ items, onSelectItem }) => {
                     eventHandlers={{
                         click: (e) => {
                             const map = e.target._map;
+                            const currentZoom = map.getZoom();
+                            const targetZoom = zoomLevels[item.type || "default"];
+                            console.log("Zoom actual:", currentZoom, "Zoom objetivo:", targetZoom);
+                            // if (currentZoom < targetZoom) {
+                            //     map.setView([item.latitude, item.longitude], targetZoom, { animate: true });
+                            // };
+                            
                             map.setView(
                                 [item.latitude, item.longitude],
                                 zoomLevels[item.type || "default"],
@@ -112,33 +143,17 @@ const Map: React.FC<MapProps> = ({ items, onSelectItem }) => {
                                     <div key={key} className="text-sm text-gray-600">
                                         <span className="font-medium">{key}:</span> {value}
                                     </div>
-                                ))
-                            }
+                                ))}
                         </p>
-                        <button className="popup-inner__button" onClick={() => onSelectItem(item.id)}>
-                            <span>{eye}</span> Ver
+                        <button
+                            className="popup-inner__button"
+                            onClick={() => {
+                                toggle(item);
+                            }}
+                        >
+                            <span>{selectedMarker ? eyeSlash : eye}</span>
+                            {selectedMarker ? "Deseleccionar" : "Seleccionar"}
                         </button>
-                        {/* <div className="bg-white p-4 rounded-lg shadow-lg">
-                            <h3 className="font-semibold text-xl mb-2">{item.name}</h3>
-                            <div className="flex items-center gap-2">
-                                <Image
-                                    src={`/${item.type}-icon.svg`}
-                                    alt={`${item.type} icon`}
-                                    width={24}
-                                    height={24}
-                                    className="w-6 h-6"
-                                />
-                                <span className="text-gray-500 capitalize">{item.type}</span>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2 mt-3">
-                                {item.details &&
-                                    Object.entries(item.details).map(([key, value]) => (
-                                        <div key={key} className="text-sm text-gray-600">
-                                            <span className="font-medium">{key}:</span> {value}
-                                        </div>
-                                    ))}
-                            </div>
-                        </div> */}
                     </Popup>
                 </Marker>
             ))}

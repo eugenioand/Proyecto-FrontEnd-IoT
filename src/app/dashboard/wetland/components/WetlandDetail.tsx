@@ -9,6 +9,8 @@ import {
     HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { NodeFilter } from "./NodeFilter";
+import clsx from "clsx";
+import { SelectionProvider, useSelection } from "@/context/SelectionContext";
 
 interface Sensor {
     sensor_id: number;
@@ -53,83 +55,81 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
     status,
     nodes,
 }) => {
-    const [selectedItem, setSelectedItem] = useState<string | number>(null);
+    const { selectedItem, setSelectedItem } = useSelection();
     const [selectedNode, setSelectedNode] = useState<Node | null>(null);
     const [selectedSensor, setSelectedSensor] = useState<Sensor | null>(null);
 
-    const nodeContainerRef = useRef<HTMLDivElement | null>(null); // Ref para el contenedor de nodos
-    const sensorContainerRef = useRef<HTMLDivElement | null>(null); // Ref para el contenedor de sensores
-    const mapContainerRef = useRef<HTMLDivElement | null>(null); // Ref para el contenedor del mapa
+    const nodeContainerRef = useRef<HTMLDivElement | null>(null);
 
-    const handleItemSelection = (id: string | number) => {
-        setSelectedItem(id);
-    }
+    useEffect(() => {
+        if (selectedItem) {
+            if (selectedItem.type === "node") {
+                const node = nodes.find((node) => node.node_id === selectedItem.id);
+                setSelectedNode(node || null);
+                setSelectedSensor(null); // Resetea el sensor seleccionado
+            } else if (selectedItem.type === "sensor") {
+                const sensor = nodes.flatMap((node) => node.sensors)
+                    .find((sensor) => sensor.sensor_id === selectedItem.id);
+                if (sensor) {
+                    const node = nodes.find((node) => node.sensors.includes(sensor)); // Encuentra el nodo que tiene este sensor
+                    setSelectedNode(node || null); // Selecciona el nodo correspondiente al sensor
+                    setSelectedSensor(sensor || null); // Selecciona el sensor
+                } else {
+                    setSelectedNode(null); // Si no se encuentra el sensor, resetea el nodo seleccionado
+                    setSelectedSensor(null); // Resetea el sensor seleccionado
+                }
+            }
+        } else {
+            setSelectedNode(null);
+            setSelectedSensor(null);
+        }
+    }, [selectedItem, nodes]);
 
-    // Maneja la selección de un nodo
+    // Maneja la selección de nodos
     const handleNodeSelection = (node: Node) => {
         if (selectedNode?.node_id === node.node_id) {
-            setSelectedNode(null); // Deselecciona el nodo si ya está seleccionado
+            setSelectedItem(null);
         } else {
-            setSelectedNode(node);
-            setSelectedSensor(null); // Resetea el sensor seleccionado al cambiar de nodo
+            setSelectedItem({ id: node.node_id, type: "node" });
         }
     };
 
-    // Maneja la selección de un sensor
+    // Maneja la selección de sensores
     const handleSensorSelection = (sensor: Sensor) => {
-        if (selectedSensor?.sensor_code === sensor.sensor_code) {
-            setSelectedSensor(null); // Deselecciona el sensor si ya está seleccionado
+        if (selectedSensor?.sensor_id === sensor.sensor_id) {
+            setSelectedItem(null);
         } else {
-            setSelectedSensor(sensor);
+            setSelectedItem({ id: sensor.sensor_id, type: "sensor" });
         }
     };
 
-    // Cerrar selección si el clic es fuera del contenedor de nodos y sensores
-    const handleClickOutside = (event: MouseEvent) => {
-        if (
-            (nodeContainerRef.current && !nodeContainerRef.current.contains(event.target as Node)) &&
-            (sensorContainerRef.current && !sensorContainerRef.current.contains(event.target as Node)) &&
-            (mapContainerRef.current && !mapContainerRef.current.contains(event.target as Node))
-        ) {
-            setSelectedNode(null); // Deselecciona el nodo
-            setSelectedSensor(null); // Deselecciona el sensor
-        }
-    };
+    const mapSensor = (sensor: Sensor) => ({
+        id: sensor.sensor_id,
+        name: sensor.name,
+        latitude: sensor.latitude,
+        longitude: sensor.longitude,
+        type: "sensor",
+        details: { value: sensor.value, unity: sensor.unity },
+    });
 
-    // Configura el evento de clic fuera del contenedor
-    useEffect(() => {
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
+    const mapNode = (node: Node) => [
+        {
+            id: node.node_id,
+            name: node.name,
+            latitude: node.latitude,
+            longitude: node.longitude,
+            type: "node",
+            details: { status: node.status }
+        },
+        ...node.sensors.map(mapSensor),
+    ];
 
-    const mapNodesAndSensors = (nodes: Node[]) => {
-        return nodes.flatMap((node) => [
-            {
-                id: node.node_id,
-                name: node.name,
-                latitude: node.latitude,
-                longitude: node.longitude,
-                type: "node",
-                details: { status: node.status },
-            },
-            ...node.sensors.map((sensor) => ({
-                id: sensor.sensor_id,
-                name: sensor.name,
-                latitude: sensor.latitude,
-                longitude: sensor.longitude,
-                type: "sensor",
-                details: { value: sensor.value, unity: sensor.unity },
-            })),
-        ]);
-    };
+    const mapNodesAndSensors = (nodes: Node[]) => nodes.flatMap(mapNode);
 
-    const nodesAndSensors = mapNodesAndSensors(nodes);
     const mapData = selectedSensor
         ? [
             {
-                id: selectedSensor.sensor_code,
+                id: selectedSensor.sensor_id,
                 name: selectedSensor.name,
                 latitude: selectedSensor.latitude,
                 longitude: selectedSensor.longitude,
@@ -139,54 +139,70 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
         ]
         : selectedNode
             ? mapNodesAndSensors([selectedNode])
-            : nodesAndSensors;
+            : mapNodesAndSensors(nodes);
 
     return (
         <div className="flex flex-col w-full gap-6">
             <div className="flex flex-col lg:flex-row rounded-md gap-4">
                 {/* Información del Humedal */}
-                <div className="relative shadow-md w-full lg:w-[80%]" >
-                    <div className="absolute w-full -top-4 z-10 text-center justify-items-center overflow-hidden">
+                <div className="relative shadow-md w-full lg:w-[80%]">
+                    <div className="absolute w-full flex justify-center -top-4 z-10 text-center overflow-hidden">
                         <HoverCard>
                             <HoverCardTrigger asChild>
-                                <h2 className="text-sm leading-4 text-ellipsis content-center px-4 py-2 max-w-[70%] h-8 font-semibold rounded-md bg-white">{name}</h2>
+                                <h2
+                                    className="text-sm leading-3 px-4 py-2 max-w-[70%] h-8 font-semibold rounded-md bg-white cursor-pointer"
+                                    aria-label={`Detalles del humedal: ${name}`}
+                                >
+                                    {name}
+                                </h2>
                             </HoverCardTrigger>
                             <HoverCardContent className="w-80">
                                 <h2 className="line-clamp-2">{name}</h2>
                                 <div className="flex items-center pt-2">
                                     <CalendarIcon className="mr-2 h-4 opacity-70" />
-                                    <span className="text-xs text-muted-foreground">Última actualización: 2 horas</span>
+                                    <span className="text-xs text-muted-foreground">
+                                        Última actualización: 2 horas
+                                    </span>
                                 </div>
                             </HoverCardContent>
                         </HoverCard>
                     </div>
-                    <div className="absolute bottom-1 left-1 flex items-center gap-2 px-2 rounded-md py-1 bg-white z-10" title={location}>
-                        <MapPinIcon className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                        <p className="text-xs truncate max-w-[80%] text-gray-500 overflow-hidden">{location}</p>
+                    <div
+                        className="absolute bottom-1 left-1 flex items-center gap-2 px-2 rounded-md py-1 bg-white z-10"
+                        title={location}
+                    >
+                        <MapPinIcon className="w-4 h-4 text-blue-500" />
+                        <p className="text-xs truncate max-w-[80%] text-gray-500">{location}</p>
                     </div>
                     <div className="h-96 w-full rounded-md overflow-hidden">
-                        <Maps items={mapData} onSelectItem={handleItemSelection} />
+                        <Maps items={mapData} />
                     </div>
                 </div>
 
                 {/* Listado de Nodos */}
-                <div className="flex flex-col w-full max-h-96 lg:w-1/5 bg-white shadow-md rounded-md p-4 gap-2">
+                <div
+                    ref={nodeContainerRef}
+                    className="flex flex-col w-full max-h-96 lg:w-1/4 xl:w-1/5 bg-white shadow-md rounded-md p-4 gap-2"
+                >
                     <h2 className="text-lg font-medium border-b pb-2">Nodos</h2>
-                    <ul className="flex flex-col overflow-hidden overflow-y-auto gap-3">
+                    <ul role="listbox" className="flex flex-col overflow-hidden overflow-y-auto p-2 gap-3">
                         {nodes.map((node) => (
                             <li
                                 key={node.node_id}
+                                role="option"
+                                aria-selected={selectedNode?.node_id === node.node_id}
                                 onClick={() => handleNodeSelection(node)}
-                                className={`w-[90%] p-4 flex self-center items-center gap-4 rounded-md shadow-sm transition-transform transform hover:scale-x-105 cursor-pointer ${selectedNode?.node_id === node.node_id
-                                    ? "bg-blue-100 border-2 border-blue-500 shadow-lg"
-                                    : statusColors[node.status]
-                                    }`}
+                                className={clsx(
+                                    "w-[90%] p-4 flex self-center items-center gap-4 rounded-md shadow-sm cursor-pointer transition-transform transform hover:scale-105",
+                                    selectedNode?.node_id === node.node_id
+                                        ? "bg-blue-100 border-2 border-blue-500 shadow-lg"
+                                        : statusColors[node.status]
+                                )}
                             >
                                 <SignalIcon
-                                    className={`w-6 h-6 ${selectedNode?.node_id === node.node_id
-                                        ? "text-blue-500"
-                                        : ""
-                                        }`}
+                                    className={clsx("w-6 h-6", {
+                                        "text-blue-500": selectedNode?.node_id === node.node_id,
+                                    })}
                                 />
                                 <div>
                                     <h3 className="font-semibold">{node.name}</h3>
@@ -218,4 +234,10 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
     );
 };
 
-export default WetlandDetail;
+const WetlandDetailWrapper = (props: WetlandDetailProps) => (
+    <SelectionProvider>
+        <WetlandDetail {...props} />
+    </SelectionProvider>
+);
+
+export default WetlandDetailWrapper;

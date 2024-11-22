@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import WetlandDetail from "../components/WetlandDetail";
 import { getWetland } from "@/lib/actions/dashboard/wetlands";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SelectionProvider } from "@/context/SelectionContext";
 
 import { Wetland } from "@/types";
 
@@ -38,13 +39,15 @@ export default function WetlandDetailPage({ params }: {
 
     return (
         wetland && (
-            <WetlandDetail
-                id={wetland.id}
-                name={wetland.name}
-                location={wetland.location}
-                status={wetland.status as "good" | "warning" | "alert"}
-                nodes={wetland.nodes}
-            />
+            <SelectionProvider>
+                <WetlandDetail
+                    id={wetland.id}
+                    name={wetland.name}
+                    location={wetland.location}
+                    status={wetland.status as "good" | "warning" | "alert"}
+                    nodes={wetland.nodes}
+                />
+            </SelectionProvider>
         )
     );
 }

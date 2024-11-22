@@ -3,7 +3,6 @@ import "@/styles/globals.scss";
 import useAuth from "@/hooks/useAuth";
 import Header from "@/components/Header";
 
-
 type LayoutProps = {
     children: React.ReactNode;
 };
