@@ -11,6 +11,7 @@ import {
 import { NodeFilter } from "./NodeFilter";
 
 interface Sensor {
+    sensor_id: number;
     name: string;
     sensor_code: string;
     unity: string;
@@ -52,12 +53,17 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
     status,
     nodes,
 }) => {
+    const [selectedItem, setSelectedItem] = useState<string | number>(null);
     const [selectedNode, setSelectedNode] = useState<Node | null>(null);
     const [selectedSensor, setSelectedSensor] = useState<Sensor | null>(null);
 
     const nodeContainerRef = useRef<HTMLDivElement | null>(null); // Ref para el contenedor de nodos
     const sensorContainerRef = useRef<HTMLDivElement | null>(null); // Ref para el contenedor de sensores
     const mapContainerRef = useRef<HTMLDivElement | null>(null); // Ref para el contenedor del mapa
+
+    const handleItemSelection = (id: string | number) => {
+        setSelectedItem(id);
+    }
 
     // Maneja la selección de un nodo
     const handleNodeSelection = (node: Node) => {
@@ -101,6 +107,7 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
     const mapNodesAndSensors = (nodes: Node[]) => {
         return nodes.flatMap((node) => [
             {
+                id: node.node_id,
                 name: node.name,
                 latitude: node.latitude,
                 longitude: node.longitude,
@@ -108,6 +115,7 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
                 details: { status: node.status },
             },
             ...node.sensors.map((sensor) => ({
+                id: sensor.sensor_id,
                 name: sensor.name,
                 latitude: sensor.latitude,
                 longitude: sensor.longitude,
@@ -121,6 +129,7 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
     const mapData = selectedSensor
         ? [
             {
+                id: selectedSensor.sensor_code,
                 name: selectedSensor.name,
                 latitude: selectedSensor.latitude,
                 longitude: selectedSensor.longitude,
@@ -156,19 +165,19 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
                         <p className="text-xs truncate max-w-[80%] text-gray-500 overflow-hidden">{location}</p>
                     </div>
                     <div className="h-96 w-full rounded-md overflow-hidden">
-                        <Maps items={mapData} />
+                        <Maps items={mapData} onSelectItem={handleItemSelection} />
                     </div>
                 </div>
 
                 {/* Listado de Nodos */}
-                <div className="flex flex-col w-full max-h-96 lg:w-1/5 bg-white shadow-md rounded-md p-4 gap-4">
+                <div className="flex flex-col w-full max-h-96 lg:w-1/5 bg-white shadow-md rounded-md p-4 gap-2">
                     <h2 className="text-lg font-medium border-b pb-2">Nodos</h2>
-                    <ul className="flex flex-col gap-3">
+                    <ul className="flex flex-col overflow-hidden overflow-y-auto gap-3">
                         {nodes.map((node) => (
                             <li
                                 key={node.node_id}
                                 onClick={() => handleNodeSelection(node)}
-                                className={`p-4 flex items-center gap-4 rounded-md shadow-sm transition-transform transform hover:scale-x-105 cursor-pointer ${selectedNode?.node_id === node.node_id
+                                className={`w-[90%] p-4 flex self-center items-center gap-4 rounded-md shadow-sm transition-transform transform hover:scale-x-105 cursor-pointer ${selectedNode?.node_id === node.node_id
                                     ? "bg-blue-100 border-2 border-blue-500 shadow-lg"
                                     : statusColors[node.status]
                                     }`}

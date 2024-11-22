@@ -1,5 +1,5 @@
 "use client";
-import "@/styles/globals.css";
+import "@/styles/globals.scss";
 import useAuth from "@/hooks/useAuth";
 import Header from "@/components/Header";
 

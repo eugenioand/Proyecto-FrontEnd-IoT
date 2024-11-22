@@ -4,16 +4,17 @@ import { Icon, LatLngBounds } from "leaflet";
 import Image from "next/image";
 
 interface MarkerItem {
+    id: number | string;
     name: string;
-    // coordinates: [number, number];
     latitude: number;
     longitude: number;
-    type?: "node" | "sensor" | "generic"; // Nuevos tipos
-    details?: Record<string, string | number>; // Información adicional para el popup
+    type?: "node" | "sensor" | "generic";
+    details?: Record<string, string | number>;
 }
 
 interface MapProps {
-    items: MarkerItem[]; // Lista de elementos a mostrar
+    items: MarkerItem[];
+    onSelectItem: (id: number | string) => void;
 }
 
 const AutoZoom = ({ bounds }: { bounds: LatLngBounds }) => {
@@ -22,21 +23,23 @@ const AutoZoom = ({ bounds }: { bounds: LatLngBounds }) => {
     return null;
 };
 
-const Map: React.FC<MapProps> = ({ items }) => {
-    // Niveles de zoom personalizados por tipo
+const eye = <i className="fa fa-eye" aria-hidden="true"/>
+const eyeSlash = <i className="fa fa-eye-slash" aria-hidden="true"/>
+
+
+const Map: React.FC<MapProps> = ({ items, onSelectItem }) => {
     const zoomLevels: Record<string, number> = {
         node: 15,
         sensor: 17,
         default: 14,
     };
 
-    // Definición de íconos personalizados
     const icons: Record<string, Icon> = {
         node: new Icon({
             iconUrl: "/node-icon.svg",
             iconSize: [30, 50],
             iconAnchor: [15, 50],
-            popupAnchor: [0, -40],
+            // popupAnchor: [0, -40],
         }),
         sensor: new Icon({
             iconUrl: "/sensor-icon.svg",
@@ -58,20 +61,19 @@ const Map: React.FC<MapProps> = ({ items }) => {
         }),
     };
 
-    // Calcular límites iniciales para el autozoom
     const bounds = new LatLngBounds(items.map((item) => [item.latitude, item.longitude]));
 
     return (
-        <MapContainer style={{zIndex: 0}} scrollWheelZoom={true} className="h-full w-full" zoomControl={false} attributionControl={false} >
-            <TileLayer
-                // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-
-            {/* Ajustar zoom inicial */}
+        <MapContainer
+            scrollWheelZoom={true}
+            className="h-full w-full"
+            zoomControl={false}
+            attributionControl={false}
+            style={{ zIndex: 1}}
+        >
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <AutoZoom bounds={bounds} />
 
-            {/* Agregar marcadores dinámicos */}
             {items.map((item, index) => (
                 <Marker
                     key={index}
@@ -79,33 +81,64 @@ const Map: React.FC<MapProps> = ({ items }) => {
                     icon={icons[item.type || "default"]}
                     eventHandlers={{
                         click: (e) => {
-                            const map = e.target._map; // Obtener el mapa desde el marcador
-                            map.setView([item.latitude, item.longitude], zoomLevels[item.type || "default"], { animate: true }); // Ajustar el zoom
+                            const map = e.target._map;
+                            map.setView(
+                                [item.latitude, item.longitude],
+                                zoomLevels[item.type || "default"],
+                                { animate: true }
+                            );
+                        },
+                        popupopen: (e) => {
+                            const map = e.target._map;
+                            const popup = e.popup;
+                            const popupHeight = popup.getElement()?.offsetHeight || 0;
+                            const mapSize = map.getSize();
+                            const popupPosition = map.latLngToLayerPoint(popup.getLatLng());
+                            const offset = popupPosition.y - popupHeight / 2;
+
+                            if (offset < 0) {
+                                map.panBy([0, offset - 20]); // Ajustar el mapa para hacer visible el popup
+                            }
                         },
                     }}
                 >
                     <Popup>
-                        <div className="text-center p-2">
-                            <h3 className="font-bold text-lg">{item.name}</h3>
-                            {item.type && (
-                                <p className="text-sm text-gray-500 flex items-center gap-1">
-                                    <Image
-                                        src={`/${item.type}-icon.svg`}
-                                        alt={`${item.type} icon`}
-                                        width={20}
-                                        height={20}
-                                        className="w-5 h-5"
-                                    />
-                                    {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
-                                </p>
-                            )}
+                        <div className="popup-inner">
+                            <h2 className="popup-inner__title">{item.name}</h2>
+                        </div>
+                        <p className="popup-inner__description">
                             {item.details &&
                                 Object.entries(item.details).map(([key, value]) => (
-                                    <p key={key} className="text-sm text-gray-600">
-                                        {key}: {value}
-                                    </p>
-                                ))}
-                        </div>
+                                    <div key={key} className="text-sm text-gray-600">
+                                        <span className="font-medium">{key}:</span> {value}
+                                    </div>
+                                ))
+                            }
+                        </p>
+                        <button className="popup-inner__button" onClick={() => onSelectItem(item.id)}>
+                            <span>{eye}</span> Ver
+                        </button>
+                        {/* <div className="bg-white p-4 rounded-lg shadow-lg">
+                            <h3 className="font-semibold text-xl mb-2">{item.name}</h3>
+                            <div className="flex items-center gap-2">
+                                <Image
+                                    src={`/${item.type}-icon.svg`}
+                                    alt={`${item.type} icon`}
+                                    width={24}
+                                    height={24}
+                                    className="w-6 h-6"
+                                />
+                                <span className="text-gray-500 capitalize">{item.type}</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 mt-3">
+                                {item.details &&
+                                    Object.entries(item.details).map(([key, value]) => (
+                                        <div key={key} className="text-sm text-gray-600">
+                                            <span className="font-medium">{key}:</span> {value}
+                                        </div>
+                                    ))}
+                            </div>
+                        </div> */}
                     </Popup>
                 </Marker>
             ))}

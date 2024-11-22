@@ -1,5 +1,5 @@
 // import localFont from "next/font/local";
-import "../styles/globals.css";
+import "../styles/globals.scss";
 import type { Metadata, Viewport } from "next"
 import { ReactNode } from "react";
 // import useAuth from "@/hooks/useAuth";
@@ -33,7 +33,9 @@ export default function Layout({ children }: LayoutProps) {
   // useAuth();
   return (
     <html lang="en">
-      <head />
+      <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossOrigin="anonymous" referrerPolicy="no-referrer" />
+      </head>
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",

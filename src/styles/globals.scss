@@ -1,3 +1,5 @@
+@use "./popu";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,6 +10,7 @@
   --bg-blue-1: #283949;
   --bg-blue-2: #001C63C2;
   --bg-blue-3: #2C3E50;
+  --color-white: #ffffff;
 }
 
 /* @media (prefers-color-scheme: dark) {
