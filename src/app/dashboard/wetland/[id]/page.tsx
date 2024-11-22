@@ -17,13 +17,12 @@ export default function WetlandDetailPage({ params }: {
         const fetchWetland = async () => {
             setLoading(true);
             const result = await getWetland(params.id);
-
+            
             if (result.error) {
                 setError(result.error);
             } else {
                 setWetland(result);
             }
-            setWetland(result);
             setLoading(false);
         }
         fetchWetland();

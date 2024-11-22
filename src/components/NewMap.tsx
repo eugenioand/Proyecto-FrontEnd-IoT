@@ -62,7 +62,7 @@ const Map: React.FC<MapProps> = ({ items }) => {
     const bounds = new LatLngBounds(items.map((item) => [item.latitude, item.longitude]));
 
     return (
-        <MapContainer scrollWheelZoom={true} className="h-full w-full" zoomControl={false} attributionControl={false}>
+        <MapContainer style={{zIndex: 0}} scrollWheelZoom={true} className="h-full w-full" zoomControl={false} attributionControl={false} >
             <TileLayer
                 // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
