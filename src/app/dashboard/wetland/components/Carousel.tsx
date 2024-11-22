@@ -5,6 +5,8 @@ import CarouselItem from "./CarouselItem";
 
 interface CarouselProps {
     items: Sensor[];
+    selectedSensor: Sensor | null;
+    onSelectSensor?: (sensor: Sensor) => void;
     autoPlay?: boolean;
     autoPlayInterval?: number;
 }
@@ -19,6 +21,8 @@ interface Sensor {
 
 const Carousel: React.FC<CarouselProps> = ({
     items,
+    selectedSensor,
+    onSelectSensor,
     autoPlay = false, // Apagado para pruebas manuales
     autoPlayInterval = 3000,
 }) => {
@@ -56,7 +60,7 @@ const Carousel: React.FC<CarouselProps> = ({
     }, []);
 
     return (
-        <div className="relative w-full overflow-hidden">
+        <div className="relative w-full h-72 overflow-hidden">
             <div
                 className="flex transition-transform duration-500 ease-in-out"
                 style={{
@@ -67,14 +71,16 @@ const Carousel: React.FC<CarouselProps> = ({
                 {items.map((item, index) => (
                     <div
                         key={index}
-                        className={`flex-shrink-0 px-2 ${visibleItems === 3
+                        className={`flex-shrink-0 p-2 ${visibleItems === 3
                                 ? "lg:w-1/3"
                                 : visibleItems === 2
                                     ? "sm:w-1/2"
                                     : "w-full"
-                            }`}
+                            }
+                        `}
+                        onClick={() => onSelectSensor(item)}
                     >
-                        <CarouselItem sensor={item} />
+                        <CarouselItem sensor={item} selectedSensor={selectedSensor === item} />
                     </div>
                 ))}
             </div>

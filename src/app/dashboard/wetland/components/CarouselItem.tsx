@@ -70,13 +70,14 @@ const DefaultSensor: React.FC<Sensor> = ({ name, value, max, unity }) => {
 
 
 // Componente principal de cada ítem del carrusel
-const CarouselItem: React.FC<{ sensor: Sensor }> = ({ sensor }) => {
+const CarouselItem: React.FC<{ sensor: Sensor, selectedSensor: boolean }> = ({ sensor, selectedSensor }) => {
     console.log("Sensor", sensor); // Muestra el sensor para depuración
+    console.log("selectedSensor", selectedSensor); // Muestra el sensor para depuración
     // Se obtiene el componente del sensor correspondiente, o el componente por defecto si no está mapeado
     const SensorComponent = sensorComponents[sensor.sensor_code] || DefaultSensor;
 
     return (
-        <div className="flex-shrink-0 w-full h-72 px-2">
+        <div className={`flex-shrink-0 w-full h-full rounded-md ${selectedSensor ? "border-2 border-blue-500" : ""}`}>
             <SensorComponent
                 name={sensor.name}
                 value={sensor.value}
