@@ -52,7 +52,10 @@ export function UpdateUserSheet({
 
     function onSubmit(values: UpdateUserFormValues) {
         updateUser(values)
-            .then(() => {
+            .then(({ error }) => {
+                if (error) {
+                    return toast.error(error)
+                }
                 toast.success("Usuario actualizado")
                 onOpenChange(false)
             })

@@ -72,21 +72,7 @@ export async function deleteUsers(ids: any) {
 
 export async function updateUser(data: any) {
     try {
-        const newData = {
-            "users": [
-                {
-                    "user_id": data.id,
-                    "first_name": data.firstName,
-                    "second_name": data.secondName,
-                    "last_name": data.lastName,
-                    "second_last_name": data.secondLastName,
-                    "email": data.email,
-                    "role": data.role,
-                    "status": data.status
-                }
-            ]
-        }
-        const response = await axios.put(`${API_URL}/users`, newData);
+        const response = await axios.put(`${API_URL}/users`, data);
         return response.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError };
