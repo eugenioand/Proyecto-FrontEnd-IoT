@@ -65,33 +65,35 @@ export function DataTableFilterItem<TData>({
     ) ?? comparisonOperators[0]
 
   React.useEffect(() => {
-    if (selectedOption.options.length > 0) {
-      // key=value1.value2.value3~operator
-      const filterValues = selectedOption.filterValues ?? []
-      const newSearchParams = createQueryString(
-        {
-          [String(selectedOption.value)]:
-            filterValues.length > 0
-              ? `${filterValues.join(".")}~${selectedOperator?.value}`
-              : null,
-        },
-        searchParams
-      )
-      router.push(`${pathname}?${newSearchParams}`, {
-        scroll: false,
-      })
-    } else {
-      // key=value~operator
-      const newSearchParams = createQueryString(
-        {
-          [String(selectedOption.value)]:
-            value.length > 0 ? `${value}~${selectedOperator?.value}` : null,
-        },
-        searchParams
-      )
-      router.push(`${pathname}?${newSearchParams}`, {
-        scroll: false,
-      })
+    if (debounceValue) {
+      if (selectedOption.options.length > 0) {
+        // key=value1.value2.value3~operator
+        const filterValues = selectedOption.filterValues ?? []
+        const newSearchParams = createQueryString(
+          {
+            [String(selectedOption.value)]:
+              filterValues.length > 0
+                ? `${filterValues.join(".")}~${selectedOperator?.value}`
+                : null,
+          },
+          searchParams
+        )
+        router.push(`${pathname}?${newSearchParams}`, {
+          scroll: false,
+        })
+      } else {
+        // key=value~operator
+        const newSearchParams = createQueryString(
+          {
+            [String(selectedOption.value)]:
+              value.length > 0 ? `${value}~${selectedOperator?.value}` : null,
+          },
+          searchParams
+        )
+        router.push(`${pathname}?${newSearchParams}`, {
+          scroll: false,
+        })
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedOption, debounceValue, selectedOperator?.value])

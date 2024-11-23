@@ -180,36 +180,39 @@ export function MultiFilterRow<TData>({
       return
     }
 
-    if (option.options.length > 0) {
-      // key=value1.value2.value3~operator
-      const filterValues = option.filterValues ?? []
-      const newSearchParams = createQueryString(
-        {
-          [String(option.value)]:
-            filterValues.length > 0
-              ? `${filterValues.join(".")}~${comparisonOperator?.value}~multi`
-              : null,
-        },
-        searchParams
-      )
-      router.push(`${pathname}?${newSearchParams}`, {
-        scroll: false,
-      })
-    } else {
-      // key=value~operator
-      const newSearchParams = createQueryString(
-        {
-          [String(option.value)]:
-            debounceValue.length > 0
-              ? `${debounceValue}~${comparisonOperator?.value}~multi`
-              : null,
-        },
-        searchParams
-      )
-      router.push(`${pathname}?${newSearchParams}`, {
-        scroll: false,
-      })
+    if (debounceValue) {
+      if (option.options.length > 0) {
+        // key=value1.value2.value3~operator
+        const filterValues = option.filterValues ?? []
+        const newSearchParams = createQueryString(
+          {
+            [String(option.value)]:
+              filterValues.length > 0
+                ? `${filterValues.join(".")}~${comparisonOperator?.value}~multi`
+                : null,
+          },
+          searchParams
+        )
+        router.push(`${pathname}?${newSearchParams}`, {
+          scroll: false,
+        })
+      } else {
+        // key=value~operator
+        const newSearchParams = createQueryString(
+          {
+            [String(option.value)]:
+              debounceValue.length > 0
+                ? `${debounceValue}~${comparisonOperator?.value}~multi`
+                : null,
+          },
+          searchParams
+        )
+        router.push(`${pathname}?${newSearchParams}`, {
+          scroll: false,
+        })
+      }
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounceValue, comparisonOperator?.value, option])
 
