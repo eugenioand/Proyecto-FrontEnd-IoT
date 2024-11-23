@@ -3,6 +3,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { login as login_api } from "@/lib/actions/login";
 
 // Define el tipo de datos que manejará el contexto
 interface AuthContextType {
@@ -53,21 +54,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const login = async (email: string, password: string) => {
         try {
-            const response = await fetch("http://localhost:5000/api/login", { // Ajusta la URL de tu servidor de Flask
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            });
+            const response = await login_api(email, password);
 
-            if (!response.ok) throw new Error("Credenciales incorrectas");
-
-            const data = await response.json();
-            localStorage.setItem("token", data.token);  // Almacena el JWT
+            localStorage.setItem("access_token", response.access_token);
+            localStorage.setItem("refresh_token", response.refresh_token);
             setIsAuthenticated(true);
-            setUser(data.user);
-            router.push("/dashboard");  // Redirige a la página protegida
+            setUser(response.user);
+            router.push("/");  // Redirige a la página protegida
         } catch (error) {
             alert(error.message);
         }
