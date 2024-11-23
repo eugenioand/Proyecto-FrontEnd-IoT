@@ -38,8 +38,11 @@ export function getColumns(): ColumnDef<Sensor>[] {
       header: ({ table }) => (
         <Checkbox
           checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
+            table.getIsAllPageRowsSelected()
+              ? true
+              : table.getIsSomePageRowsSelected()
+              ? "indeterminate"
+              : false
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -60,6 +63,7 @@ export function getColumns(): ColumnDef<Sensor>[] {
     {
       accessorKey: "name",
       header: ({ column }) => (
+        console.log(`column`, column),
         <DataTableColumnHeader column={column} title="Nombre" />
       ),
       cell: ({ row }) => {
@@ -137,7 +141,7 @@ export function getColumns(): ColumnDef<Sensor>[] {
             <DeleteSensorsDialog
               open={showDeleteSensorDialog}
               onOpenChange={setShowDeleteSensorDialog}
-              sensorId={[row.original.id]}
+              sensorId={[row.original?.id?.toString()]}
               showTrigger={false}
             />
             <DropdownMenu>
