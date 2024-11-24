@@ -6,6 +6,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SelectionProvider } from "@/context/SelectionContext";
 
 import { Wetland } from "@/types";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import ErrorModal from "@/components/dialogs/ErrorModal";
 
 export default function WetlandDetailPage({ params }: {
     params: { id: string } 
@@ -34,7 +36,12 @@ export default function WetlandDetailPage({ params }: {
     }
 
     if (loading) {
-        return <WetlandSkeleton />;
+        // return <WetlandSkeleton />;
+        return <LoadingSpinner />;
+    }
+
+    if (error) {
+        return <ErrorModal message={error} onClose={closeErrorModal} />;
     }
 
     return (

@@ -39,7 +39,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             if (accessToken) {
                 try {
                     const response = await axiosClient.get('/me');
-                    setUser(response.data);
+                    setUser(response.data?.data);
                     setIsAuthenticated(true);
                 } catch (error) {
                     logout();
