@@ -1,12 +1,10 @@
-import axios from "axios";
-import { unknownError } from "../constants";
+import axiosClient from "@/utils/axios-client";
+import { unknownError } from "../lib/constants";
 import { toast } from "sonner";
-
-const API_URL = "https://proyecto-backend-iot.vercel.app/api";
 
 export async function login(email: string, password: string) {
     try {
-        const response = await axios.post(`${API_URL}/login`, { email, password });
+        const response = await axiosClient.post('/auth/login', { email, password });
         return response.data;
     } catch (error: any) {
         toast.error(error.response?.data?.message || unknownError);
@@ -16,7 +14,7 @@ export async function login(email: string, password: string) {
 
 export async function logout() {
     try {
-        const response = await axios.post(`${API_URL}/logout`);
+        const response = await axiosClient.post('/logout');
         toast.success(response.data.message);
         return response.data;
     } catch (error: any) {
@@ -27,7 +25,7 @@ export async function logout() {
 
 export async function verifyToken(token: string) {
     try {
-        const response = await axios.post(`${API_URL}/verify-token`, { token });
+        const response = await axiosClient.post('/verify-token', { token });
         toast.success(response.data.message);
         return response.data;
     } catch (error: any) {
@@ -38,7 +36,7 @@ export async function verifyToken(token: string) {
 
 export async function refreshToken(token: string) {
     try {
-        const response = await axios.post(`${API_URL}/refresh-token`, { token });
+        const response = await axiosClient.post('/refresh-token', { token });
         toast.success(response.data.message);
         return response.data;
     } catch (error: any) {

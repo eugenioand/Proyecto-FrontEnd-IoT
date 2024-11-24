@@ -1,4 +1,4 @@
-import { deleteUser, deleteUsers } from "@/lib/actions/users";
+import { deleteUser, deleteUsers } from "@/services/users";
 import { DeleteDialog } from "@/components/dialogs/DeleteDialog";
 
 interface DeleteUsersDialogProps {

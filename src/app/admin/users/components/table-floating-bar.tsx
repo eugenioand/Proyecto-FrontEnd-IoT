@@ -29,7 +29,7 @@ import {
 import { Kbd } from "@/components/kbd";
 import { LoaderIcon } from "@/components/loader-icon";
 
-import { updateSensors, deleteSensors } from "@/lib/actions/sensors";
+import { updateSensors, deleteSensors } from "@/services/sensors";
 import { User } from "@/types/user";
 
 

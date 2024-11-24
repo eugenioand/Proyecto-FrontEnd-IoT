@@ -24,7 +24,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 
-import { updateSensor } from "@/lib/actions/sensors"
+import { updateSensor } from "@/services/sensors"
 import { getErrorMessage } from "@/lib/handle-error"
 import { Sensor } from "@/types"
 

@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 
-import { updateSensor } from "@/lib/actions/sensors"
+import { updateSensor } from "@/services/sensors"
 import DeleteSensorsDialog from "./delete-dialog"
 import { UpdateSensorSheet } from "./update-sheet"
 

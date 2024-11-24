@@ -1,13 +1,10 @@
-import axios from 'axios';
-import { unknownError } from '../constants';
-import { SearchParams } from '../validations';
-
-// const API_URL = process.env.BACKEND_API_BASE_URL;
-const API_URL = 'https://proyecto-backend-iot.vercel.app/api';
+import axiosClient from "@/utils/axios-client";
+import { unknownError } from '../lib/constants';
+import { SearchParams } from '../lib/validations';
 
 export async function createSensor(data: any) {
     try {
-        const response = await axios.post(`${API_URL}/sensors`, data);
+        const response = await axiosClient.post('/sensors', data);
         return response.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError};
@@ -16,8 +13,7 @@ export async function createSensor(data: any) {
 
 export async function getSensors(params: SearchParams) {
     try {
-        const response = await axios.get(`${API_URL}/sensors`, { params });
-        console.log('response', response)
+        const response = await axiosClient.get('/sensors', { params });
         return {
             data: response.data?.data || [],
             pageCount: response.data?.paging?.total_pages || 0,
@@ -27,7 +23,6 @@ export async function getSensors(params: SearchParams) {
             message: response.data?.message
         };
     } catch (error: any) {
-        console.log('error', error)
         return {
             data: [],
             pageCount: 0,
@@ -41,7 +36,7 @@ export async function getSensors(params: SearchParams) {
 
 export async function deleteSensor(id: string) {
     try {
-        const response = await axios.delete(`${API_URL}/sensors/${id}`);
+        const response = await axiosClient.delete(`/sensors/${id}`);
         return response.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError};
@@ -50,7 +45,7 @@ export async function deleteSensor(id: string) {
 
 export async function deleteSensors(ids: any) {
     try {
-        const response = await axios.delete(`${API_URL}/sensors`, { data: { ids } });
+        const response = await axiosClient.delete('/sensors', { data: { ids } });
         return response.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError};
@@ -59,7 +54,7 @@ export async function deleteSensors(ids: any) {
 
 export async function updateSensor(data: any) {
     try {
-        const response = await axios.put(`${API_URL}/sensors/${data.id}`, data);
+        const response = await axiosClient.put(`/sensors/${data.id}`, data);
         return response.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError};
@@ -68,7 +63,7 @@ export async function updateSensor(data: any) {
 
 export async function updateSensors(data: any) {
     try {
-        const response = await axios.put(`${API_URL}/sensors`, data);
+        const response = await axiosClient.put('/sensors', data);
         return response.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError};

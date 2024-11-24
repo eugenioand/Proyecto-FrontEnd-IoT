@@ -1,16 +1,16 @@
-// app/context/auth-context.tsx
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { login as login_api } from "@/lib/actions/login";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import axiosClient from '../utils/axios-client';
+import { useRouter } from 'next/navigation';
 
-// Define el tipo de datos que manejará el contexto
 interface AuthContextType {
-    user: any;
     isAuthenticated: boolean;
-    login: (email: string, password: string) => void;
+    user: any;
+    login: (email: string, password: string) => Promise<void>;
     logout: () => void;
+    refreshToken: () => Promise<void>;
+    loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,63 +18,86 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
-        throw new Error("useAuth debe ser usado dentro de un AuthProvider");
+        throw new Error('useAuth must be used within an AuthProvider');
     }
     return context;
 };
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<any>(null);
+interface AuthProviderProps {
+    children: React.ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [user, setUser] = useState<any>(null);
+    const [loading, setLoading] = useState<boolean>(true);
     const router = useRouter();
 
     useEffect(() => {
-        // Verifica si hay un token en las cookies al cargar la página
-        const token = localStorage.getItem("token");
-        if (token) {
-            setIsAuthenticated(true);
-            // Hacer la verificación del token o obtener los datos del usuario
-            // Conecta con tu backend para obtener los datos del usuario
-            fetch("/api/verify-token", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ token }),
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    setUser(data.user);
-                })
-                .catch(() => {
+        const initializeAuth = async () => {
+            const accessToken = localStorage.getItem('access_token');
+            if (accessToken) {
+                try {
+                    const response = await axiosClient.get('/me');
+                    setUser(response.data);
+                    setIsAuthenticated(true);
+                } catch (error) {
                     logout();
-                });
-        }
+                }
+            }
+            setLoading(false);
+        };
+        initializeAuth();
+    }, []);
+
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            try {
+                await refreshToken();
+            } catch {
+                console.error('No se pudo actualizar el token');
+            }
+        }, 10 * 60 * 1000);
+        return () => clearInterval(interval);
     }, []);
 
     const login = async (email: string, password: string) => {
         try {
-            const response = await login_api(email, password);
-
-            localStorage.setItem("access_token", response.access_token);
-            localStorage.setItem("refresh_token", response.refresh_token);
+            const response = await axiosClient.post('/auth/login', { email, password });
+            const { access_token, refresh_token, user } = response.data;
+            localStorage.setItem('access_token', access_token);
+            localStorage.setItem('refresh_token', refresh_token);
+            setUser(user);
             setIsAuthenticated(true);
-            setUser(response.user);
-            router.push("/");  // Redirige a la página protegida
+            router.push('/dashboard');
         } catch (error) {
-            alert(error.message);
+            console.error('Error durante el login:', error);
         }
     };
 
     const logout = () => {
-        localStorage.removeItem("token");
+        localStorage.clear();
         setIsAuthenticated(false);
         setUser(null);
-        router.push("/login");  // Redirige al login
+        router.replace('/login');
+    };
+
+    const refreshToken = async () => {
+        try {
+            const refresh_token = localStorage.getItem('refresh_token');
+            if (!refresh_token) throw new Error('No refresh token available');
+            const response = await axiosClient.post('/auth/refresh', { refresh_token });
+            const { access_token } = response.data;
+            localStorage.setItem('access_token', access_token);
+            return access_token;
+        } catch (error) {
+            console.error('Error al refrescar el token:', error);
+            logout();
+        }
     };
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, user, login, logout, refreshToken, loading }}>
             {children}
         </AuthContext.Provider>
     );

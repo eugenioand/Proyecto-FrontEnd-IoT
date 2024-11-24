@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import WetlandCard from "@/components/WetlandCard";
-import { getWetlands } from '@/lib/actions/dashboard/wetlands';
+import { getWetlands } from '@/services/dasboard/wetlands';
 import { Skeleton } from '@/components/ui/skeleton';
 import ErrorModal from '@/components/dialogs/ErrorModal';
 import { useRouter } from "next/navigation";

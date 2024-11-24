@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import WetlandDetail from "../components/WetlandDetail";
-import { getWetland } from "@/lib/actions/dashboard/wetlands";
+import { getWetland } from "@/services/dasboard/wetlands";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SelectionProvider } from "@/context/SelectionContext";
 

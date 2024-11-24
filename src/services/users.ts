@@ -1,25 +1,23 @@
-import axios from "axios";
-import { unknownError } from "../constants";
-import { SearchParams } from "../validations";
+import axiosClient from "@/utils/axios-client";
+import { unknownError } from "../lib/constants";
+import { SearchParams } from "../lib/validations";
 import { ApiUser } from "@/types/user";
-
-const API_URL = "https://proyecto-backend-iot.vercel.app/api";
 
 export async function createUser(data: any) {
     try {
         console.log("Enviando datos al servidor:", data);
-        const response = await axios.post(`${API_URL}/users`, data);
+        const response = await axiosClient.post('/users', data);
         console.log("Respuesta completa del servidor:", response);
         return response.data;
     } catch (error: any) {
         console.error("Error al crear usuario:", error);
-        return { error: error.response?.data?.errors?.message || unknownError };
+        return { error: error.response?.data?.message || unknownError };
     }
 }
 
 export async function getUsers(params: SearchParams) {
     try {
-        const response = await axios.get(`${API_URL}/users`, { params });
+        const response = await axiosClient.get('/users', { params });
         const data = response.data?.data || [];
         return {
             data: data.map((user: ApiUser) => ({
@@ -54,7 +52,7 @@ export async function getUsers(params: SearchParams) {
 
 export async function deleteUser(id: string) {
     try {
-        const response = await axios.delete(`${API_URL}/users/${id}`);
+        const response = await axiosClient.delete(`/users/${id}`);
         return response.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError };
@@ -63,7 +61,7 @@ export async function deleteUser(id: string) {
 
 export async function deleteUsers(ids: any) {
     try {
-        const response = await axios.delete(`${API_URL}/users`, { data: { ids } });
+        const response = await axiosClient.delete('/users', { data: { ids } });
         return response.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError };
@@ -72,7 +70,7 @@ export async function deleteUsers(ids: any) {
 
 export async function updateUser(data: any) {
     try {
-        const response = await axios.put(`${API_URL}/users`, data);
+        const response = await axiosClient.put('/users', data);
         return response.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError };
@@ -81,7 +79,7 @@ export async function updateUser(data: any) {
 
 export async function getUser(id: string) {
     try {
-        const response = await axios.get(`${API_URL}/users/${id}`);
+        const response = await axiosClient.get(`/users/${id}`);
         return response.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError };
@@ -90,7 +88,7 @@ export async function getUser(id: string) {
 
 export async function getRoles() {
     try {
-        const response = await axios.get(`${API_URL}/role-select`);
+        const response = await axiosClient.get('/role-select');
         return response.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError };

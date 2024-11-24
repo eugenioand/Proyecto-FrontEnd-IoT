@@ -37,7 +37,7 @@ import {
 import { Kbd } from "@/components/kbd";
 
 import { CreateUserFormValues, createUserSchema } from "@/lib/validations/users";
-import { createUser } from "@/lib/actions/users";
+import { createUser } from "@/services/users";
 
 export function CreateUserDialog() {
     const [open, setOpen] = React.useState(false);

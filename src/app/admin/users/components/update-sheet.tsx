@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { getErrorMessage } from "@/lib/handle-error"
-import { updateUser } from "@/lib/actions/users"
+import { updateUser } from "@/services/users"
 
 interface UpdateUserSheetProps {
     user: User

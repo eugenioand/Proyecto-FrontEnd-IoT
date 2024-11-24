@@ -8,7 +8,7 @@ import { DataTableSkeleton } from '@/components/data-table/data-table-skeleton';
 import { DateRangePicker } from '@/components/date-range-picker';
 import { SensorsTable } from './components/table';
 import { Shell } from '@/components/shell';
-import { getSensors } from '@/lib/actions/sensors';
+import { getSensors } from '@/services/sensors';
 import { toast } from 'sonner';
 
 const SensorsPage = () => {

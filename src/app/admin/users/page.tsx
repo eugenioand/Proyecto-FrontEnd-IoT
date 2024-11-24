@@ -4,7 +4,7 @@ import * as React from "react";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Shell } from "@/components/shell";
-import { getUsers } from "@/lib/actions/users";
+import { getUsers } from "@/services/users";
 import { toast } from "sonner";
 import { UsersTable } from "./components/Table";
 interface UsersData {
