@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axiosClient from '../utils/axios-client';
 import { useRouter } from 'next/navigation';
+import { unknownError } from '@/lib/constants';
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -72,6 +73,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             router.push('/dashboard');
         } catch (error) {
             console.error('Error durante el login:', error);
+            throw error;
         }
     };
 
