@@ -8,6 +8,7 @@ import { debounce } from '@mui/material';
 import { Logo, logos } from '@/components/Logo';
 import { LogoKeys } from '@/types';
 import { useRouter } from "next/navigation";
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 const Login = () => {
     const { login, isAuthenticated, loading } = useAuth();
@@ -20,6 +21,7 @@ const Login = () => {
 
     useEffect(() => {
         if (!loading && isAuthenticated) {
+            
             router.push("/dashboard");
         }
     }, [isAuthenticated, loading, router]);
