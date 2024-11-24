@@ -26,7 +26,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 
 import { updateSensor } from "@/services/sensors"
 import { getErrorMessage } from "@/lib/handle-error"
-import { Sensor } from "@/types"
+import type { Sensor } from "@/types"
 
 const sensorSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -54,7 +54,7 @@ export function UpdateSensorSheet({
       name: sensor.name,
       type_sensor: sensor.type_sensor.code,
       status: sensor.status === "ACTIVE" ? "active" : "inactive",
-      purchase_date: sensor.purchase_date,
+      purchase_date: sensor.purchase_date.toString(),
     },
   })
 

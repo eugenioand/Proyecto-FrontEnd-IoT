@@ -1,4 +1,3 @@
-import { deleteSensor } from "@/services/sensors"
 import { deleteSensors } from "@/services/sensors";
 import { DeleteDialog } from "@/components/dialogs/DeleteDialog"
 

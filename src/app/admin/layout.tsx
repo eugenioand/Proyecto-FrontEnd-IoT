@@ -19,7 +19,7 @@ export default function AdminLayout({ children }: LayoutProps) {
         if (!loading && !isAuthenticated) {
             router.push('/login');
         }
-    }, [isAuthenticated, loading]);
+    }, [isAuthenticated, loading, router]);
 
     if (loading) {
         return (

@@ -30,7 +30,7 @@ import { LoaderIcon } from "@/components/loader-icon"
 
 import { deleteSensors, updateSensors } from "@/services/sensors"
 
-import { Sensor } from "@/types"
+import type { Sensor } from "@/types"
 
 interface SensorsTableFloatingBarProps {
     table: Table<Sensor>

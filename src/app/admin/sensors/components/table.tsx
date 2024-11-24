@@ -10,7 +10,7 @@ import { SensorsTableFloatingBar } from "./table-floating-bar";
 
 import { getStatusIcon, getSensorTypes } from "@/lib/utils";
 
-import { Sensor } from "@/types"
+import type { Sensor } from "@/types"
 
 interface SensorsTableProps {
   sensorsData: {

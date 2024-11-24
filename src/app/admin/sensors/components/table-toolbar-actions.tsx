@@ -40,7 +40,7 @@ export function SensorsTableToolbarActions({
                         .getFilteredSelectedRowModel()
                         .rows.map((row) => row.original)}
                     open={false}
-                    onOpenChange={function (open: boolean): void {
+                    onOpenChange={function (_open: boolean): void {
                             throw new Error("Function not implemented.")
                         } }
                     showTrigger={false}             

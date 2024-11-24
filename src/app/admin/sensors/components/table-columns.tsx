@@ -3,9 +3,7 @@
 import * as React from "react"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
-import { toast } from "sonner"
 
-import { getErrorMessage } from "@/lib/handle-error"
 import { formatDate } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -14,22 +12,16 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 
-import { updateSensor } from "@/services/sensors"
 import DeleteSensorsDialog from "./delete-dialog"
 import { UpdateSensorSheet } from "./update-sheet"
 
-import { Sensor } from "@/types"
+import type { Sensor } from "@/types"
 
 export function getColumns(): ColumnDef<Sensor>[] {
   return [
@@ -127,7 +119,6 @@ export function getColumns(): ColumnDef<Sensor>[] {
     {
       id: "actions",
       cell: function Cell({ row }) {
-        const [isUpdatePending, startUpdateTransition] = React.useTransition()
         const [showUpdateSensorSheet, setShowUpdateSensorSheet] = React.useState(false)
         const [showDeleteSensorDialog, setShowDeleteSensorDialog] = React.useState(false)
 
