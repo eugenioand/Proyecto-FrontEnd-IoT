@@ -49,7 +49,7 @@ export function UsersTable({ usersData }: UsersTableProps) {
         pageCount: usersData.pageCount,
         totalCount: usersData.data.length,
         currentPage: 1,
-        perPage: 10,
+        perPage: usersData.data.length,
         defaultPerPage: 10,
         defaultSort: "created_at.desc",
         filterFields,

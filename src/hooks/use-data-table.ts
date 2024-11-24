@@ -48,7 +48,10 @@ export function useDataTable<TData, TValue>({
   currentPage,
   perPage,
   defaultPerPage = 10,
-  defaultSort = `${Object.keys(data[0] as object)[0]}.desc` as `${Extract<keyof TData, string | number>}.desc`,
+  defaultSort = `${Object.keys(data[0] as object)[0]}.desc` as `${Extract<
+    keyof TData,
+    string | number
+  >}.desc`,
   filterFields = [],
 }: UseDataTableProps<TData, TValue>) {
   const router = useRouter();
@@ -102,17 +105,18 @@ export function useDataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>(initialColumnFilters);
 
-  const [{ pageIndex }, setPagination] = React.useState<PaginationState>({
-    pageIndex: currentPage - 1,
-    pageSize: perPage,
-  });
+  const [{ pageIndex, pageSize: localPageSize }, setPagination] =
+    React.useState<PaginationState>({
+      pageIndex: page - 1,
+      pageSize: pageSize,
+    });
 
   const pagination = React.useMemo(
     () => ({
       pageIndex,
-      pageSize,
+      pageSize: localPageSize,
     }),
-    [pageIndex, pageSize]
+    [pageIndex, localPageSize]
   );
 
   const [sorting, setSorting] = React.useState<SortingState>([
@@ -137,64 +141,20 @@ export function useDataTable<TData, TValue>({
     return filterableColumns.find((column) => column.value === filter.id);
   });
 
-  const [mounted, setMounted] = React.useState(false);
-
+  // Sincronizar cambios en la URL con el estado local
   React.useEffect(() => {
-    if (!mounted) {
-      setMounted(true);
-      return;
-    }
+    const parsed = schema.parse(Object.fromEntries(searchParams));
+    setPagination({
+      pageIndex: parsed.page - 1,
+      pageSize: parsed.page_size ?? defaultPerPage,
+    });
+  }, [searchParams, defaultPerPage]);
 
-    const newParamsObject = {
-      page: 1,
-    };
-
-    for (const column of debouncedSearchableColumnFilters) {
-      if (typeof column.value === "string") {
-        Object.assign(newParamsObject, {
-          [column.id]: column.value,
-        });
-      }
-    }
-
-    for (const column of filterableColumnFilters) {
-      if (typeof column.value === "object" && Array.isArray(column.value)) {
-        Object.assign(newParamsObject, { [column.id]: column.value.join(".") });
-      }
-    }
-
-    for (const key of searchParams.keys()) {
-      if (
-        (searchableColumns.find((column) => column.value === key) &&
-          !debouncedSearchableColumnFilters.find(
-            (column) => column.id === key
-          )) ||
-        (filterableColumns.find((column) => column.value === key) &&
-          !filterableColumnFilters.find((column) => column.id === key))
-      ) {
-        Object.assign(newParamsObject, { [key]: null });
-      }
-    }
-
-    router.push(
-      `${pathname}?${createQueryString(newParamsObject, searchParams)}`,
-      { scroll: false }
-    );
-
-    table.setPageIndex(0);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    JSON.stringify(debouncedSearchableColumnFilters),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    JSON.stringify(filterableColumnFilters),
-  ]);
-
+  // Sincronizar cambios en el estado local con la URL
   React.useEffect(() => {
     const newParams: { [key: string]: any } = {
       page: pageIndex + 1,
-      page_size: pageSize,
+      page_size: localPageSize,
       sort: sorting[0]?.id
         ? `${sorting[0]?.id}.${sorting[0]?.desc ? "desc" : "asc"}`
         : undefined,
@@ -212,14 +172,11 @@ export function useDataTable<TData, TValue>({
       }
     }
 
-    router.push(`${pathname}?${createQueryString(newParams, searchParams)}`, {
-      scroll: false,
-    });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const queryString = createQueryString(newParams, searchParams);
+    router.push(`${pathname}?${queryString}`, { scroll: false });
   }, [
     pageIndex,
-    pageSize,
+    localPageSize,
     sorting,
     debouncedSearchableColumnFilters,
     filterableColumnFilters,
