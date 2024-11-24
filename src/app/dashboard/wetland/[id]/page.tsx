@@ -1,10 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import WetlandDetail from "../components/WetlandDetail";
-import { getWetland } from "@/lib/actions/dashboard/wetlands";
+import { getWetland } from "@/services/dasboard/wetlands";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SelectionProvider } from "@/context/SelectionContext";
 
 import { Wetland } from "@/types";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import ErrorModal from "@/components/dialogs/ErrorModal";
 
 export default function WetlandDetailPage({ params }: {
     params: { id: string } 
@@ -17,13 +20,12 @@ export default function WetlandDetailPage({ params }: {
         const fetchWetland = async () => {
             setLoading(true);
             const result = await getWetland(params.id);
-
+            
             if (result.error) {
                 setError(result.error);
             } else {
                 setWetland(result);
             }
-            setWetland(result);
             setLoading(false);
         }
         fetchWetland();
@@ -34,28 +36,34 @@ export default function WetlandDetailPage({ params }: {
     }
 
     if (loading) {
-        return <WetlandSkeleton />;
+        // return <WetlandSkeleton />;
+        return <LoadingSpinner />;
+    }
+
+    if (error) {
+        return <ErrorModal message={error} onClose={closeErrorModal} />;
     }
 
     return (
         wetland && (
-            <WetlandDetail
-                id={wetland.id}
-                name={wetland.name}
-                location={wetland.location}
-                status={wetland.status as "good" | "warning" | "alert"}
-                nodes={wetland.nodes}
-            />
+            <SelectionProvider>
+                <WetlandDetail
+                    id={wetland.id}
+                    name={wetland.name}
+                    location={wetland.location}
+                    status={wetland.status as "good" | "warning" | "alert"}
+                    nodes={wetland.nodes}
+                />
+            </SelectionProvider>
         )
     );
 }
 
 const WetlandSkeleton = () => {
     return (
-        <div className="grid grid-cols-1 w-full mx-auto">
-            <Skeleton className="h-20" />
-            <Skeleton className="h-20" />
-            <Skeleton className="h-20" />
+        <div className="flex flex-col w-full gap-5">
+            <Skeleton className="h-72" />
+            <Skeleton className="h-52" />
         </div>
     );
 }

@@ -31,6 +31,13 @@ export function DataTableColumnsVisibility() {
     setTimeout(() => setOpen(true), 100)
   })
 
+  const columnNamesInSpanish: Record<string, string> = {
+    name: "Nombre",
+    type_sensor: "Tipo de Sensor",
+    status: "Estado",
+    purchase_date: "Fecha de Compra",
+  }
+
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <TooltipProvider>
@@ -44,12 +51,12 @@ export function DataTableColumnsVisibility() {
                 className="ml-auto hidden h-8 lg:flex"
               >
                 <LayoutIcon className="mr-2 size-4" />
-                Columns
+                Columnas
               </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
           <TooltipContent className="flex items-center gap-2 border bg-accent font-semibold text-foreground dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/40">
-            Toggle columns
+            Alternar columnas
             <div>
               <Kbd variant="outline">⇧</Kbd> <Kbd variant="outline">C</Kbd>
             </div>
@@ -61,7 +68,7 @@ export function DataTableColumnsVisibility() {
         align="end"
         className="w-40 dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/40"
       >
-        <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+        <DropdownMenuLabel>Alternar columnas</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
           .getAllColumns()
@@ -70,7 +77,7 @@ export function DataTableColumnsVisibility() {
               typeof column.accessorFn !== "undefined" && column.getCanHide()
           )
           .map((column) => {
-            console.log(column)
+            const spanishColumnName = columnNamesInSpanish[column.id] || column.id
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}
@@ -79,7 +86,7 @@ export function DataTableColumnsVisibility() {
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 onSelect={(e) => e.preventDefault()}
               >
-                <span className="truncate">{column.id}</span>
+                <span className="truncate" title={spanishColumnName}>{spanishColumnName}</span>
               </DropdownMenuCheckboxItem>
             )
           })}

@@ -28,7 +28,7 @@ import {
 import { Kbd } from "@/components/kbd"
 import { LoaderIcon } from "@/components/loader-icon"
 
-import { deleteSensors, updateSensors } from "@/lib/actions/sensors"
+import { deleteSensors, updateSensors } from "@/services/sensors"
 
 import { Sensor } from "@/types"
 

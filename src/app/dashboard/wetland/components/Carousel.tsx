@@ -1,81 +1,86 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
+import CarouselItem from "./CarouselItem";
 
 interface CarouselProps {
-    items: string[]; // Array de URLs o contenido que se quiera mostrar
-    autoPlay?: boolean; // Si se desea autoplay (por defecto es true)
-    autoPlayInterval?: number; // Intervalo del autoplay en ms (por defecto 3000ms)
+    items: Sensor[];
+    selectedSensor: Sensor | null;
+    onSelectSensor?: (sensor: Sensor) => void;
+    autoPlay?: boolean;
+    autoPlayInterval?: number;
+}
+
+interface Sensor {
+    name: string;
+    sensor_code: string;
+    unity: string;
+    value: number;
+    max?: number;
 }
 
 const Carousel: React.FC<CarouselProps> = ({
     items,
-    autoPlay = true,
+    selectedSensor,
+    onSelectSensor,
+    autoPlay = false, // Apagado para pruebas manuales
     autoPlayInterval = 3000,
 }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const intervalRef = useRef<NodeJS.Timeout | null>(null); // Ref para el intervalo de autoplay
-    const [isHovered, setIsHovered] = useState(false); // Para controlar el estado de hover
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    // Cambiar al siguiente slide
-    const nextSlide = React.useCallback(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
-    }, [items.length]);
-
-    // Cambiar al slide anterior
-    const prevSlide = () => {
-        setCurrentIndex(
-            (prevIndex) => (prevIndex - 1 + items.length) % items.length
-        );
+    const itemPerView = (windowWidth: number) => {
+        if (windowWidth >= 1024) return 3; // Desktop
+        if (windowWidth >= 640) return 2; // Tablet
+        return 1; // Mobile
     };
 
-    // Configurar autoplay
+    const [visibleItems, setVisibleItems] = useState(itemPerView(window.innerWidth));
+
     useEffect(() => {
-        if (autoPlay && !isHovered) {
-            intervalRef.current = setInterval(nextSlide, autoPlayInterval);
-        }
-
-        // Limpiar el intervalo cuando el componente se desmonta o cuando el autoplay se detiene
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
+        const handleResize = () => {
+            setVisibleItems(itemPerView(window.innerWidth));
         };
-    }, [autoPlay, isHovered, autoPlayInterval, nextSlide]);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
-    // Manejar el hover para pausar el autoplay
-    const handleMouseEnter = () => {
-        setIsHovered(true);
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-        }
+    const calculateTranslateX = () => {
+        return `translateX(-${currentIndex * (100 / visibleItems)}%)`;
     };
 
-    const handleMouseLeave = () => {
-        setIsHovered(false);
-    };
+    const nextSlide = useCallback(() => {
+        setCurrentIndex((prevIndex) =>
+            prevIndex < items.length - visibleItems ? prevIndex + 1 : prevIndex
+        );
+    }, [items.length, visibleItems]);
+
+    const prevSlide = useCallback(() => {
+        setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex));
+    }, []);
 
     return (
-        <div
-            className="relative w-full max-w-4xl mx-auto overflow-hidden"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-        >
-            {/* Contenedor de las imágenes o items */}
+        <div className="relative w-full h-72 overflow-hidden">
             <div
                 className="flex transition-transform duration-500 ease-in-out"
                 style={{
-                    transform: `translateX(-${currentIndex * 100}%)`,
+                    transform: calculateTranslateX(), // Simple desplazamiento
                 }}
+                ref={containerRef}
             >
                 {items.map((item, index) => (
-                    <div key={index} className="flex-shrink-0 w-full relative">
-                        {/* <img
-                            src={item}
-                            alt={`Slide ${index + 1}`}
-                            className="w-full h-auto object-cover rounded-lg shadow-lg"
-                        /> */}
-                        <p>{item.name}</p>
+                    <div
+                        key={index}
+                        className={`flex-shrink-0 p-2 ${visibleItems === 3
+                                ? "lg:w-1/3"
+                                : visibleItems === 2
+                                    ? "sm:w-1/2"
+                                    : "w-full"
+                            }
+                        `}
+                        onClick={() => onSelectSensor(item)}
+                    >
+                        <CarouselItem sensor={item} selectedSensor={selectedSensor === item} />
                     </div>
                 ))}
             </div>
@@ -83,38 +88,18 @@ const Carousel: React.FC<CarouselProps> = ({
             {/* Botones de navegación */}
             <button
                 onClick={prevSlide}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black text-white p-3 rounded-full shadow-lg opacity-75 hover:opacity-100 transition-opacity"
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black text-white p-3 rounded-full shadow-lg opacity-75 hover:opacity-100 transition-opacity z-10"
                 aria-label="Previous slide"
             >
                 &#60;
             </button>
             <button
                 onClick={nextSlide}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black text-white p-3 rounded-full shadow-lg opacity-75 hover:opacity-100 transition-opacity"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black text-white p-3 rounded-full shadow-lg opacity-75 hover:opacity-100 transition-opacity z-10"
                 aria-label="Next slide"
             >
                 &#62;
             </button>
-
-            {/* Indicadores de slide */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                {items.map((_, index) => (
-                    <button
-                        key={index}
-                        onClick={() => setCurrentIndex(index)}
-                        className={`w-3 h-3 rounded-full ${currentIndex === index ? "bg-white" : "bg-gray-500"
-                            } transition-colors`}
-                        aria-label={`Go to slide ${index + 1}`}
-                    />
-                ))}
-            </div>
-
-            {/* Texto de información del slide actual */}
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white text-lg font-bold">
-                <p>
-                    Slide {currentIndex + 1} of {items.length}
-                </p>
-            </div>
         </div>
     );
 };

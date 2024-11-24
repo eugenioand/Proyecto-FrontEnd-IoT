@@ -1,5 +1,5 @@
-import { deleteSensor } from "@/lib/actions/sensors"
-import { deleteSensors } from "@/lib/actions/sensors";
+import { deleteSensor } from "@/services/sensors"
+import { deleteSensors } from "@/services/sensors";
 import { DeleteDialog } from "@/components/dialogs/DeleteDialog"
 
 interface DeleteSensorsDialogProps {

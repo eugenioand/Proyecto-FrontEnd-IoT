@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/tooltip"
 import { Kbd } from "@/components/kbd"
 
-import { createSensor } from "@/lib/actions/sensors";
+import { createSensor } from "@/services/sensors";
 import { TooltipPortal } from "@radix-ui/react-tooltip";
 
 const sensorTypes = [

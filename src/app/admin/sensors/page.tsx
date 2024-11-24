@@ -8,7 +8,8 @@ import { DataTableSkeleton } from '@/components/data-table/data-table-skeleton';
 import { DateRangePicker } from '@/components/date-range-picker';
 import { SensorsTable } from './components/table';
 import { Shell } from '@/components/shell';
-import { getSensors } from '@/lib/actions/sensors';
+import { getSensors } from '@/services/sensors';
+import { toast } from 'sonner';
 
 const SensorsPage = () => {
   interface SensorsData {
@@ -44,20 +45,17 @@ const SensorsPage = () => {
     }
 
     if (updated) {
-      console.log("update...");
       const newSearchParams = new URLSearchParams(params);
       router.replace(`${window.location.pathname}?${newSearchParams.toString()}`);
     } else {
-      console.log("no update...");
-      // Llamada asincrónica para obtener los sensores
       const fetchData = async () => {
         const queryString = new URLSearchParams(params).toString();
         console.log("Making API request with query string:", queryString);
         try {
           const data = await getSensors(params);
-          console.log('dataaaaaaaa', data);
           setSensorsData(data);
         } catch (error) {
+          toast.error(error?.message || '');
           console.error('Error fetching sensors:', error);
         }
       };

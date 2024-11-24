@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import WetlandCard from "@/components/WetlandCard";
-import { getWetlands } from '@/lib/actions/dashboard/wetlands';
+import { getWetlands } from '@/services/dasboard/wetlands';
 import { Skeleton } from '@/components/ui/skeleton';
 import ErrorModal from '@/components/dialogs/ErrorModal';
+import { useRouter } from "next/navigation";
 
 interface Wetland {
     id: number;
@@ -24,9 +25,11 @@ interface Wetland {
 
 
 const Dashboard = () => {
+    const router = useRouter();
     const [wetlands, setWetlands] = useState<Wetland[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isCardDisabled, setIsCardDisabled] = useState(false);
 
     useEffect(() => {
         const fetchWetlands = async () => {
@@ -47,6 +50,12 @@ const Dashboard = () => {
         setError(null);
     }
 
+    const handleCardClick = (id: number) => {
+        setIsCardDisabled(true); // Deshabilitar todas las tarjetas
+        console.log(`Tarjeta seleccionada: ${id}`);
+        router.push(`/dashboard/wetland/${id}`);
+    };
+
     if (loading) {
         return <WetlandSkeleton />;
     }
@@ -63,6 +72,8 @@ const Dashboard = () => {
                         sensors={wetland.sensors}
                         status={wetland.status}
                         lastUpdated={wetland.lastUpdated}
+                        onClick={() => handleCardClick(wetland.id)}
+                        disabled={isCardDisabled}
                     />
                 ))}
             </div>
@@ -76,9 +87,9 @@ const Dashboard = () => {
 const WetlandSkeleton = () => {
     return (
         <div className='mx-auto max-w-7xl'>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 xl:justify-center gap-10 w-full mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 xl:justify-center  gap-10 w-full mx-auto">
                 {Array.from({ length: 6 }).map((_, index) => (
-                    <Skeleton key={index} className="w-full min-w-72 h-[12rem] md:w-[22rem] bg-white rounded-lg shadow-md" />
+                    <Skeleton key={index} className="flex flex-col justify-self-center p-4 rounded-lg shadow-md w-full min-w-72 h-[12rem] bg-white md:w-[22rem]" />
                 ))}
             </div>
         </div>

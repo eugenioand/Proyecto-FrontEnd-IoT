@@ -1,3 +1,5 @@
+@use "./popu";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,6 +10,7 @@
   --bg-blue-1: #283949;
   --bg-blue-2: #001C63C2;
   --bg-blue-3: #2C3E50;
+  --color-white: #ffffff;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -102,5 +105,70 @@ body {
 @media (max-width: 640px) {
   .container {
     @apply px-4;
+  }
+}
+
+@keyframes bubble {
+    0% {
+        transform: translateY(0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes flow-in {
+    0% {
+        transform: translateX(-10px);
+    }
+    100% {
+        transform: translateX(10px);
+    }
+}
+
+@keyframes flow-out {
+    0% {
+        transform: translateX(10px);
+    }
+    100% {
+        transform: translateX(-10px);
+    }
+}
+
+.animate-flow-in {
+    animation: flow-in 1s infinite alternate;
+}
+
+.animate-flow-out {
+    animation: flow-out 1s infinite alternate;
+}
+
+
+@keyframes pulse-skeleton {
+    0% {
+        background-color: #e0e0e0;
+    }
+    50% {
+        background-color: #f5f5f5;
+    }
+    100% {
+        background-color: #e0e0e0;
+    }
+}
+
+.animate-pulse-skeleton {
+    animation: pulse-skeleton 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
   }
 }

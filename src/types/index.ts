@@ -60,3 +60,12 @@ export interface Wetland {
     };
   };
 }
+
+export type SelectedItem = { id: number; type: "node" | "sensor" };
+
+export type Column = string
+
+export interface TableSchema {
+    columns: Column[]
+    filterableFields: Column[]
+}

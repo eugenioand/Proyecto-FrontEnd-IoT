@@ -3,6 +3,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 import type { SearchParams } from "@/lib/validations";
+import { FilterParams, Filter, Operator, Sort } from "./validations";
 
 import {
   ValueIcon,
@@ -18,6 +19,7 @@ import {
   ArrowForward,
   ArrowBack,
 } from "@mui/icons-material"
+import { DataTableFilterOption, TableSchema } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -103,4 +105,73 @@ const types = {
 
 export function getSensorTypes(type: keyof typeof types) {
   return types[type];
+}
+
+export function calcFilterParams<T = unknown>(
+  selectedOptions: DataTableFilterOption<T>[],
+  searchParams: ReadonlyURLSearchParams
+): FilterParams {
+  const filterItems: Filter[] = selectedOptions
+    .filter((option) => option.filterValues && option.filterValues.length > 0)
+    .map((option) => ({
+      field: option.value as Filter["field"],
+      value: `${option.filterValues?.join(".")}~${option.filterOperator}`,
+      isMulti: !!option.isMulti,
+    }));
+  const filterParams: FilterParams = {
+    filters: filterItems,
+  };
+  filterParams.operator = (searchParams.get("operator") as Operator) || "and";
+  if (searchParams.get("sort")) {
+    filterParams.sort = searchParams.get("sort") as Sort;
+  }
+  return filterParams;
+}
+
+// Función para calcular la URL de los parámetros de búsqueda de una vista
+export function calcViewSearchParamsURL(view: any, tableSchema: TableSchema) {
+  const searchParamsObj: Record<string, string> = {};
+  const filterParams = view.filterParams;
+  if (!filterParams) return;
+
+  for (const item of filterParams.filters ?? []) {
+    if (tableSchema.filterableFields.includes(item.field)) {
+      const value = item.isMulti ? `${item.value}~multi` : item.value;
+      searchParamsObj[item.field] = value;
+    }
+  }
+  if (filterParams.operator) {
+    searchParamsObj.operator = filterParams.operator;
+  }
+  if (filterParams.sort) {
+    searchParamsObj.sort = filterParams.sort;
+  }
+  searchParamsObj.page = "1";
+  searchParamsObj.per_page = "10";
+  searchParamsObj.viewId = view.id;
+
+  return new URLSearchParams(searchParamsObj).toString();
+}
+
+// Función para verificar si hay filtros aplicados
+export function getIsFiltered(
+  searchParams: ReadonlyURLSearchParams,
+  tableSchema: TableSchema
+) {
+  const filters = [];
+  const filterObj = Object.fromEntries(searchParams);
+  for (const [key, value] of Object.entries(filterObj)) {
+    if (key === "sort" && value === "createdAt.desc") {
+      continue;
+    }
+
+    if (key === "operator" && value === "and") {
+      continue;
+    }
+
+    if (tableSchema.filterableFields.includes(key)) {
+      filters.push({ key, value });
+    }
+  }
+  return filters.length > 0;
 }

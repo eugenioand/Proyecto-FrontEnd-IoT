@@ -1,9 +1,7 @@
 "use client";
 
 import { useState} from 'react';
-// import { useAuth } from '@/hooks/AuthProvider';
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import { useAuth } from '@/context/auth-context';
 import Image from 'next/image';
 
 const logos = {
@@ -39,8 +37,7 @@ const logos = {
 type LogoKeys = 'unibarranquilla' | 'ua' | 'uniguajira';
 
 const Login = () => {
-    // const { login } = useAuth();
-    const router = useRouter();
+    const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -76,19 +73,11 @@ const Login = () => {
         setIsButtonDisabled(true);
         
         try {
-            const response = await axios.post('/api/auth', { email, password});
-            localStorage.setItem('token', response.data.token);
-            // login(response.data.token);
-            console.log('Login successful');
-            router.push('/')
+            await login(email, password);
+            // router.push('/dashboard');
         } catch (err) {
-            if (axios.isAxiosError(err)) {
-                // validate if message exists, if not, set a default message
-                setError(err.response?.data?.message || 'Correo o contraseña incorrectos');
-            } else {
-                // set a default message
-                setError('Algo salió mal, por favor intenta de nuevo');
-            }
+            setError('Error al iniciar sesión. Por favor, verifica tus credenciales.');
+        } finally {
             setIsButtonDisabled(false);
         }
     };

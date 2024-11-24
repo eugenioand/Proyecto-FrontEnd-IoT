@@ -1,15 +1,33 @@
 "use client";
-import "@/styles/globals.css";
-import useAuth from "@/hooks/useAuth";
+import "@/styles/globals.scss";
+import { useEffect } from "react";
+import { useAuth } from "@/context/auth-context";
 import Header from "@/components/Header";
-
+import { useRouter } from 'next/navigation';
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 type LayoutProps = {
     children: React.ReactNode;
 };
 
 export default function DashboardLayout({ children }: LayoutProps) {
-    useAuth();
+    const router = useRouter();
+    const { isAuthenticated, loading } = useAuth();
+
+    useEffect(() => {
+        if (!loading && !isAuthenticated) {
+            router.push('/login');
+        }
+    }, [isAuthenticated, loading]);
+
+    if (loading) {
+        return (
+            <LoadingSpinner />
+        );
+    }
+
+    if (!isAuthenticated) return null;
+
     return (
         <div className="flex flex-col min-h-screen bg-pageBackground">
             <Header />

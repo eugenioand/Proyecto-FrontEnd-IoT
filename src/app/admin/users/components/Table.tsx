@@ -1,72 +1,70 @@
-import React from "react";
-// import Pagination from "./Pagination";
+import * as React from "react";
+import type { DataTableFilterField } from "@/types"
+import { useDataTable } from "@/hooks/use-data-table";
+import { DataTable } from "@/components/data-table/data-table";
+import { TableInstanceProvider } from "@/components/data-table/table-instance-provider";
+import { DataTableAdvancedToolbar } from "@/components/data-table/advanced/data-table-advanced-toolbar";
+import { getColumns } from "./table-columns";
+import { UsersTableToolbarActions } from "./table-toolbar-actions";
+import { UsersTableFloatingBar } from "./table-floating-bar";
 
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
-    createdAt: string;
-    status: number;
+
+interface UsersTableProps {
+    usersData: {
+        data: any[];
+        pageCount: number;
+        error?: string;
+    };
 }
 
-interface TableProps {
-    data: User[];
-    totalRecords: number;
-    recordsPerPage: number;
-    currentPage: number;
-    onPageChange: (page: number) => void;
-    onEdit: (id: number) => void;
-    onDelete: (id: number) => void;
-    loading: boolean;
-    visibleColumns: string[];
-}
-
-const Table = ({ data, totalRecords, recordsPerPage, currentPage, onPageChange, onEdit, onDelete, loading, visibleColumns }: TableProps) => {
-    const columns: { key: keyof User; label: string }[] = [
-        { key: 'name', label: 'Nombre' },
-        { key: 'email', label: 'Correo' },
-        { key: 'role', label: 'Rol' },
-        { key: 'createdAt', label: 'Fecha de Creación' },
+export function UsersTable({ usersData }: UsersTableProps) {
+    const columns = React.useMemo(() => getColumns(), []);
+    
+    const filterFields: DataTableFilterField<any>[] = [
+        {
+            label: "Nombre",
+            value: "name",
+            placeholder: "Filtrar por nombre...",
+        },
+        {
+            label: "Correo",
+            value: "email",
+            placeholder: "Filtrar por correo...",
+        },
+        {
+            label: "Rol",
+            value: "role",
+            placeholder: "Filtrar por rol...",
+        },
+        {
+            label: "Estado",
+            value: "status",
+            placeholder: "Filtrar por estado...",
+        },
     ];
 
-    return (
-        <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-                <tr>
-                    {columns.filter(col => visibleColumns.includes(col.key)).map(col => (
-                        <th key={col.key} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{col.label}</th>
-                    ))}
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-                {loading ? (
-                    <tr className="p-2 align-middle h-24 text-center">
-                        <td colSpan={5} className="px-6 py-4 whitespace-nowrap text-center">Cargando...</td>
-                    </tr>
-                ) : (
-                    totalRecords > 0 ? (
-                        data.map(user => (
-                            <tr key={user.id}>
-                                {columns.filter(col => visibleColumns.includes(col.key)).map(col => (
-                                    <td key={`${user.id}-${col.key}`} className="px-2 py-4 max-w-80 whitespace-break-spaces">{user[col.key]}</td>
-                                ))}
-                                <td className="px-2 py-4 w-40 whitespace-break-spaces">
-                                    <button onClick={() => onEdit(user.id)} className="text-blue-600 hover:text-blue-900">Editar</button>
-                                    <button onClick={() => onDelete(user.id)} className="text-red-600 hover:text-red-900 ml-2">Eliminar</button>
-                                </td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr className="p-2 align-middle h-24 text-center">
-                            <td colSpan={5} className="px-6 py-4 whitespace-nowrap text-center">No hay usuarios para mostrar</td>
-                        </tr>
-                    )
-                )}
-            </tbody>
-        </table>
-    );
-};
+    const { table } = useDataTable({
+        data: usersData.data,
+        columns,
+        pageCount: usersData.pageCount,
+        totalCount: usersData.data.length,
+        currentPage: 1,
+        perPage: 10,
+        defaultPerPage: 10,
+        defaultSort: "created_at.desc",
+        filterFields,
+    });
 
-export default Table;
+    return (
+        <TableInstanceProvider table={table}>
+            <DataTable
+                table={table}
+                floatingBar={<UsersTableFloatingBar table={table} />}
+            >
+                <DataTableAdvancedToolbar filterFields={filterFields}>
+                    <UsersTableToolbarActions table={table} />
+                </DataTableAdvancedToolbar>
+            </DataTable>
+        </TableInstanceProvider>
+    );
+}

@@ -17,22 +17,17 @@ interface WetlandCardProps {
         };
     };
     lastUpdated: string;
+    onClick: () => void;
+    disabled: boolean;
 }
 
 const colors = ['blue', 'orange', 'green', 'purple', 'red', 'yellow'];
 
 
-const WetlandCard: React.FC<WetlandCardProps> = ({ id, name, location, status, sensors, lastUpdated }) => {
-    const router = useRouter();
-
-    const handleClick = () => {
-        console.log('click');
-        console.log(id);
-        if (id) {
-            router.push(`/dashboard/wetland/${id}`);
-        } else {
-            toast.error(`Error al obtener la información del humedal ${name}`);
-        }
+const WetlandCard: React.FC<WetlandCardProps> = ({ id, name, location, status, sensors, lastUpdated, onClick, disabled }) => {
+    
+    if (id === undefined) {
+        toast.error(`Error al obtener la información del humedal ${name}`);
     }
 
     const statusColor = {
@@ -45,13 +40,14 @@ const WetlandCard: React.FC<WetlandCardProps> = ({ id, name, location, status, s
     
     return (
         <div 
-        key={id} 
-        className="
-            flex flex-col justify-self-center p-4 rounded-lg shadow-md w-full min-w-72 h-[12rem] bg-white
-            md:w-[22rem] cursor-pointer
-            hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out
-        "
-        onClick={handleClick}
+            key={id} 
+            className={`
+                flex flex-col justify-self-center p-4 rounded-lg shadow-md w-full min-w-72 h-[12rem] bg-white
+                md:w-[22rem] cursor-pointer
+                hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out
+                ${disabled ? 'opacity-50 pointer-events-none' : ''}
+            `}
+            onClick={onClick}
         >
             <div>
                 <div className="flex flex-row justify-between">
