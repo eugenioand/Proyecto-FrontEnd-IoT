@@ -29,7 +29,7 @@ export interface DataTableFilterOption<TData> {
 }
 
 export interface Sensor {
-  id: number;
+  sensor_id: number;
   name: string;
   type_sensor: {
     name: string;
@@ -37,8 +37,15 @@ export interface Sensor {
   };
   status: string;
   purchase_date: Date;
-  // created_at: string;
+  longitude?: string;
+  latitude?: string;
+  created_at?: string;
   // updated_at: string;
+}
+
+export interface SensorType {
+  name: string;
+  code: string;
 }
 
 export interface Wetland {

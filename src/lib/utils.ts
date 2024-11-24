@@ -18,7 +18,9 @@ import {
   Waves,
   ArrowForward,
   ArrowBack,
+  Sensors
 } from "@mui/icons-material"
+
 import { DataTableFilterOption, TableSchema } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
@@ -84,10 +86,10 @@ export function getIsMacOS() {
   return navigator.userAgent?.includes("Mac");
 }
 
-export function getStatusIcon(status: 'active' | 'inactive') {
+export function getStatusIcon(status: string) {
   const statusIcons = {
-    active: ValueIcon,
-    inactive: ValueNoneIcon,
+    activo: ValueIcon,
+    inactivo: ValueNoneIcon,
   };
 
   return statusIcons[status];
@@ -101,10 +103,11 @@ const types = {
   turbidity: Waves,
   FlowRateInlet: ArrowForward,
   FlowRateOut: ArrowBack,
+  default: Sensors,
 };
 
-export function getSensorTypes(type: keyof typeof types) {
-  return types[type];
+export function getSensorTypes(type: string) {
+  return types[type] || types.default;
 }
 
 export function calcFilterParams<T = unknown>(

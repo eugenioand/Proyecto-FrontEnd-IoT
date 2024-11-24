@@ -1,6 +1,7 @@
 import axiosClient from "@/utils/axios-client";
 import { unknownError } from '../lib/constants';
 import { SearchParams } from '../lib/validations';
+import { toast } from "sonner";
 
 export async function createSensor(data: any) {
     try {
@@ -54,16 +55,27 @@ export async function deleteSensors(ids: any) {
 
 export async function updateSensor(data: any) {
     try {
-        const response = await axiosClient.put(`/sensors/${data.id}`, data);
+        const response = await axiosClient.put(`/sensors/${data.sensor_id}`, data);
+        toast.success(response.data.message);
         return response.data;
     } catch (error: any) {
+        toast.error(error.response?.data?.message || unknownError);
         return { error: error.response?.data?.message || unknownError};
     }
 }
 
 export async function updateSensors(data: any) {
     try {
-        const response = await axiosClient.put('/sensors', data);
+        await axiosClient.put('/sensors', data);
+        return { error: null}
+    } catch (error: any) {
+        return { error: error.response?.data?.message || unknownError};
+    }
+}
+
+export async function getTypes() {
+    try {
+        const response = await axiosClient.get('/sensors/type_sensors');
         return response.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError};

@@ -23,7 +23,9 @@ import { UpdateSensorSheet } from "./update-sheet"
 
 import type { Sensor } from "@/types"
 
-export function getColumns(): ColumnDef<Sensor>[] {
+
+
+export function getColumns({ sensorTypes }): ColumnDef<Sensor>[] {
   return [
     {
       id: "select",
@@ -122,17 +124,22 @@ export function getColumns(): ColumnDef<Sensor>[] {
         const [showUpdateSensorSheet, setShowUpdateSensorSheet] = React.useState(false)
         const [showDeleteSensorDialog, setShowDeleteSensorDialog] = React.useState(false)
 
+        console.log(`row`, row)
         return (
           <>
-            <UpdateSensorSheet
-              open={showUpdateSensorSheet}
-              onOpenChange={setShowUpdateSensorSheet}
-              sensor={row.original}
-            />
+            {
+              showUpdateSensorSheet &&
+              <UpdateSensorSheet
+                open={showUpdateSensorSheet}
+                onOpenChange={setShowUpdateSensorSheet}
+                sensor={row.original}
+                sensorTypes={sensorTypes}
+              />
+            }
             <DeleteSensorsDialog
               open={showDeleteSensorDialog}
               onOpenChange={setShowDeleteSensorDialog}
-              sensorId={[row.original?.id?.toString()]}
+              sensorId={[row.original?.sensor_id?.toString()]}
               showTrigger={false}
             />
             <DropdownMenu>
@@ -152,40 +159,6 @@ export function getColumns(): ColumnDef<Sensor>[] {
                 <DropdownMenuItem onSelect={() => setShowUpdateSensorSheet(true)}>
                   Editar
                 </DropdownMenuItem>
-                {/* <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuRadioGroup
-                      value={row.original.label}
-                      onValueChange={(value) => {
-                        startUpdateTransition(() => {
-                          toast.promise(
-                            updateSensor({
-                              id: row.original.id,
-                              label: value as Sensor["label"],
-                            }),
-                            {
-                              loading: "Updating...",
-                              success: "Label updated",
-                              error: (err) => getErrorMessage(err),
-                            }
-                          )
-                        })
-                      }}
-                    >
-                      {["label1", "label2", "label3"].map((label) => (
-                        <DropdownMenuRadioItem
-                          key={label}
-                          value={label}
-                          className="capitalize"
-                          disabled={isUpdatePending}
-                        >
-                          {label}
-                        </DropdownMenuRadioItem>
-                      ))}
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub> */}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onSelect={() => setShowDeleteSensorDialog(true)}

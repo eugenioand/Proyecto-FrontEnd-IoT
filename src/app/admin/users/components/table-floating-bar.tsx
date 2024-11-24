@@ -106,7 +106,7 @@ export function UsersTableFloatingBar({ table }: UsersTableFloatingBarProps) {
 
                                 startTransition(async () => {
                                     const { error } = await updateSensors({
-                                        ids: rows.map((row) => row.original.id),
+                                        sensors: rows.map((row) => row.original.id),
                                         status: value,
                                     })
 
@@ -115,7 +115,7 @@ export function UsersTableFloatingBar({ table }: UsersTableFloatingBarProps) {
                                         return
                                     }
 
-                                    toast.success("Sensors updated")
+                                    toast.success("Sensores actualizados")
                                 })
                             }}
                         >
