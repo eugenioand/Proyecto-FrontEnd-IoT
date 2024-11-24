@@ -27,10 +27,8 @@ const SensorsPage = () => {
 
   React.useEffect(() => {
     const params = Object.fromEntries(searchParams.entries());
-    console.log('params', params);
     let updated = false;
 
-    // Añadir parámetros por defecto si no están presentes
     if (!params.page) {
       params.page = '1';
       updated = true;
@@ -50,13 +48,11 @@ const SensorsPage = () => {
     } else {
       const fetchData = async () => {
         const queryString = new URLSearchParams(params).toString();
-        console.log("Making API request with query string:", queryString);
         try {
           const data = await getSensors(params);
           setSensorsData(data);
         } catch (error) {
           toast.error(error?.message || '');
-          console.error('Error fetching sensors:', error);
         }
       };
 

@@ -101,9 +101,9 @@ export function DataTableFilterCombobox<TData>({
         align="start"
       >
         <Command className="dark:bg-transparent">
-          <CommandInput placeholder="Filter by..." />
+          <CommandInput placeholder="Filtrar por..." />
           <CommandList>
-            <CommandEmpty>No item found.</CommandEmpty>
+            <CommandEmpty>No hay opciones disponibles.</CommandEmpty>
             <CommandGroup>
               {selectableOptions.map((option) => (
                 <CommandItem
@@ -151,7 +151,7 @@ export function DataTableFilterCombobox<TData>({
                 }}
               >
                 <PlusIcon className="mr-2 size-4" aria-hidden="true" />
-                Advanced filter
+                Filtros avanzados
               </CommandItem>
             </CommandGroup>
           </CommandList>

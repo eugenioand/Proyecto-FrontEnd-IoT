@@ -23,12 +23,11 @@ interface SensorsTableProps {
 
 export function SensorsTable({ sensorsData }: SensorsTableProps) {
   const { sensorTypes, loading, error } = useSensorTypes();
-
-  console.log("sensorTypes asdas das", sensorTypes);
-  const columns = React.useMemo(() => getColumns({ sensorTypes }), [sensorTypes]);
-
+  
   const sensorStatus = ["activo", "inactivo"];
 
+  const columns = React.useMemo(() => getColumns({ sensorTypes }), [sensorTypes]);
+  
   const filterFields: DataTableFilterField<Sensor>[] = [
     {
       label: "Nombre",
