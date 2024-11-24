@@ -27,6 +27,7 @@ import {
 } from '@heroicons/react/20/solid';
 
 import Image from "next/image";
+import Link from 'next/link';
 
 // const navigation = [
 //     { name: 'Inicio', href: '#' },
@@ -37,9 +38,9 @@ import Image from "next/image";
 
 
 const subAdminNav = [
-    { name: 'Usuarios', description: 'Administra los usuarios de la plataforma', href: '#', icon: FingerPrintIcon },
+    { name: 'Usuarios', description: 'Administra los usuarios de la plataforma', href: '/admin/users', icon: FingerPrintIcon },
     { name: 'Humedales', description: 'Administra los humedales de la plataforma', href: '#', icon: SquaresPlusIcon },
-    { name: 'Sensores', description: 'Administra los sensores de los humedales', href: '#', icon: ChartPieIcon },
+    { name: 'Sensores', description: 'Administra los sensores de los humedales', href: '/admin/sensors', icon: ChartPieIcon },
     // { name: 'Estadísticas', description: 'Visualiza las estadísticas de los humedales', href: '#', icon: CursorArrowRaysIcon },
     { name: 'Reportes', description: 'Visualiza los reportes de los humedales', href: '#', icon: ArrowPathIcon },
 ]
@@ -53,7 +54,7 @@ const Navbar = () => {
         <>
             <nav aria-label="Global" className="flex items-center justify-between mx-auto max-w-7xl w-full lg:px-8">
                 <div className="flex lg:flex-1">
-                    <a href="#" className="-m-1.5 p-1.5">
+                    <Link href="#" className="-m-1.5 p-1.5">
                         <span className="sr-only">Company</span>
                         <Image
                             alt="Company"
@@ -62,7 +63,7 @@ const Navbar = () => {
                             height={59}
                             // className="h-14 w-auto"
                         />
-                    </a>
+                    </Link>
                 </div>
                 {
                     pathname == '/dashboard/map' && (
@@ -82,12 +83,12 @@ const Navbar = () => {
                     </button>
                 </div>
                 <PopoverGroup className="hidden lg:flex lg:space-x-12">
-                    <a href="/dashboard/wetland" className="text-sm font-semibold leading-6 text-white">
+                    <Link href="/dashboard/wetland" className="text-sm font-semibold leading-6 text-white">
                         Inicio
-                    </a>
-                    <a href="map" className="text-sm font-semibold leading-6 text-white">
+                    </Link>
+                    <Link href="/dashboard/map" className="text-sm font-semibold leading-6 text-white">
                         Maps
-                    </a>
+                    </Link>
                     <Popover className="relative">
                         <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-white">
                             Administración
@@ -107,10 +108,10 @@ const Navbar = () => {
                                             <item.icon aria-hidden="true" className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" />
                                         </div>
                                         <div className="flex-auto">
-                                            <a href={item.href} className="block font-semibold text-gray-900">
+                                            <Link href={item.href} className="block font-semibold text-gray-900">
                                                 {item.name}
                                                 <span className="absolute inset-0"></span>
-                                            </a>
+                                            </Link>
                                             <p className="mt-1 text-gray-600">{item.description}</p>
                                         </div>
                                     </div>
@@ -118,9 +119,12 @@ const Navbar = () => {
                             </div>
                         </PopoverPanel>
                     </Popover>
-                    <a href="/dashboard/report" className="text-sm font-semibold leading-6 text-white">
+                    <Link href="/dashboard/report" className="text-sm font-semibold leading-6 text-white">
                         Reportes
-                    </a>
+                    </Link>
+                    <Link href="/dashboard/alarm" className="text-sm font-semibold leading-6 text-white">
+                        Alarmas
+                    </Link>
                 </PopoverGroup>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
 
@@ -152,18 +156,18 @@ const Navbar = () => {
                     <div className="mt-6 flow-root">
                         <div className="-my-6 divide-y divide-gray-500/10">
                             <div className="space-y-2 py-6">
-                                <a
+                                <Link
                                     href="/dashboard/wetland"
                                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                 >
                                     Inicio
-                                </a>
-                                <a
+                                </Link>
+                                <Link
                                     href="#"
                                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                 >
                                     Maps
-                                </a>
+                                </Link>
                                 <Disclosure as="div" className="-mx-3">
                                     <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                                         Administración
@@ -183,12 +187,12 @@ const Navbar = () => {
                                     </DisclosurePanel>
                                 </Disclosure>
                                 
-                                <a
+                                <Link
                                     href="/dashboard/report"
                                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                 >
                                     Reportes
-                                </a>
+                                </Link>
                             </div>
                             <div className="py-6">
                                 

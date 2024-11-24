@@ -1,10 +1,12 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from "react";
 import {
   useReactTable,
   getCoreRowModel,
   flexRender,
   ColumnDef,
-} from '@tanstack/react-table';
+} from "@tanstack/react-table";
+import { Download } from "lucide-react";
+import axiosClient from "@/utils/axios-client";
 
 interface TableProps {
   filters: {
@@ -28,7 +30,7 @@ interface DataRow {
 }
 
 const TableComponent = ({ filters }: TableProps) => {
-  console.log('filters', filters);
+  console.log("filters", filters);
   const [data, setData] = useState<DataRow[]>([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10); // Tamaño de página por defecto
@@ -38,28 +40,35 @@ const TableComponent = ({ filters }: TableProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Construcción dinámica del endpoint
-  const buildEndpoint = () => {
-    let endpoint = 'https://proyecto-backend-iot.vercel.app/api/wetland-report';
-    if (filters.humedal && filters.humedal !== '0') endpoint += `/${filters.humedal}`;
+  const buildEndpoint = (fomrat?:string) => {
+    let endpoint = "https://proyecto-backend-iot.vercel.app/api/wetland-report";
+    if (filters.humedal && filters.humedal !== "0")
+      endpoint += `/${filters.humedal}`;
     if (filters.nodo) endpoint += `/${filters.nodo}`;
     if (filters.sensor) endpoint += `/${filters.sensor}`;
     endpoint += `?page_size=${pageSize}&page=${page}`;
 
-    const startTime = filters.startDate ? Math.floor(new Date(filters.startDate).getTime()) : null;
-    const endTime = filters.endDate ? Math.floor(new Date(filters.endDate).getTime()) : null;
+    const startTime = filters.startDate
+      ? Math.floor(new Date(filters.startDate).getTime())
+      : null;
+    const endTime = filters.endDate
+      ? Math.floor(new Date(filters.endDate).getTime())
+      : null;
 
-    if(filters.typeSensor) {
+    if (filters.typeSensor) {
       endpoint += `&sensor_type=${filters.typeSensor}`;
     }
 
     if (startTime && endTime) {
-      console.log('start', startTime, 'end', endTime);
+      console.log("start", startTime, "end", endTime);
       endpoint += `&start_time=${startTime}`;
       endpoint += `&end_time=${endTime}`;
     }
     // if (endTime) {
     // }
-
+    if(fomrat){
+      endpoint += `&format=${fomrat}`;
+    }
     return endpoint;
   };
 
@@ -68,20 +77,27 @@ const TableComponent = ({ filters }: TableProps) => {
     setLoading(true);
     setErrorMessage(null);
     try {
-      if(filters.startDate && filters.endDate && new Date(filters.startDate) > new Date(filters.endDate)) {
-        setErrorMessage('La fecha de inicio no puede ser mayor a la fecha de fin.');
+      if (
+        filters.startDate &&
+        filters.endDate &&
+        new Date(filters.startDate) > new Date(filters.endDate)
+      ) {
+        setErrorMessage(
+          "La fecha de inicio no puede ser mayor a la fecha de fin."
+        );
         setLoading(false);
-        return
+        return;
       }
-      if(filters.startDate && !filters.endDate) {
+      if (filters.startDate && !filters.endDate) {
         // setErrorMessage('Es necesario ingresar una fecha de fin.');
         setLoading(false);
-        return
+        return;
       }
-      const response = await fetch(buildEndpoint());
-      const result = await response.json();
+      const response = await axiosClient.get(buildEndpoint());
+      console.log("response", response);
+      const result = await response.data;
 
-      if (response.ok) {
+      if (response.status === 200) {
         const transformedData = result.data.map((item: any) => ({
           fecha: new Date(item.sensor.register_date).toLocaleDateString(),
           hora: new Date(item.sensor.register_date).toLocaleTimeString(),
@@ -99,11 +115,15 @@ const TableComponent = ({ filters }: TableProps) => {
         setData([]);
         setTotalResults(0);
         setTotalPages(0);
-        setErrorMessage( 'No hay Data');
+        setErrorMessage("No hay Data");
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setErrorMessage('Error al conectar con el servidor.');
+      console.error("Error fetching data:", error);
+      if(error.status === 404){
+        setErrorMessage(error.response.data.message ||"No se encontraron datos.");
+        return;
+      }
+      setErrorMessage("Error al conectar con el servidor.");
     } finally {
       setLoading(false);
     }
@@ -117,37 +137,37 @@ const TableComponent = ({ filters }: TableProps) => {
   const columns: ColumnDef<DataRow>[] = useMemo(
     () => [
       {
-        accessorKey:'ID',
-        header: 'ID',
+        accessorKey: "ID",
+        header: "ID",
         cell: (cell) => cell.row.index + 1,
       },
       {
-        accessorKey: 'fecha',
-        header: 'Fecha',
+        accessorKey: "fecha",
+        header: "Fecha",
       },
       {
-        accessorKey: 'hora',
-        header: 'Hora',
+        accessorKey: "hora",
+        header: "Hora",
       },
       {
-        accessorKey: 'valor',
-        header: 'Valor',
+        accessorKey: "valor",
+        header: "Valor",
       },
       {
-        accessorKey: 'unidad',
-        header: 'Unidad',
+        accessorKey: "unidad",
+        header: "Unidad",
       },
       {
-        accessorKey: 'localizacionNodo',
-        header: 'Localización Nodo',
+        accessorKey: "localizacionNodo",
+        header: "Localización Nodo",
       },
       {
-        accessorKey: 'nombreHumedal',
-        header: 'Nombre Humedal',
+        accessorKey: "nombreHumedal",
+        header: "Nombre Humedal",
       },
       {
-        accessorKey: 'tipoSensor',
-        header: 'Tipo de Sensor',
+        accessorKey: "tipoSensor",
+        header: "Tipo de Sensor",
       },
     ],
     []
@@ -169,7 +189,9 @@ const TableComponent = ({ filters }: TableProps) => {
     if (page < totalPages) setPage((prevPage) => prevPage + 1);
   }, [page, totalPages]);
 
-  const handlePageSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handlePageSizeChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     setPageSize(Number(event.target.value));
     setPage(1); // Reset page to 1 when page size changes
   };
@@ -179,17 +201,37 @@ const TableComponent = ({ filters }: TableProps) => {
       {loading ? (
         <div className="text-center">Cargando datos...</div>
       ) : (
-        <div className="overflow-x-auto overflow-y-auto max-h-[570px]">
-          <table className="min-w-full divide-y divide-gray-200">
+        <div className="bg-white rounded-lg shadow overflow-hidden">            
+        <div className="p-4 border-b border-gray-200 ]">
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-medium text-gray-900">
+                Datos del Humedal
+              </h2>
+              <a
+                // onClick={handleExport}
+                href={buildEndpoint('excel')}
+                target="_blank"
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Exportar Excel
+              </a>
+            </div>
+          </div>
+          <div className="overflow-x-auto overflow-y-auto max-h-[570px]">
+          <table className="relative min-w-full divide-y divide-gray-200 ">
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="sticky top-0 px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                     </th>
                   ))}
                 </tr>
@@ -198,7 +240,10 @@ const TableComponent = ({ filters }: TableProps) => {
             <tbody className="bg-white divide-y divide-gray-200">
               {errorMessage ? (
                 <tr>
-                  <td colSpan={columns.length} className="text-center py-4 text-red-500">
+                  <td
+                    colSpan={columns.length}
+                    className="text-center py-4 text-red-500"
+                  >
                     {errorMessage}
                   </td>
                 </tr>
@@ -216,7 +261,10 @@ const TableComponent = ({ filters }: TableProps) => {
                         key={cell.id}
                         className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </td>
                     ))}
                   </tr>
@@ -224,12 +272,15 @@ const TableComponent = ({ filters }: TableProps) => {
               )}
             </tbody>
           </table>
+          </div>
         </div>
       )}
       {!loading && !errorMessage && (
-        <div className="mt-4 flex justify-between items-center">
-          <div className="text-sm text-gray-700">
-            Mostrando {data.length > 0 ? (page - 1) * pageSize + 1 : 0} - {page * pageSize > totalResults ? totalResults : page * pageSize} de {totalResults} resultados
+        <div className="mt-4 flex flex-col lg:flex-row  lg:justify-between items-center ">
+          <div className="text-sm text-gray-700 mb-4">
+            Mostrando {data.length > 0 ? (page - 1) * pageSize + 1 : 0} -{" "}
+            {page * pageSize > totalResults ? totalResults : page * pageSize} de{" "}
+            {totalResults} resultados
           </div>
           <div className="flex space-x-2 items-center">
             <button
@@ -239,7 +290,9 @@ const TableComponent = ({ filters }: TableProps) => {
             >
               Anterior
             </button>
-            <span className="px-3 py-1 border rounded bg-blue-600 text-white">{page}</span>
+            <span className="px-3 py-1 border rounded bg-blue-600 text-white">
+              {page}
+            </span>
             <button
               className="px-3 py-1 border rounded hover:bg-gray-50"
               onClick={handleNextPage}
@@ -262,6 +315,5 @@ const TableComponent = ({ filters }: TableProps) => {
       )}
     </div>
   );
-}
+};
 export const Table = React.memo(TableComponent);
-

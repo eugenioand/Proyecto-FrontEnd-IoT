@@ -38,7 +38,15 @@ export interface Sensor {
   // created_at: string;
   // updated_at: string;
 }
-
+export interface Alarm {
+  alert_id: number;
+  description: string;
+  node_id: number;
+  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  status: 'Active' | 'Inactive';
+  alert_date: Date;
+  created_at: Date;
+}
 export interface Wetland {
   id: string;
   name: string;

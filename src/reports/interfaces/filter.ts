@@ -11,6 +11,8 @@ export interface FiltersProps {
     onFilterChange: (filters: any) => void;
     compareMode: boolean;
     secondHumedal: string;
+    setIsSidebarOpen: (value: boolean) => void;
+    isSidebarOpen: boolean;
     onSecondHumedalChange: (humedal: string) => void;
     view: string;
   }
