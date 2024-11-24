@@ -54,7 +54,7 @@ export function getColumns(): ColumnDef<User>[] {
                 const formattedName = name
                     .toLowerCase()
                     .replace(/\b\w/g, (char) => char.toUpperCase());
-                return <div className="w-40">{formattedName}</div>;
+                return <div className="max-w-48">{formattedName}</div>;
             },
             enableSorting: false,
             enableHiding: false,
