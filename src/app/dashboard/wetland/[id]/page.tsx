@@ -41,7 +41,7 @@ export default function WetlandDetailPage({ params }: {
     }
 
     if (error) {
-        return <ErrorModal message={error} onClose={closeErrorModal} />;
+        return <ErrorModal errorMessage={error} onClose={closeErrorModal} />;
     }
 
     return (
