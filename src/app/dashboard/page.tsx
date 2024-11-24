@@ -11,17 +11,9 @@ export default function DashboardPage() {
         return <LoadingSpinner />;
     }
 
-    console.log(user);
-
-    if (!user) {
-        return null;
-    }
+    // if (!user) {
+    //     return null;
+    // }
     
-    if (user.role.code === 'USER') {
-        redirect('/dashboard/wetland');
-    } else if (user.role.code === 'ADMIN') {
-        redirect('/admin');
-    } else {
-        redirect('/logout');
-    }
+    return <div>Dashboard</div>;
 }

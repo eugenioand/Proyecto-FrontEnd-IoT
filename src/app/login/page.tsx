@@ -22,7 +22,9 @@ const Login = () => {
     useEffect(() => {
         if (!loading && isAuthenticated) {
             
-            router.push("/dashboard");
+            // router.push("/dashboard");
+            console.log('Usuario autenticado');
+            
         }
     }, [isAuthenticated, loading, router]);
 

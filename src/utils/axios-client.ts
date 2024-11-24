@@ -1,4 +1,5 @@
 import axios from "axios";
+import { headers } from "next/headers";
 
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
 
@@ -70,8 +71,8 @@ axiosClient.interceptors.response.use(
                     throw new Error("Refresh token no encontrado.");
                 }
 
-                const response = await axios.post(`${API_URL}/refresh-token`, {
-                    refresh_token: refreshToken,
+                const response = await axios.post(`${API_URL}/auth/refresh`, null, {
+                    headers: {"Authorization": `Bearer ${refreshToken}`}
                 });
 
                 const newAccessToken = response.data.access_token;

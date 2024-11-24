@@ -3,7 +3,7 @@ import "@/styles/globals.scss";
 import { useEffect } from "react";
 import { useAuth } from "@/context/auth-context";
 import Header from "@/components/Header";
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 type LayoutProps = {
@@ -15,8 +15,8 @@ export default function DashboardLayout({ children }: LayoutProps) {
     const { isAuthenticated, loading } = useAuth();
 
     useEffect(() => {
-        if (!loading && !isAuthenticated) {
-            router.push('/login');
+        if (loading && !isAuthenticated) {
+            redirect('/login');
         }
     }, [isAuthenticated, loading]);
 
