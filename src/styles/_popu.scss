@@ -1,0 +1,101 @@
+.leaflet-popup-content-wrapper {
+    /* background-color: #fff; */
+    background-color: var(--background) !important;
+    color: var(--color) !important;
+    
+}
+
+.leaflet-popup-close-button {
+    padding: 0.5rem !important;
+    width: 2rem !important;
+    height: 2.5rem !important;
+    color: var(--color) !important;
+    font-size: 1.5rem !important;
+}
+
+// .leaflet-popup-close-button:hover {
+//     color: var(--color) !important;
+// }
+
+.popup-inner {
+    &__title {
+        position: relative;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        color: var(--bg-blue-2);
+
+        &::after {
+            position: absolute;
+            content: "";
+            width: 35%;
+            height: 2px;
+            background-color: var(--bg-blue-2);
+            bottom: -0.5rem; // -14px
+            left: 0px;
+        }
+
+        i {
+            padding-top: 0.15rem;
+            font-size: 1.5rem;
+            align-self: flex-start;
+        }
+    }
+
+    &__description {
+        color: var(--color-white);
+        font-size: 1.2rem;
+        font-weight: 400;
+        margin-bottom: 0.5rem;
+    }
+
+    &__link {
+        color: var(--color-white);
+        font-size: 1rem;
+        font-weight: 400;
+        margin-bottom: 0.5rem;
+        text-decoration: underline;
+    }
+
+    &__link:hover {
+        color: var(--bg-blue-2);
+    }
+
+    &__button {
+        display: flex;
+        padding: 0.5rem 1rem;
+        background-color: var(--bg-blue-2);
+        color: var(--color-white);
+        align-items: center;
+        font-size: inherit;
+        font-weight: 700;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: background-color 0.3s;
+        gap: 0.5rem;
+
+        &:hover {
+            background-color: var(--bg-blue-3);
+        }
+
+        span {
+            display: flex;
+            align-items: center;
+            font-size: inherit;
+            gap: 0.5rem;
+            line-height: 0;
+            
+            i {
+                margin-top: -3px;
+            }
+        }
+        
+    }
+
+}

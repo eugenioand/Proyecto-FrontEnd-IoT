@@ -1,0 +1,72 @@
+/* Custom form styles */
+.form-group {
+    @apply mb-6 p-4 bg-white rounded-lg shadow-sm;
+  }
+  
+  .form-row {
+    @apply grid grid-cols-1 md:grid-cols-5 gap-4 items-center mb-4;
+  }
+  
+  .form-label {
+    @apply text-sm font-medium text-gray-700 mb-1;
+  }
+  
+  .form-select {
+    @apply w-full px-4 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg
+           focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors
+           appearance-none cursor-pointer;
+  }
+  
+  .date-input {
+    @apply w-full px-4 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg
+           focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors;
+  }
+  
+  .select-wrapper {
+    @apply relative;
+  }
+  
+  .select-wrapper::after {
+    content: '';
+    @apply absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 
+           border-r-2 border-b-2 border-gray-400 transform rotate-45 pointer-events-none;
+  }
+  .scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: blue gray-300; /* color de la barra y del fondo */
+}
+
+/* Estilos para Webkit (Chrome, Safari, etc.) */
+.scrollbar::-webkit-scrollbar {
+    width: 8px; /* ancho de la barra de desplazamiento */
+}
+
+.scrollbar::-webkit-scrollbar-track {
+    background: gray-300; /* color del fondo de la barra de desplazamiento */
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    background-color: blue; /* color del cursor de la barra de desplazamiento */
+    border-radius: 20px; /* redondear las esquinas */
+    border: 2px solid transparent; /* frontera transparente para efectos de espacio */
+}
+
+/* Estilos para la barra de desplazamiento */
+.scrollbar-custom {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1; /* Cambia los colores según tus necesidades */
+}
+
+/* Estilos para Webkit */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 8px; /* ancho de la barra de desplazamiento */
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #f1f1f1; /* color del fondo de la barra de desplazamiento */
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: #888; /* color del cursor de la barra de desplazamiento */
+  border-radius: 4px; /* redondear las esquinas */
+}
