@@ -9,6 +9,7 @@ interface MarkerItem {
     name: string;
     latitude: number;
     longitude: number;
+    code?: string;
     type?: "node" | "sensor" | "generic";
     details?: Record<string, string | number>;
 }
@@ -77,6 +78,48 @@ const Map: React.FC<MapProps> = ({ items }) => {
             iconAnchor: [12, 41],
             // popupAnchor: [1, -34],
         }),
+        PH: new Icon({
+            iconUrl: "/assets/science.svg",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            // popupAnchor: [1, -34],
+        }),
+        HUM: new Icon({
+            iconUrl: "/assets/water_drop.svg",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            // popupAnchor: [1, -34],
+        }),
+        OD: new Icon({
+            iconUrl: "/assets/water.svg",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            // popupAnchor: [1, -34],
+        }),
+        TURB: new Icon({
+            iconUrl: "/assets/waves.svg",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            // popupAnchor: [1, -34],
+        }),
+        TEMP: new Icon({
+            iconUrl: "/assets/thermostat.svg",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            // popupAnchor: [1, -34],
+        }),
+        CAUD_EN: new Icon({
+            iconUrl: "/assets/arrow_forward.svg",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            // popupAnchor: [1, -34],
+        }),
+        CAUD_SAL: new Icon({
+            iconUrl: "/assets/arrow_back.svg",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            // popupAnchor: [1, -34],
+        }),
         default: new Icon({
             iconUrl: "/default-icon.svg",
             iconSize: [25, 41],
@@ -102,7 +145,7 @@ const Map: React.FC<MapProps> = ({ items }) => {
                 <Marker
                     key={index}
                     position={[item.latitude, item.longitude]}
-                    icon={icons[item.type || "default"]}
+                    icon={icons[item.type == "sensor" ? item.code : item.type || "default"]}
                     eventHandlers={{
                         click: (e) => {
                             const map = e.target._map;

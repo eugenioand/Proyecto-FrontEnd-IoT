@@ -96,13 +96,13 @@ export function getStatusIcon(status: string) {
 }
 
 const types = {
-  temperature: Thermostat,
-  humidity: WaterDrop,
-  ph: Science,
-  od: Water,
-  turbidity: Waves,
-  FlowRateInlet: ArrowForward,
-  FlowRateOut: ArrowBack,
+  TEMP: Thermostat,
+  HUM: WaterDrop,
+  PH: Science,
+  OD: Water,
+  TURB: Waves,
+  CAUD_EN: ArrowForward,
+  CAUD_SAL: ArrowBack,
   default: Sensors,
 };
 
