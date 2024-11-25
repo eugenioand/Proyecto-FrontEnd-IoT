@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import "@/reports/style/form.css";
 import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverGroup, PopoverPanel } from "@headlessui/react";
 import { ArrowPathIcon, Bars3Icon, ChartPieIcon, FingerPrintIcon, SquaresPlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Bell } from "lucide-react";
+import { Bell, ChevronDown, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import axiosClient from "@/utils/axios-client";
@@ -12,6 +12,7 @@ import {
   // PhoneIcon,
   // PlayCircleIcon
 } from "@heroicons/react/20/solid";
+import { AvatarIcon } from "@radix-ui/react-icons";
 const subAdminNav = [
   {
     name: "Usuarios",
@@ -43,8 +44,10 @@ const Navbar = () => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   const [notifications, setNotifications] = useState([]);
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
 
   useEffect(() => {
     const fetchNotifications = () => {
@@ -175,6 +178,66 @@ const Navbar = () => {
             </div>
           )}
         </div>
+          {/* bg-white/20 p-4 rounded-full */}
+        <div className="relative ml-32 z-50 ">
+        <div className="max-w-7xl mx-auto flex justify-end">
+          <div className="relative">
+            <button
+              onClick={() => setIsOpen2(!isOpen2)}
+              className="flex items-center space-x-3 bg-white/20 hover:bg-white/30 transition-colors rounded-full px-3 py-2 text-white"
+            >
+              {/* <img
+                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150"
+                alt="Profile"
+                className="w-8 h-8 rounded-full object-cover border-2 border-white"
+              /> */}
+              {/* <span className="font-medium">Jessica Jones</span> */}
+              <AvatarIcon className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isOpen2 && (
+              <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-100">
+                <div className="px-4 py-2 border-b border-gray-100">
+                  <p className="text-sm text-gray-500">WELCOME!</p>
+                </div>
+
+                {/* <div className="py-1">
+                  <button className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-3">
+                    <User className="w-4 h-4" />
+                    <span>My profile</span>
+                  </button>
+                  <button className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-3">
+                    <Settings className="w-4 h-4" />
+                    <span>Settings</span>
+                  </button>
+                  <button className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-3">
+                    <Activity className="w-4 h-4" />
+                    <span>Activity</span>
+                  </button>
+                  <button className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-3">
+                    <HelpCircle className="w-4 h-4" />
+                    <span>Support</span>
+                  </button>
+                </div> */}
+
+                <div className="border-t border-gray-100 pt-1">
+                  <button
+                    onClick={()=>{
+                      localStorage.removeItem('access_token');
+                      localStorage.removeItem('refresh_token');
+                      router.replace('/login');
+                    }}
+                    className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-3"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white p-[0.63rem] sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
