@@ -70,7 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             localStorage.setItem('refresh_token', refresh_token);
             setUser(user);
             setIsAuthenticated(true);
-            router.push('/dashboard');
+            router.push('/dashboard/wetland');
         } catch (error) {
             console.error('Error durante el login:', error);
             throw error;

@@ -26,7 +26,7 @@ export function SensorsTable1({ sensorsData }: SensorsTableProps) {
   console.log('sensorsData', sensorsData);
   const columns = React.useMemo(() => getColumns(), []);
 
-  const sensorStatus: Array<'active' | 'inactive'> = ["active", "inactive"];
+  const sensorStatus: Array<'Active' | 'Cleared'> = ["Active", "Cleared"];
   const sensorTypes = [
     { label: "Temperatura", value: "temperature" as const, code: "TMP" },
     { label: "Humedad", value: "humidity" as const, code: "HMD" },
@@ -54,17 +54,17 @@ export function SensorsTable1({ sensorsData }: SensorsTableProps) {
         withCount: true,
       })),
     },
-    {
-      label: "Tipo",
-      value: "type_sensor",
-      options: sensorTypes.map((types) => ({
-        label: types.label[0]?.toUpperCase() + types.label.slice(1),
-        code: types.code,
-        value: types.code,
-        // icon: getSensorTypes(types.value),
-        withCount: true,
-      })),
-    },
+    // {
+    //   label: "Tipo",
+    //   value: "type_sensor",
+    //   options: sensorTypes.map((types) => ({
+    //     label: types.label[0]?.toUpperCase() + types.label.slice(1),
+    //     code: types.code,
+    //     value: types.code,
+    //     // icon: getSensorTypes(types.value),
+    //     withCount: true,
+    //   })),
+    // },
   ]
 
   const { table } = useDataTable({
@@ -75,8 +75,8 @@ export function SensorsTable1({ sensorsData }: SensorsTableProps) {
     currentPage: 1,
     perPage: 10,
     defaultPerPage: 10,
-    // defaultSort: "purchase_date.desc",
-    // filterFields,
+    defaultSort: "alert_date.desc",
+    filterFields,
   });
 
   return (

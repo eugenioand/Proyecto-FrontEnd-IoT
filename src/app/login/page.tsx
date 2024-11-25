@@ -20,7 +20,7 @@ const Login = () => {
 
     useEffect(() => {
         if (!loading && isAuthenticated) {
-            router.push("/dashboard");
+            router.push("/dashboard/wetland");
         }
     }, [isAuthenticated, loading, router]);
 
