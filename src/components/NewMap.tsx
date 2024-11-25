@@ -79,43 +79,43 @@ const Map: React.FC<MapProps> = ({ items }) => {
             // popupAnchor: [1, -34],
         }),
         PH: new Icon({
-            iconUrl: "/assets/science.svg",
+            iconUrl: "/assets/icons/science.svg",
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             // popupAnchor: [1, -34],
         }),
         HUM: new Icon({
-            iconUrl: "/assets/water_drop.svg",
+            iconUrl: "/assets/icons/water_drop.svg",
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             // popupAnchor: [1, -34],
         }),
         OD: new Icon({
-            iconUrl: "/assets/water.svg",
+            iconUrl: "/assets/icons/water.svg",
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             // popupAnchor: [1, -34],
         }),
         TURB: new Icon({
-            iconUrl: "/assets/waves.svg",
+            iconUrl: "/assets/icons/waves.svg",
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             // popupAnchor: [1, -34],
         }),
         TEMP: new Icon({
-            iconUrl: "/assets/thermostat.svg",
+            iconUrl: "/assets/icons/thermostat.svg",
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             // popupAnchor: [1, -34],
         }),
         CAUD_EN: new Icon({
-            iconUrl: "/assets/arrow_forward.svg",
+            iconUrl: "/assets/icons/arrow_forward.svg",
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             // popupAnchor: [1, -34],
         }),
         CAUD_SAL: new Icon({
-            iconUrl: "/assets/arrow_back.svg",
+            iconUrl: "/assets/icons/arrow_back.svg",
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             // popupAnchor: [1, -34],
@@ -145,7 +145,7 @@ const Map: React.FC<MapProps> = ({ items }) => {
                 <Marker
                     key={index}
                     position={[item.latitude, item.longitude]}
-                    icon={icons[item.type == "sensor" ? item.code : item.type || "default"]}
+                    icon={icons[item.type === "sensor" ? item?.code || "default" : item.type || "default"]}
                     eventHandlers={{
                         click: (e) => {
                             const map = e.target._map;

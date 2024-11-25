@@ -105,7 +105,7 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
 
     const mapSensor = (sensor: Sensor) => ({
         id: sensor.sensor_id,
-        sensor_code: sensor.sensor_code,
+        code: sensor.sensor_code,
         name: sensor.name,
         latitude: sensor.latitude,
         longitude: sensor.longitude,
