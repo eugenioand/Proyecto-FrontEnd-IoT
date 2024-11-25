@@ -29,7 +29,7 @@ import { getErrorMessage } from "@/lib/handle-error"
 import { Alarm } from "@/types"
 
 const alertSchema = z.object({
-  alert_date: z.date(),
+  alert_date: z.any(),
   description: z.string().min(1, "Description is required"),
   node_id: z.number().min(1, "Node ID is required"),
   severity: z.enum(["CRITICAL" ,"MAJOR" ,"MINOR", "WARNING","INDETERMINATE"]),
@@ -86,11 +86,7 @@ export function UpdateAlertSheet({
                 <FormItem>
                   <FormLabel>Alert Date</FormLabel>
                   <FormControl>
-                    <Input
-                      type="date"
-                      {...field}
-                      value={field.value ? field.value.toISOString().split('T')[0] : ''}
-                    />
+                    <Input type="date" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
