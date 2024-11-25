@@ -218,7 +218,7 @@ const TableComponent = ({ filters }: TableProps) => {
               </a>
             </div>
           </div>
-          <div className="overflow-x-auto overflow-y-auto max-h-[570px] scrollbar">
+          <div className="overflow-x-auto overflow-y-auto max-h-[570px]">
           <table className="relative min-w-full divide-y divide-gray-200 ">
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (

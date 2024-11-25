@@ -32,7 +32,7 @@ const sensorSchema = z.object({
   name: z.string().min(1, "Name is required"),
   type_sensor: z.string().min(1, "Type is required"),
   status: z.enum(["active", "inactive"]),
-  purchase_date: z.string().min(1, "Purchase date is required"),
+  purchase_date: z.date(),
 })
 
 type SensorFormValues = z.infer<typeof sensorSchema>
@@ -136,7 +136,7 @@ export function UpdateSensorSheet({
                 <FormItem>
                   <FormLabel>Fecha de compra</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input type="date" {...field} value={field.value.toISOString().split('T')[0]} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

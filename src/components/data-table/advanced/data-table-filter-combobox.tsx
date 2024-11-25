@@ -142,7 +142,7 @@ export function DataTableFilterCombobox<TData>({
                     {
                       id: crypto.randomUUID(),
                       label: selectedOption?.label ?? "",
-                      value: selectedOption?.value ?? "",
+                      value: selectedOption?.value as keyof TData,
                       options: selectedOption?.options ?? [],
                       isMulti: true,
                     },

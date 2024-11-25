@@ -14,7 +14,8 @@ interface MarkerItem {
 }
 
 interface MapProps {
-    items: MarkerItem[];
+    // items: MarkerItem[];
+    items: any;
 }
 
 const AutoZoom = ({ bounds }: { bounds: LatLngBounds }) => {
@@ -141,7 +142,7 @@ const Map: React.FC<MapProps> = ({ items }) => {
                             {item.details &&
                                 Object.entries(item.details).map(([key, value]) => (
                                     <div key={key} className="text-sm text-gray-600">
-                                        <span className="font-medium">{key}:</span> {value}
+                                        <span className="font-medium">{key}:</span> {value as string | number}
                                     </div>
                                 ))}
                         </p>

@@ -99,13 +99,13 @@ export function SensorsTableFloatingBar({ table }: SensorsTableFloatingBarProps)
                     </div>
                     <Separator orientation="vertical" className="hidden h-5 sm:block" />
                     <div className="flex items-center gap-1.5">
-                        <Select
+                        {/* <Select
                             onValueChange={(value: Alarm["status"]) => {
                                 setMethod("update-status")
 
                                 startTransition(async () => {
                                     const { error } = await updateSensors({
-                                        ids: rows.map((row) => row.original.id),
+                                        ids: rows.map((row) => (row.original as { id: string }).id),
                                         status: value,
                                     })
 
@@ -160,8 +160,8 @@ export function SensorsTableFloatingBar({ table }: SensorsTableFloatingBarProps)
                                     ))}
                                 </SelectGroup>
                             </SelectContent>
-                        </Select>
-                        <Select
+                        </Select> */}
+                        {/* <Select
                             onValueChange={(value: Alarm["alert_date"]["code"]) => {
                                 setMethod("update-type")
 
@@ -219,7 +219,7 @@ export function SensorsTableFloatingBar({ table }: SensorsTableFloatingBarProps)
                                     ))}
                                 </SelectGroup>
                             </SelectContent>
-                        </Select>
+                        </Select> */}
                         <TooltipProvider>
                             <Tooltip delayDuration={250}>
                                 <TooltipTrigger asChild>
@@ -257,7 +257,7 @@ export function SensorsTableFloatingBar({ table }: SensorsTableFloatingBarProps)
                         <TooltipProvider>
                             <Tooltip delayDuration={250}>
                                 <TooltipTrigger asChild>
-                                    <Button
+                                    {/* <Button
                                         variant="secondary"
                                         size="icon"
                                         className="size-7 border"
@@ -287,7 +287,7 @@ export function SensorsTableFloatingBar({ table }: SensorsTableFloatingBarProps)
                                         ) : (
                                             <TrashIcon className="size-3.5" aria-hidden="true" />
                                         )}
-                                    </Button>
+                                    </Button> */}
                                 </TooltipTrigger>
                                 <TooltipContent className="border bg-accent font-semibold text-foreground dark:bg-background/95 dark:backdrop-blur-md dark:supports-[backdrop-filter]:bg-background/40">
                                     <p>Delete sensors</p>

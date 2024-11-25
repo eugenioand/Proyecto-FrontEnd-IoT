@@ -27,6 +27,7 @@ interface Sensor {
 }
 
 interface Node {
+    id:any;
     name: string;
     node_id: number;
     sensors: Sensor[];
@@ -36,8 +37,8 @@ interface Node {
 }
 
 interface NodeFilterProps {
-    nodes: Node[]
-    selectedNodes: Node[]
+    nodes: Node[] | any
+    selectedNodes: Node[] | any
     setSelectedNodes: React.Dispatch<React.SetStateAction<Node[]>>
 }
 

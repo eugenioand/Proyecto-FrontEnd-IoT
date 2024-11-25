@@ -9,34 +9,54 @@ import { Wetland } from "@/types";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorModal from "@/components/dialogs/ErrorModal";
 
-export default function WetlandDetailPage({ params }: {
-    params: { id: string } 
-}) {
-    const [wetland, setWetland] = useState<Wetland>();
+// Hook personalizado para manejar la lógica de obtención de datos
+const useWetland = (id: string) => {
+    const [wetland, setWetland] = useState<Wetland | null>(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchWetland = async () => {
-            setLoading(true);
-            const result = await getWetland(params.id);
-            
-            if (result.error) {
-                setError(result.error);
-            } else {
-                setWetland(result);
-            }
+        if (!id) {
+            setError("El ID es obligatorio.");
             setLoading(false);
+            return;
         }
+
+        const fetchWetland = async () => {
+            try {
+                setLoading(true);
+                const result = await getWetland(id);
+
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+
+                setWetland(result);
+            } catch (err: any) {
+                setError(err.message || "Ocurrió un error desconocido.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchWetland();
-    }, [params.id]);
+    }, [id]);
+
+    return { wetland, loading, error, setError };
+};
+
+export default function WetlandDetailPage({
+    params,
+}: {
+    params: { id: string };
+}) {
+    const { wetland, loading, error, setError } = useWetland(params.id);
 
     const closeErrorModal = () => {
         setError(null);
-    }
+    };
 
     if (loading) {
-        // return <WetlandSkeleton />;
         return <LoadingSpinner />;
     }
 
@@ -59,6 +79,7 @@ export default function WetlandDetailPage({ params }: {
     );
 }
 
+// Componente Skeleton para mostrar mientras se carga el contenido
 const WetlandSkeleton = () => {
     return (
         <div className="flex flex-col w-full gap-5">
@@ -66,7 +87,4 @@ const WetlandSkeleton = () => {
             <Skeleton className="h-52" />
         </div>
     );
-}
-
-// export default WetlandDetailPage;
-
+};

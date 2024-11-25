@@ -10,11 +10,17 @@ export default function ReportPage() {
     humedal: "0",
     nodo: "",
     sensor: "",
+    humedalLabel: "",
+    nodoLabel: "",
+    sensorLabel: "",
   });
   const [filters2, setFilters2] = useState({
     humedal: "0",
     nodo: "",
     sensor: "",
+    humedalLabel: "",
+    nodoLabel: "",
+    sensorLabel: "",
   });
   const [compareMode, setCompareMode] = useState(false);
   const [secondHumedal, setSecondHumedal] = useState("Humedal 2");

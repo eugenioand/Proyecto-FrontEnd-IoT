@@ -32,8 +32,8 @@ const alertSchema = z.object({
   alert_date: z.date(),
   description: z.string().min(1, "Description is required"),
   node_id: z.number().min(1, "Node ID is required"),
-  severity: z.enum(['LOW' , 'MEDIUM' , 'HIGH' , 'CRITICAL']),
-  status: z.enum(["Active", "Inactive"]),
+  severity: z.enum(["CRITICAL" ,"MAJOR" ,"MINOR", "WARNING","INDETERMINATE"]),
+  status: z.enum(["Active", "Cleared"]),
 })
 
 type AlertFormValues = z.infer<typeof alertSchema>
@@ -86,7 +86,11 @@ export function UpdateAlertSheet({
                 <FormItem>
                   <FormLabel>Alert Date</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input
+                      type="date"
+                      {...field}
+                      value={field.value ? field.value.toISOString().split('T')[0] : ''}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

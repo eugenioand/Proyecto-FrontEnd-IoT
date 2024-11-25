@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { MapPinIcon, SignalIcon } from "@heroicons/react/24/solid";
 import { CalendarIcon } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -8,7 +8,6 @@ import {
     HoverCardContent,
     HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { NodeFilter } from "./NodeFilter";
 import clsx from "clsx";
 import { SelectionProvider, useSelection } from "@/context/SelectionContext";
 
@@ -33,14 +32,16 @@ interface Node {
 }
 
 interface WetlandDetailProps {
+    id:any
     name: string;
     location: string;
     status: string;
-    nodes: Node[];
+    nodes: any;
 }
 
 const Maps = dynamic(() => import("@/components/NewMap"), {
     ssr: false,
+    loading: () => <p className="text-center text-gray-500">Cargando mapa...</p>,
 });
 
 const statusColors = {
@@ -50,6 +51,7 @@ const statusColors = {
 };
 
 const WetlandDetail: React.FC<WetlandDetailProps> = ({
+    id,
     name,
     location,
     status,
@@ -61,22 +63,45 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
 
     const nodeContainerRef = useRef<HTMLDivElement | null>(null);
 
+    const handleNodeSelection = useCallback(
+        (node: Node) => {
+            if (selectedNode?.node_id === node.node_id) {
+                setSelectedItem(null);
+            } else {
+                setSelectedItem({ id: node.node_id, type: "node" });
+            }
+        },
+        [selectedNode, setSelectedItem]
+    );
+
+    const handleSensorSelection = useCallback(
+        (sensor: Sensor) => {
+            if (selectedSensor?.sensor_id === sensor.sensor_id) {
+                setSelectedItem(null);
+            } else {
+                setSelectedItem({ id: sensor.sensor_id, type: "sensor" });
+            }
+        },
+        [selectedSensor, setSelectedItem]
+    );
+
     useEffect(() => {
         if (selectedItem) {
             if (selectedItem.type === "node") {
                 const node = nodes.find((node) => node.node_id === selectedItem.id);
                 setSelectedNode(node || null);
-                setSelectedSensor(null); // Resetea el sensor seleccionado
+                setSelectedSensor(null);
             } else if (selectedItem.type === "sensor") {
-                const sensor = nodes.flatMap((node) => node.sensors)
+                const sensor = nodes
+                    .flatMap((node) => node.sensors)
                     .find((sensor) => sensor.sensor_id === selectedItem.id);
                 if (sensor) {
-                    const node = nodes.find((node) => node.sensors.includes(sensor)); // Encuentra el nodo que tiene este sensor
-                    setSelectedNode(node || null); // Selecciona el nodo correspondiente al sensor
-                    setSelectedSensor(sensor || null); // Selecciona el sensor
+                    const node = nodes.find((node) => node.sensors.includes(sensor));
+                    setSelectedNode(node || null);
+                    setSelectedSensor(sensor || null);
                 } else {
-                    setSelectedNode(null); // Si no se encuentra el sensor, resetea el nodo seleccionado
-                    setSelectedSensor(null); // Resetea el sensor seleccionado
+                    setSelectedNode(null);
+                    setSelectedSensor(null);
                 }
             }
         } else {
@@ -84,24 +109,6 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
             setSelectedSensor(null);
         }
     }, [selectedItem, nodes]);
-
-    // Maneja la selección de nodos
-    const handleNodeSelection = (node: Node) => {
-        if (selectedNode?.node_id === node.node_id) {
-            setSelectedItem(null);
-        } else {
-            setSelectedItem({ id: node.node_id, type: "node" });
-        }
-    };
-
-    // Maneja la selección de sensores
-    const handleSensorSelection = (sensor: Sensor) => {
-        if (selectedSensor?.sensor_id === sensor.sensor_id) {
-            setSelectedItem(null);
-        } else {
-            setSelectedItem({ id: sensor.sensor_id, type: "sensor" });
-        }
-    };
 
     const mapSensor = (sensor: Sensor) => ({
         id: sensor.sensor_id,
@@ -119,27 +126,34 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
             latitude: node.latitude,
             longitude: node.longitude,
             type: "node",
-            details: { status: node.status }
+            details: { status: node.status },
         },
         ...node.sensors.map(mapSensor),
     ];
 
-    const mapNodesAndSensors = (nodes: Node[]) => nodes.flatMap(mapNode);
+    const mapNodesAndSensors = useCallback(
+        (nodes: Node[]) => nodes.flatMap(mapNode),
+        []
+    );
 
-    const mapData = selectedSensor
-        ? [
-            {
-                id: selectedSensor.sensor_id,
-                name: selectedSensor.name,
-                latitude: selectedSensor.latitude,
-                longitude: selectedSensor.longitude,
-                type: "sensor",
-                details: { value: selectedSensor.value, unity: selectedSensor.unity },
-            },
-        ]
-        : selectedNode
-            ? mapNodesAndSensors([selectedNode])
-            : mapNodesAndSensors(nodes);
+    const mapData = useMemo(() => {
+        if (selectedSensor) {
+            return [
+                {
+                    id: selectedSensor.sensor_id,
+                    name: selectedSensor.name,
+                    latitude: selectedSensor.latitude,
+                    longitude: selectedSensor.longitude,
+                    type: "sensor",
+                    details: { value: selectedSensor.value, unity: selectedSensor.unity },
+                },
+            ];
+        }
+        if (selectedNode) {
+            return mapNodesAndSensors([selectedNode]);
+        }
+        return mapNodesAndSensors(nodes);
+    }, [selectedSensor, selectedNode, nodes, mapNodesAndSensors]);
 
     return (
         <div className="flex flex-col w-full gap-6">
@@ -185,7 +199,10 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
                     className="flex flex-col w-full max-h-96 lg:w-1/4 xl:w-1/5 bg-white shadow-md rounded-md p-4 gap-2"
                 >
                     <h2 className="text-lg font-medium border-b pb-2">Nodos</h2>
-                    <ul role="listbox" className="flex flex-col overflow-hidden overflow-y-auto p-2 gap-3">
+                    <ul
+                        role="listbox"
+                        className="flex flex-col overflow-hidden overflow-y-auto p-2 gap-3"
+                    >
                         {nodes.map((node) => (
                             <li
                                 key={node.node_id}
@@ -234,9 +251,12 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
     );
 };
 
+// Memorizar el componente para evitar re-renderizados innecesarios
+const MemoizedWetlandDetail = React.memo(WetlandDetail);
+
 const WetlandDetailWrapper = (props: WetlandDetailProps) => (
     <SelectionProvider>
-        <WetlandDetail {...props} />
+        <MemoizedWetlandDetail {...props} />
     </SelectionProvider>
 );
 
