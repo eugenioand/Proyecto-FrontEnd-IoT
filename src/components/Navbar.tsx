@@ -276,7 +276,7 @@ const Navbar = () => {
                 )}
               </div>
 
-              <div className="p-3 bg-gray-50 border-t border-gray-100">
+              <div className="p-3 bg-gray-50 border-t border-gray-100 flex justify-center items-center">
                 <Link
                   className="w-full text-center text-[#00bcd4] hover:text-[#00acc1] text-sm font-medium"
                   onClick={() => setIsOpen(false)}
