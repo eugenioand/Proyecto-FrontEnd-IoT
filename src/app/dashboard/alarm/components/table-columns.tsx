@@ -10,7 +10,22 @@ import DeleteSensorsDialog from "./delete-dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Checkbox } from "@/components/ui/checkbox"
-
+const getBadgeVariant = (value: string) => {
+  switch (value) {
+    case "CRITICAL":
+      return "destructive"; // Rojo o color crítico
+    case "MAJOR":
+      return "default"; // Default
+    case "MINOR":
+      return "secondary"; // Secondary
+    case "WARNING":
+      return "default"; // Outline
+    case "INDETERMINATE":
+      return "default"; // Default
+    default:
+      return "default"; // Default
+  }
+};
  export function getColumns(): ColumnDef<Alarm>[] {
   return [
     {
@@ -54,7 +69,12 @@ import { Checkbox } from "@/components/ui/checkbox"
     {
       accessorKey: "severity",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Severidad" />,
-      cell: ({ row ,column}) => <Badge variant={row.getValue(column.id) === "CRITICAL" ? "destructive" : "default"}>{row.getValue(column.id)}</Badge>,
+      cell : ({ row, column }: { row: any; column: any }) => {
+        const value = row.getValue(column.id); // Obtener el valor de la celda
+        const variant = getBadgeVariant(value); // Obtener el color basado en el valor
+      
+        return <Badge variant={variant}>{value}</Badge>;
+      },
     },
     {
       accessorKey: "status",
