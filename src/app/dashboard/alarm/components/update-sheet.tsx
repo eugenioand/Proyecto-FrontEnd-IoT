@@ -24,16 +24,17 @@ import {
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 
-import { updateAlarm } from "@/services/dasboard/alarms"
+import { updateAlarms } from "@/services/dasboard/alarms"
 import { getErrorMessage } from "@/lib/handle-error"
 import { Alarm } from "@/types"
 
 const alertSchema = z.object({
-  alert_date: z.any(),
+  alert_date: z.any().optional(),
   description: z.string().min(1, "Description is required"),
-  node_id: z.number().min(1, "Node ID is required"),
-  severity: z.enum(["CRITICAL" ,"MAJOR" ,"MINOR", "WARNING","INDETERMINATE"]),
+  node_id: z.number().min(1, "Node ID is required").optional(),
+  severity: z.enum(["CRITICAL" ,"MAJOR" ,"MINOR", "WARNING","INDETERMINATE"]).optional(),
   status: z.enum(["Active", "Cleared"]),
+  alert_id:z.any()
 })
 
 type AlertFormValues = z.infer<typeof alertSchema>
@@ -57,11 +58,13 @@ export function UpdateAlertSheet({
       node_id: alert.node_id,
       severity: alert.severity,
       status: alert.status,
+      alert_id: alert.alert_id,
     },
   })
 
   function onSubmit(values: AlertFormValues) {
-    updateAlarm(values)
+    console.log('values', values);
+    updateAlarms(values)
       .then(() => {
         toast.success("Alert updated successfully")
         onOpenChange(false)
@@ -82,6 +85,7 @@ export function UpdateAlertSheet({
             <FormField
               control={form.control}
               name="alert_date"
+              disabled
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Alert Date</FormLabel>
@@ -94,20 +98,8 @@ export function UpdateAlertSheet({
             />
             <FormField
               control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Alert description" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="node_id"
+              disabled
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Node ID</FormLabel>
@@ -121,6 +113,7 @@ export function UpdateAlertSheet({
             <FormField
               control={form.control}
               name="severity"
+              disabled
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Severity</FormLabel>
@@ -141,6 +134,20 @@ export function UpdateAlertSheet({
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Alert description" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

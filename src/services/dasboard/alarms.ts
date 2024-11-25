@@ -63,7 +63,9 @@ export async function updateAlarm(data: any) {
 
 export async function updateAlarms(data: any) {
     try {
-        const response = await axiosClient.put('/alerts', data);
+        const response = await axiosClient.put('/alerts', {
+            alerts: [data]
+        });
         return response.data;
     } catch (error: any) {
         return { error: error.response?.data?.message || unknownError};
