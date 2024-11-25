@@ -225,6 +225,7 @@ const Navbar = () => {
                     onClick={()=>{
                       localStorage.removeItem('access_token');
                       localStorage.removeItem('refresh_token');
+                      window.location.reload();
                       router.replace('/login');
                     }}
                     className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-3"
