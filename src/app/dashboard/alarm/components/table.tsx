@@ -22,7 +22,7 @@ interface SensorsTableProps {
   };
 }
 
-export function SensorsTable({ sensorsData }: SensorsTableProps) {
+export function SensorsTable1({ sensorsData }: SensorsTableProps) {
   console.log('sensorsData', sensorsData);
   const columns = React.useMemo(() => getColumns(), []);
 
@@ -92,3 +92,5 @@ export function SensorsTable({ sensorsData }: SensorsTableProps) {
     </TableInstanceProvider>
   );
 }
+
+export const SensorsTable = React.memo(SensorsTable1);

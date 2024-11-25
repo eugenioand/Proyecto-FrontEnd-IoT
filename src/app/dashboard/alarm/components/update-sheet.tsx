@@ -86,7 +86,7 @@ export function UpdateAlertSheet({
                 <FormItem>
                   <FormLabel>Alert Date</FormLabel>
                   <FormControl>
-                    <Input type="datetime-local" {...field} />
+                    <Input type="date" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -135,8 +135,9 @@ export function UpdateAlertSheet({
                       <SelectContent>
                         <SelectGroup>
                           <SelectItem value="CRITICAL">Critical</SelectItem>
+                          <SelectItem value="INDETERMINATE">Indeterminate</SelectItem>
+                          <SelectItem value="MAJOR">Major</SelectItem>
                           <SelectItem value="WARNING">Warning</SelectItem>
-                          <SelectItem value="INFO">Info</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -162,7 +163,7 @@ export function UpdateAlertSheet({
                       <SelectContent>
                         <SelectGroup>
                           <SelectItem value="Active">Active</SelectItem>
-                          <SelectItem value="Inactive">Inactive</SelectItem>
+                          <SelectItem value="Cleared">Cleared</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>

@@ -196,6 +196,7 @@ export function Filters({
          xl:block
          w-full  xl:w-64 2xl:w-80 bg-white border-r
          ${view === "table" ? "lg:w-40" : ""}
+         scrollbar
          fixed xl:relative
          ${title === "Humedal 2" ? "top-[500px] xl:top-0" : "top-0"}
          left-0

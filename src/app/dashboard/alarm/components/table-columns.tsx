@@ -11,7 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Checkbox } from "@/components/ui/checkbox"
 
-export function getColumns(): ColumnDef<Alarm>[] {
+ export function getColumns(): ColumnDef<Alarm>[] {
   return [
     {
       id: "select",
@@ -45,6 +45,7 @@ export function getColumns(): ColumnDef<Alarm>[] {
       header: ({ column }) => <DataTableColumnHeader column={column} title="ID de Alerta" />,
       cell: ({ row, column }) => <span>{row.getValue(column.id)}</span>,
     },
+    
     {
       accessorKey: "description",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Descripción" />,
@@ -63,7 +64,8 @@ export function getColumns(): ColumnDef<Alarm>[] {
     {
       accessorKey: "alert_date",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Fecha de Alerta" />,
-      cell: ({ row, column }) => <span>{row.getValue(column.id)}</span>,
+      cell: ({ cell }) => formatDate(cell.getValue() as Date),
+
     },
    
     {
@@ -74,7 +76,7 @@ export function getColumns(): ColumnDef<Alarm>[] {
     {
       id: "actions",
       cell: function Cell({ row }) {
-        console.log('row', row);
+   
         const [isUpdatePending, startUpdateTransition] = React.useTransition()
         const [showUpdateSensorSheet, setShowUpdateSensorSheet] = React.useState(false)
         const [showDeleteSensorDialog, setShowDeleteSensorDialog] = React.useState(false)
@@ -158,3 +160,4 @@ export function getColumns(): ColumnDef<Alarm>[] {
     },
   ]
 }
+// export const getColumns = React.memo(getColumns1);

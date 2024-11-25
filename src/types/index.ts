@@ -44,8 +44,8 @@ export interface Alarm {
   alert_id: number;
   description: string;
   node_id: number;
-  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  status: 'Active' | 'Inactive';
+  severity: "CRITICAL" |"MAJOR" |"MINOR"| "WARNING" | "INDETERMINATE";
+  status: 'Active' | 'Cleared';
   alert_date: Date;
   created_at: Date;
 }

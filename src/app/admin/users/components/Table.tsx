@@ -17,7 +17,7 @@ interface UsersTableProps {
     };
 }
 
-export function UsersTable({ usersData }: UsersTableProps) {
+export function UsersTable1({ usersData }: UsersTableProps) {
     const columns = React.useMemo(() => getColumns(), []);
     
     const filterFields: DataTableFilterField<any>[] = [
@@ -68,3 +68,4 @@ export function UsersTable({ usersData }: UsersTableProps) {
         </TableInstanceProvider>
     );
 }
+export const UsersTable = React.memo(UsersTable1);
