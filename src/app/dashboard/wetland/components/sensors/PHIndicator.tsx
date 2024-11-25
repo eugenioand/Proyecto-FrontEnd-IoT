@@ -84,7 +84,7 @@ const PHGaugeChart: React.FC<{ value: number }> = ({ value }) => {
                     show: false,
                 },
                 axisLabel: {
-                    color: '#fff',
+                    color: '#000',
                     fontSize: 14,
                     distance: 25,
                     formatter: (value: number) => {
@@ -113,6 +113,7 @@ const PHGaugeChart: React.FC<{ value: number }> = ({ value }) => {
                 },
                 data: [ { value: value },
                 ],
+                
             },
         ],
     };
