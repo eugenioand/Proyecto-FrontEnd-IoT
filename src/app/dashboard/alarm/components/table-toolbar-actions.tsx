@@ -33,7 +33,7 @@ export function SensorsTableToolbarActions({
     )
 
     return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 bg-white">
             {table.getFilteredSelectedRowModel().rows.length > 0 ? (
                 <DeleteSensorsDialog
                     sensorId={table

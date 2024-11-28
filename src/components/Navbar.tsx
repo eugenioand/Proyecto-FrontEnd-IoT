@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState , useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import "@/reports/style/form.css";
 import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverGroup, PopoverPanel } from "@headlessui/react";
@@ -48,6 +48,7 @@ const Navbar = () => {
   const [notifications, setNotifications] = useState([]);
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
+  const notificationsRef = useRef(null);
 
   useEffect(() => {
     const fetchNotifications = () => {
@@ -76,6 +77,20 @@ const Navbar = () => {
 
     return () => clearInterval(interval); // Cleanup on component unmount
   }, [notifications]);
+
+  useEffect(() => {
+
+    const handleClickOutside = (event) => {
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+  },[])
+
 
   return (
     <>
@@ -155,7 +170,9 @@ const Navbar = () => {
             <Bell className="h-6 w-6 text-white" />
           </button>
           {isOpen && (
-            <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl overflow-hidden ">
+            <div 
+            ref={notificationsRef}
+            className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl overflow-hidden ">
               <div className="p-4 border-b border-gray-100">
                 <p className="text-gray-600">Tienes <span className="text-[#00bcd4] font-medium">{notifications.filter((e)=> e.status === 'Active').length}</span> notificaciones.</p>
               </div>

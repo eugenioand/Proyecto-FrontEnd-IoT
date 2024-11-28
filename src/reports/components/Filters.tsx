@@ -284,13 +284,29 @@ export function Filters({
                   handleSelectChange("nodo", selectedOption)
                 }
                 isClearable
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    fontSize: '12px', 
+                  }),
+                  menu: (provided) => ({
+                    ...provided,
+                    fontSize: '12px',
+                  }),
+                  option: (provided, state) => ({
+                    ...provided,
+                    fontSize: '12px', 
+                    backgroundColor: state.isFocused ? '#f0f0f0' : 'white', 
+                    color: 'black',
+                  }),
+                }}
                 instanceId="nodo-select"
                 isDisabled={filters.humedal === "0"}
               />
             </div>
 
             {/* Sensores */}
-            {view === "table" && (
+            {/* {view === "table" && (
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Tipo de sensor
@@ -322,7 +338,7 @@ export function Filters({
                   instanceId="sensor-select"
                 />
               </div>
-            )}
+            )} */}
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
