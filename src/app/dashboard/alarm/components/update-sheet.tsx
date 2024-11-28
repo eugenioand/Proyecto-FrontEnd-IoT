@@ -86,15 +86,19 @@ export function UpdateAlertSheet({
               control={form.control}
               name="alert_date"
               disabled
-              render={({ field }) => (
+              render={({ field }) => {
+
+                console.log({field})
+                return(
                 <FormItem>
                   <FormLabel>Alert Date</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input type="string" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              )}
+                )
+              }}
             />
             <FormField
               control={form.control}
@@ -121,6 +125,7 @@ export function UpdateAlertSheet({
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      disabled
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select severity" />
