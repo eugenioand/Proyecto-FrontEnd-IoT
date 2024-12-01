@@ -21,7 +21,7 @@ const getGradientColor = (ph: number): [string, string] => {
   return ["#D3D3D3", "#D3D3D3"]; // Gris como fallback
 };
 
- const PHGaugeChart1: React.FC<{ value: number }> = ({ value }) => {
+const PHGaugeChart1: React.FC<{ value: number }> = ({ value }) => {
   // Validar y escalar el nivel de pH al rango de 0 a 100
   const normalizedPHLevel = Math.max(0, Math.min(value, 14));
   const scaledPHLevel = (normalizedPHLevel / 14) * 100;
@@ -36,18 +36,20 @@ const getGradientColor = (ph: number): [string, string] => {
         name: "Nivel de pH",
         type: "gauge",
         center: ["50%", "60%"],
-        radius: "90%",
+        radius: "80%",
         startAngle: 180,
         endAngle: 0,
         min: 0,
         max: 14,
+        // splitNumber: 14, // Divisiones para representar valores de pH de 0 a 14
         axisLine: {
           lineStyle: {
-            width: 20,
+            width: 30,
             color: [
               [
                 scaledPHLevel / 100,
                 {
+                  // Hasta el nivel del pH escalado
                   type: "linear",
                   x: 0,
                   y: 0,
@@ -59,20 +61,45 @@ const getGradientColor = (ph: number): [string, string] => {
                   ],
                 },
               ],
-              [1, "#D3D3D3"],
+              [1, "#D3D3D3"], // El resto de la elipse (gris claro)
             ],
           },
         },
+        axisTick: {
+          show: false,
+        },
+        splitLine: {
+          show: false,
+        },
+        axisLabel: {
+          color: "#000",
+          fontSize: 14,
+          distance: 25,
+          formatter: (value: number) => {
+            console.log(value);
+            if (value === 0) return "Ácido";
+            if (value === 7) return "Neutro";
+            if (value === 14) return "Alcalino";
+            return ""; // El resto de etiquetas se omiten
+          },
+        },
         pointer: {
-          length: "70%",
-          width: 6,
+          icon: "path://M12.8,0.7l12,40.1H0.7L12.8,0.7z",
+          length: "12%",
+          width: 15,
+          offsetCenter: [0, "-60%"],
+          itemStyle: {
+            color: "auto",
+          },
         },
         detail: {
           valueAnimation: true,
           formatter: "{value} pH",
           fontSize: 16,
+          color: "auto",
+          // offsetCenter: [0, '60%'],
         },
-        data: [{ value: normalizedPHLevel }],
+        data: [{ value: value }],
       },
     ],
   };
