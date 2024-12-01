@@ -17,7 +17,7 @@ interface Sensor {
 const sensorComponents = {
   PH: PHGaugeChart,
   OD: OxygenSensor,
-  Turbidity: TurbiditySensor,
+  TURB: TurbiditySensor,
   FlowIn: FlowSensor,
   FlowOut: FlowSensor,
 };

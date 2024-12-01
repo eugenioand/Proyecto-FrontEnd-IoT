@@ -18,7 +18,7 @@ type TurbiditySensorProps = {
     }, []);
 
     return (
-        <div className="relative w-40 h-40 bg-blue-100 rounded-full overflow-hidden">
+        <div className="relative w-full h-72 bg-blue-100  overflow-hidden">
             <h3 className="text-lg font-semibold absolute top-2 left-2">Turbidez: {value} NTU</h3>
             {bubbles.map((bubble, idx) => (
                 <div
@@ -28,7 +28,7 @@ type TurbiditySensorProps = {
                         left: `${Math.random() * 100}%`,
                         bottom: 0,
                         width: `${Math.random() * 10 + 5}px`,
-                        height: `${Math.random() * 10 + 5}px`,
+                        height: `${Math.random() * 40 + 5}px`,
                         animationDuration: `${Math.random() * 3 + 2}s`,
                     }}
                 />
