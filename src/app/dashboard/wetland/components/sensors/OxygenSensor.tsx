@@ -7,7 +7,7 @@ type OxygenSensorProps = {
     max: number; // Máximo permitido
 };
 
-export default function OxygenSensor({ value, max }: OxygenSensorProps) {
+ function OxygenSensor1({ value, max }: OxygenSensorProps) {
     const percentage = (value / max) * 100;
     const isCritical = value >= max * 0.9; // Indicador de alerta si está cerca del máximo
 
@@ -19,7 +19,7 @@ export default function OxygenSensor({ value, max }: OxygenSensorProps) {
     };
 
     return (
-        <div className="flex flex-col items-center bg-white shadow-lg rounded-xl p-4 w-40">
+        <div className="flex flex-col items-center bg-white shadow-lg rounded-xl p-4 w-full">
             {/* Título */}
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Oxígeno Disuelto</h3>
 
@@ -53,3 +53,4 @@ export default function OxygenSensor({ value, max }: OxygenSensorProps) {
         </div>
     );
 }
+export const OxygenSensor = React.memo(OxygenSensor1);

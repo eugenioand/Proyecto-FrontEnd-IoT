@@ -54,7 +54,7 @@ export function Filters({
     axiosClient.get(`https://proyecto-backend-iot.vercel.app/api/wetland-select`)
       .then((response) => response)
       .then(({ data }) =>{
-        console.log({data})
+        // console.log({data})
         setWetlands([{ name: "Todos los Humedales", wetland_id: 0 }, ...data.data])
       }
       )
@@ -188,7 +188,7 @@ export function Filters({
     }
   };
   // w-80 bg-white border-r min-h-[calc(100vh-64px)] p-4 scrollbar  overflow-y-auto 
-  console.log({title})
+  // console.log({title})
   return (
     <div
     className={`
@@ -248,7 +248,7 @@ export function Filters({
                 )}
                 // onChange={handleWetlandChange}
                 onChange={(selectedOption) =>{
-                  console.log({selectedOption})
+                  // console.log({selectedOption})
                   handleSelectChange("humedal", selectedOption)
                 }
                 }

@@ -68,6 +68,7 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
             if (selectedNode?.node_id === node.node_id) {
                 setSelectedItem(null);
             } else {
+                // console.log({node})
                 setSelectedItem({ id: node.node_id, type: "node" });
             }
         },
@@ -76,13 +77,15 @@ const WetlandDetail: React.FC<WetlandDetailProps> = ({
 
     const handleSensorSelection = useCallback(
         (sensor: Sensor) => {
+           
+        //    console.log({sensor})
             if (selectedSensor?.sensor_id === sensor.sensor_id) {
-                setSelectedItem(null);
+                setSelectedItem({ id: selectedNode?.node_id, type: "node" });
             } else {
                 setSelectedItem({ id: sensor.sensor_id, type: "sensor" });
             }
         },
-        [selectedSensor, setSelectedItem]
+        [selectedSensor, setSelectedItem,selectedNode]
     );
 
     useEffect(() => {

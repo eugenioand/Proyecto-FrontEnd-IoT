@@ -84,7 +84,7 @@ const Carousel: React.FC<CarouselProps> = ({
     }, [autoPlay, autoPlayInterval, nextSlide]);
 
     return (
-        <div className="relative w-full h-72 overflow-hidden">
+        <div className="relative w-full h-96 overflow-hidden">
             <div
                 ref={containerRef}
                 className="flex transition-transform duration-500 ease-in-out"
@@ -103,6 +103,7 @@ const Carousel: React.FC<CarouselProps> = ({
                         onClick={() => onSelectSensor && onSelectSensor(item)}
                     >
                         <CarouselItem
+                            key={item.sensor_code}
                             sensor={item}
                             selectedSensor={selectedSensor === item}
                         />

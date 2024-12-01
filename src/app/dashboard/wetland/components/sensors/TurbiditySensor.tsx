@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type TurbiditySensorProps = {
     value: number; // Valor de turbidez
     max: number; // Máximo permitido
 };
 
-export default function TurbiditySensor({ value, max }: TurbiditySensorProps) {
+ function TurbiditySensor1({ value, max }: TurbiditySensorProps) {
     const [bubbles, setBubbles] = useState<number[]>([]);
 
     useEffect(() => {
@@ -39,3 +39,4 @@ export default function TurbiditySensor({ value, max }: TurbiditySensorProps) {
         </div>
     );
 }
+export const TurbiditySensor = React.memo(TurbiditySensor1);

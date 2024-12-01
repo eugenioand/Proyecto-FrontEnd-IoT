@@ -1,10 +1,12 @@
+import React from "react";
+
 type FlowSensorProps = {
     direction: "entrada" | "salida"; // Dirección del flujo
     value: number; // Valor del flujo
     max: number; // Máximo permitido
 };
 
-export default function FlowSensor({ direction, value, max }: FlowSensorProps) {
+ function FlowSensor1({ direction, value, max }: FlowSensorProps) {
     return (
         <div className="flex flex-col items-center">
             <h3 className="text-lg font-semibold mb-2">
@@ -23,3 +25,5 @@ export default function FlowSensor({ direction, value, max }: FlowSensorProps) {
         </div>
     );
 }
+
+export const FlowSensor = React.memo(FlowSensor1);

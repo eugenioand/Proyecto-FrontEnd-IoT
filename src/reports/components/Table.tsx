@@ -30,7 +30,7 @@ interface DataRow {
 }
 
 const TableComponent = ({ filters }: TableProps) => {
-  console.log("filters", filters);
+  // console.log("filters", filters);
   const [data, setData] = useState<DataRow[]>([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10); // Tamaño de página por defecto
