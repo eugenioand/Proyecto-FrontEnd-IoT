@@ -1,7 +1,8 @@
 import React, { use, useEffect, useState } from "react";
 import Select from "react-select";
 import { FiltersProps } from "../interfaces";
-import axiosClient from "@/utils/axios-client";
+import apiClient from "@/lib/api";
+import { DateRangePicker } from "@/components/date-range-picker";
 
 interface Wetland {
   wetland_id: number;
@@ -51,13 +52,9 @@ export function Filters({
 
   useEffect(() => {
     setLoadingWetlands(true);
-    axiosClient.get(`https://proyecto-backend-iot.vercel.app/api/wetland-select`)
-      .then((response) => response)
-      .then(({ data }) =>{
-        // console.log({data})
-        setWetlands([{ name: "Todos los Humedales", wetland_id: 0 }, ...data.data])
-      }
-      )
+    apiClient
+      .get(`/wetland-select`)
+      .then(({ data }) => setWetlands([{ name: "Todos los Humedales", wetland_id: 0 }, ...data.data]))
       .catch((error) => console.error(error))
       .finally(() => setLoadingWetlands(false));
   }, []);
@@ -65,10 +62,8 @@ export function Filters({
   useEffect(() => {
     if (filters.humedal !== "0") {
       setLoadingNodes(true);
-      axiosClient.get(
-        `https://proyecto-backend-iot.vercel.app/api/node-select/${filters.humedal}`
-      )
-        .then((response) => response)
+      apiClient
+        .get(`/node-select/${filters.humedal}`)
         .then(({ data }) => setNodes(data.data))
         .catch((error) => console.error(error))
         .finally(() => setLoadingNodes(false));
@@ -78,10 +73,8 @@ export function Filters({
   useEffect(() => {
     if (filters.nodo !== "") {
       // setLoadingSensors(true);
-      axiosClient.get(
-        `https://proyecto-backend-iot.vercel.app/api/sensor-select/${filters.nodo}`
-      )
-        .then((response) => response)
+      apiClient
+        .get(`/sensor-select/${filters.nodo}`)
         .then(({ data }) => setSensors(data.data))
         .catch((error) => console.error(error));
       // .finally(() => setLoadingSensors(false));
@@ -90,8 +83,8 @@ export function Filters({
 
   useEffect(() => {
     setLoadingSensors(true);
-    axiosClient.get(`https://proyecto-backend-iot.vercel.app/api/sensors/type_sensors`)
-      .then((response) => response)
+    apiClient
+      .get(`/sensors/type_sensors`)
       .then(({ data }) => setTypeSensors(data.data))
       .catch((error) => console.error(error))
       .finally(() => setLoadingSensors(false));
@@ -166,7 +159,6 @@ export function Filters({
   const handleSelectChange = (key: string, selectedOption: any) => {
     const value = selectedOption ? selectedOption.value.toString() : "";
     const label = selectedOption ? selectedOption.label : "";
-    console.log({ label})
     onFilterChange({ ...filters, [key]: value , [key + "Label"]: label});
     if (view === "charts") {
       setErrors((prev) => ({ ...prev, [key]: !value }));
@@ -376,22 +368,24 @@ export function Filters({
               <label className="block text-sm font-medium text-gray-700">
                 Rango de fechas
               </label>
-              <div className="grid grid-cols-2 gap-2">
-                <input
-                  type="datetime-local"
-                  value={filters.startDate}
-                  // onChange={(e) => handleDateChange('startDate', e.target.value)}
-                  onChange={(e) =>
-                    handleDateChange("startDate", e.target.value)
+              <div>
+                <DateRangePicker
+                  dateRange={
+                    (filters.startDate || filters.endDate)
+                      ? {
+                          from: filters.startDate ? new Date(filters.startDate) : undefined,
+                          to: filters.endDate ? new Date(filters.endDate) : undefined,
+                        }
+                      : undefined
                   }
-                  className="flex-1 border rounded-md p-2"
-                />
-                <input
-                  type="datetime-local"
-                  value={filters.endDate}
-                  // onChange={(e) => handleDateChange('endDate', e.target.value)}
-                  onChange={(e) => handleDateChange("endDate", e.target.value)}
-                  className="flex-1 border rounded-md p-2"
+                  placeholder="Seleccionar rango de fechas"
+                  triggerSize="sm"
+                  triggerClassName="w-full text-left"
+                  onChange={(range) => {
+                    const start = range?.from ? new Date(range.from).toISOString() : "";
+                    const end = range?.to ? new Date(range.to).toISOString() : "";
+                    onFilterChange({ ...filters, startDate: start, endDate: end });
+                  }}
                 />
               </div>
               {dateError && <p className="text-sm text-red-500">{dateError}</p>}

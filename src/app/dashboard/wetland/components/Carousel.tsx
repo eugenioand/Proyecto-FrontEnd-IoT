@@ -5,7 +5,8 @@ import CarouselItem from "./CarouselItem";
 
 interface CarouselProps {
     items: Sensor[];
-    selectedSensor: Sensor | null;
+    // Now we accept the selected sensor id (or code) to avoid object reference equality
+    selectedSensor?: string | number | null;
     onSelectSensor?: (sensor: Sensor) => void;
     autoPlay?: boolean;
     autoPlayInterval?: number;
@@ -90,7 +91,14 @@ const Carousel: React.FC<CarouselProps> = ({
                 className="flex transition-transform duration-500 ease-in-out"
                 style={{ transform: calculateTranslateX }}
             >
-                {items.map((item, index) => (
+                {items.map((item, index) => {
+                    const isSelected =
+                        selectedSensor !== undefined && selectedSensor !== null &&
+                        (item.hasOwnProperty("sensor_id")
+                            ? (item as any).sensor_id === selectedSensor
+                            : (item as any).id === selectedSensor || (item as any).sensor_code === selectedSensor);
+
+                    return (
                     <div
                         key={index}
                         className={`flex-shrink-0 p-2 ${
@@ -105,10 +113,11 @@ const Carousel: React.FC<CarouselProps> = ({
                         <CarouselItem
                             key={item.sensor_code}
                             sensor={item}
-                            selectedSensor={selectedSensor === item}
+                            selectedSensor={isSelected}
                         />
                     </div>
-                ))}
+                    );
+                })}
             </div>
 
             {/* Botones de navegación */}

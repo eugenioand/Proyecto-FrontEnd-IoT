@@ -31,20 +31,35 @@ const Dashboard = () => {
     const [error, setError] = useState(null);
     const [isCardDisabled, setIsCardDisabled] = useState(false);
 
-    useEffect(() => {
-        const fetchWetlands = async () => {
-            setLoading(true);
-            const result = await getWetlands();
-            console.log(result);
-            if (result.error) {
-                setError(result.error);
-            } else {
-                setWetlands(result);
-            }
-            setLoading(false);
+    const fetchWetlands = async (isInitial = false) => {
+        if (isInitial) setLoading(true);
+        const result = await getWetlands();
+        console.log(result);
+        if (result.error) {
+            setError(result.error);
+        } else {
+            setWetlands(result);
         }
-        fetchWetlands();
-    }, []);
+        if (isInitial) setLoading(false);
+    };
+
+    useEffect(() => {
+    let isMounted = true;
+
+    const fetchLoop = async () => {
+        if (!isMounted) return;
+
+        await fetchWetlands(false);
+        setTimeout(fetchLoop, 5000);
+    };
+
+    fetchWetlands(true); // primera carga
+    fetchLoop();
+
+    return () => {
+        isMounted = false;
+    };
+}, []);
 
     const closeErrorModal = () => {
         setError(null);

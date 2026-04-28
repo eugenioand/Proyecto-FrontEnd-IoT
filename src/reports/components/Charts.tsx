@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactECharts from "echarts-for-react";
+import apiClient from "@/lib/api";
 
 interface ChartsProps {
   filters: {
@@ -47,32 +48,23 @@ export function Charts({ filters }: ChartsProps) {
         startDate = lastMonth.toISOString();
       }
 
-      // Base URL de la API
-      let baseUrl =
-        "https://proyecto-backend-iot.vercel.app/api/wetland-report-graph";
+      const buildPath = () => {
+        const queryParams = new URLSearchParams();
+        if (startDate) queryParams.append("start_time", Math.floor(new Date(startDate).getTime()).toString());
+        if (endDate) queryParams.append("end_time", Math.floor(new Date(endDate).getTime()).toString());
 
-      const queryParams = new URLSearchParams();
+        let path = `/wetland-report-graph`;
+        if (humedal) path += `/${humedal}`;
+        if (nodo) path += `/${nodo}`;
+        if (sensor) path += `/${sensor}`;
 
-      if (humedal) baseUrl += `/${humedal}`;
-      if (nodo) baseUrl += `/${nodo}`;
-      if (sensor) baseUrl += `/${sensor}`;
-      if (startDate)
-        queryParams.append(
-          "start_time",
-          Math.floor(new Date(startDate).getTime()).toString()
-        );
-      if (endDate)
-        queryParams.append(
-          "end_time",
-          Math.floor(new Date(endDate).getTime()).toString()
-        );
-
-      const finalUrl = `${baseUrl}?${queryParams.toString()}`;
+        return `${path}?${queryParams.toString()}`;
+      };
 
       try {
         setLoading(true);
-        const response = await fetch(finalUrl);
-        const json = await response.json();
+        const response = await apiClient.get(buildPath());
+        const json = response.data;
 
         const data = json.data
           .map(
@@ -163,9 +155,7 @@ export function Charts({ filters }: ChartsProps) {
   //     </div>
   //   );
   function sanitizeValue(value) {
-    console.log("value", typeof value);
     if (typeof value === "number" || !isFinite(value) || isNaN(value)) {
-      console.log("value", value);
       return "";
     }
 

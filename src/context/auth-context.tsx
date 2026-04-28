@@ -89,13 +89,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
             const refresh_token = localStorage.getItem('refresh_token');
 
-            console.log({ refresh_token });
             if (!refresh_token) throw new Error('No refresh token available');
             const response = await axios.post(`${API_URL}/auth/refresh`,{key:null}, { headers:{
                 Authorization: `Bearer ${refresh_token}`
             } });
             const { access_token } = response.data;
-            console.log({ access_token });
             localStorage.setItem('access_token', access_token);
             return access_token;
         } catch (error) {

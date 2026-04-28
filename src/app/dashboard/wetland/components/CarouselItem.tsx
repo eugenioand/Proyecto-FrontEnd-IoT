@@ -78,9 +78,7 @@ const CarouselItem: /*  React.FC<{ sensor: Sensor, selectedSensor: boolean }> */
   ({ sensor, selectedSensor }) => {
     const SensorComponent =
       sensorComponents[sensor.sensor_code] || DefaultSensor;
-      console.log("Rendering CarouselItem for:", sensor.sensor_code);
-
-      console.log("SensorComponent:", SensorComponent);
+      
     return (
       <div
         className={`flex-shrink-0 w-full h-full rounded-md ${

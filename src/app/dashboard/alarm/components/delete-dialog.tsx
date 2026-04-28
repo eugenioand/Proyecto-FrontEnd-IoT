@@ -14,8 +14,7 @@ export default function DeleteSensorsDialog({ sensorId, open, onOpenChange, show
     if (sensorId.length > 1) {
         description = "Are you sure you want to delete these sensors? This action cannot be undone."
     }
-    console.log({sensorId})
-
+    
     return (
         <DeleteDialog
             onDelete={() => deleteAlarms(sensorId.map((id) => parseInt(id)))}

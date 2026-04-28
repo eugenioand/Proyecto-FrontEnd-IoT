@@ -23,7 +23,6 @@ interface SensorsTableProps {
 }
 
 export function SensorsTable1({ sensorsData }: SensorsTableProps) {
-  console.log('sensorsData', sensorsData);
   const columns = React.useMemo(() => getColumns(), []);
 
   const sensorStatus: Array<'Active' | 'Cleared'> = ["Active", "Cleared"];

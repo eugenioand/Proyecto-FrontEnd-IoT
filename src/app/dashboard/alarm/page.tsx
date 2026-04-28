@@ -26,7 +26,6 @@ export default function AlarmPage() {
 
   React.useEffect(() => {
     const params = Object.fromEntries(searchParams.entries());
-    console.log('params', params);
     let updated = false;
 
     // Añadir parámetros por defecto si no están presentes
@@ -48,8 +47,7 @@ export default function AlarmPage() {
       router.replace(`${window.location.pathname}?${newSearchParams.toString()}`);
     } else {
       const fetchData = async () => {
-        const queryString = new URLSearchParams(params).toString();
-        console.log("Making API request with query string:", queryString);
+      const queryString = new URLSearchParams(params).toString();
         try {
           const data = await getAlarms(params);
           setSensorsData(data);

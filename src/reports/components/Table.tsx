@@ -6,7 +6,7 @@ import {
   ColumnDef,
 } from "@tanstack/react-table";
 import { Download } from "lucide-react";
-import axiosClient from "@/utils/axios-client";
+import apiClient, { API_URL } from "@/lib/api";
 
 interface TableProps {
   filters: {
@@ -39,37 +39,30 @@ const TableComponent = ({ filters }: TableProps) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Construcción dinámica del endpoint
-  const buildEndpoint = (fomrat?:string) => {
-    let endpoint = "https://proyecto-backend-iot.vercel.app/api/wetland-report";
-    if (filters.humedal && filters.humedal !== "0")
-      endpoint += `/${filters.humedal}`;
-    if (filters.nodo) endpoint += `/${filters.nodo}`;
-    if (filters.sensor) endpoint += `/${filters.sensor}`;
-    endpoint += `?page_size=${pageSize}&page=${page}`;
+  // Construcción dinámica de la ruta del endpoint (ruta relativa)
+  const buildPath = (fomrat?: string) => {
+    let path = `/wetland-report`;
+    if (filters.humedal && filters.humedal !== "0") path += `/${filters.humedal}`;
+    if (filters.nodo) path += `/${filters.nodo}`;
+    if (filters.sensor) path += `/${filters.sensor}`;
+    path += `?page_size=${pageSize}&page=${page}`;
 
-    const startTime = filters.startDate
-      ? Math.floor(new Date(filters.startDate).getTime())
-      : null;
-    const endTime = filters.endDate
-      ? Math.floor(new Date(filters.endDate).getTime())
-      : null;
+    const startTime = filters.startDate ? Math.floor(new Date(filters.startDate).getTime()) : null;
+    const endTime = filters.endDate ? Math.floor(new Date(filters.endDate).getTime()) : null;
 
     if (filters.typeSensor) {
-      endpoint += `&sensor_type=${filters.typeSensor}`;
+      path += `&sensor_type=${filters.typeSensor}`;
     }
 
     if (startTime && endTime) {
-      console.log("start", startTime, "end", endTime);
-      endpoint += `&start_time=${startTime}`;
-      endpoint += `&end_time=${endTime}`;
+      path += `&start_time=${startTime}`;
+      path += `&end_time=${endTime}`;
     }
-    // if (endTime) {
-    // }
-    if(fomrat){
-      endpoint += `&format=${fomrat}`;
+    if (fomrat) {
+      path += `&format=${fomrat}`;
     }
-    return endpoint;
+
+    return path;
   };
 
   // Fetch data from API
@@ -93,20 +86,25 @@ const TableComponent = ({ filters }: TableProps) => {
         setLoading(false);
         return;
       }
-      const response = await axiosClient.get(buildEndpoint());
-      console.log("response", response);
-      const result = await response.data;
+      const response = await apiClient.get(buildPath());
+      const result = response.data;
 
       if (response.status === 200) {
-        const transformedData = result.data.map((item: any) => ({
-          fecha: new Date(item.sensor.register_date).toLocaleDateString(),
-          hora: new Date(item.sensor.register_date).toLocaleTimeString(),
-          valor: item.sensor.value,
-          unidad: item.sensor.unity,
-          localizacionNodo: item.node.location,
-          nombreHumedal: item.wetland.name,
-          tipoSensor: item.sensor.type_sensor,
-        }));
+        const transformedData = result.data.map((item: any) => {
+          const rawDate =
+            item?.sensor?.register_date ?? item?.register_date ?? item?.sensor?.registerDate ?? item?.registerDate;
+          const parsed = rawDate ? new Date(rawDate) : null;
+
+          return {
+            fecha: parsed ? parsed.toLocaleDateString() : "",
+            hora: parsed ? parsed.toLocaleTimeString() : "",
+            valor: item?.sensor?.value ?? item?.value ?? null,
+            unidad: item?.sensor?.unity ?? item?.unity ?? "",
+            localizacionNodo: item?.node?.location ?? item?.location ?? "",
+            nombreHumedal: item?.wetland?.name ?? item?.name ?? "",
+            tipoSensor: item?.sensor?.type_sensor ?? item?.type_sensor ?? "",
+          };
+        });
 
         setData(transformedData);
         setTotalResults(result.paging.total_count);
@@ -128,6 +126,18 @@ const TableComponent = ({ filters }: TableProps) => {
       setLoading(false);
     }
   }, [page, pageSize, filters]);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [
+    filters.humedal,
+    filters.nodo,
+    filters.sensor,
+    filters.typeSensor,
+    filters.startDate,
+    filters.endDate,
+  ]);
 
   useEffect(() => {
     fetchData();
@@ -153,10 +163,10 @@ const TableComponent = ({ filters }: TableProps) => {
         accessorKey: "valor",
         header: "Valor",
       },
-      {
+      /* {
         accessorKey: "unidad",
         header: "Unidad",
-      },
+      }, */
       {
         accessorKey: "localizacionNodo",
         header: "Localización Nodo",
@@ -209,7 +219,7 @@ const TableComponent = ({ filters }: TableProps) => {
               </h2>
               <a
                 // onClick={handleExport}
-                href={buildEndpoint('excel')}
+                href={`${(API_URL ?? '').replace(/\/$/, '')}${buildPath('excel')}`}
                 target="_blank"
                 className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactECharts from "echarts-for-react";
+import apiClient from "@/lib/api";
 
 interface ComparisonChartProps {
   filters: {
@@ -51,25 +52,17 @@ export function ComparisonChart({
     "daily"
   );
 
-  const buildUrl = (baseUrl: string, params: any) => {
+  const buildPath = (params: any) => {
     const queryParams = new URLSearchParams();
-    if (params.startDate)
-      queryParams.append(
-        "start_time",
-        Math.floor(new Date(params.startDate).getTime()).toString()
-      );
-    if (params.endDate)
-      queryParams.append(
-        "end_time",
-        Math.floor(new Date(params.endDate).getTime()).toString()
-      );
+    if (params.startDate) queryParams.append("start_time", Math.floor(new Date(params.startDate).getTime()).toString());
+    if (params.endDate) queryParams.append("end_time", Math.floor(new Date(params.endDate).getTime()).toString());
 
-    let url = baseUrl;
-    if (params.humedal) url += `/${params.humedal}`;
-    if (params.nodo) url += `/${params.nodo}`;
-    if (params.sensor) url += `/${params.sensor}`;
+    let path = `/wetland-report-graph`;
+    if (params.humedal) path += `/${params.humedal}`;
+    if (params.nodo) path += `/${params.nodo}`;
+    if (params.sensor) path += `/${params.sensor}`;
 
-    return `${url}?${queryParams.toString()}`;
+    return `${path}?${queryParams.toString()}`;
   };
 
   const calculateDates = (range: "daily" | "weekly" | "monthly") => {
@@ -96,15 +89,10 @@ export function ComparisonChart({
     timeRange: "daily" | "weekly" | "monthly"
   ) => {
     const { startDate, endDate } = calculateDates(timeRange);
-    const url = buildUrl(
-      "https://proyecto-backend-iot.vercel.app/api/wetland-report-graph",
-      { ...currentFilters, startDate, endDate }
-    );
-
     try {
       setLoading(true);
-      const response = await fetch(url);
-      const json = await response.json();
+      const response = await apiClient.get(buildPath({ ...currentFilters, startDate, endDate }));
+      const json = response.data;
       const data = json.data
         .map((entry: { sensor: any }) => entry.sensor)
         .filter(Boolean);

@@ -118,7 +118,7 @@ const Navbar = () => {
         </div>
         <div className="hidden lg:flex lg:space-x-12">
           <Link href="/dashboard/wetland" className="text-sm font-semibold leading-6 text-white">Inicio</Link>
-          <Link href="/dashboard/map" className="text-sm font-semibold leading-6 text-white">Maps</Link>
+          {/* <Link href="/dashboard/map" className="text-sm font-semibold leading-6 text-white">Maps</Link> */}
           {/* <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-white">
               Administración

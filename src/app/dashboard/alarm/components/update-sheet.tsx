@@ -63,7 +63,6 @@ export function UpdateAlertSheet({
   })
 
   function onSubmit(values: AlertFormValues) {
-    console.log('values', values);
     updateAlarms(values)
       .then(() => {
         toast.success("Alert updated successfully")
@@ -86,10 +85,7 @@ export function UpdateAlertSheet({
               control={form.control}
               name="alert_date"
               disabled
-              render={({ field }) => {
-
-                console.log({field})
-                return(
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Alert Date</FormLabel>
                   <FormControl>
@@ -97,8 +93,7 @@ export function UpdateAlertSheet({
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-                )
-              }}
+              )}
             />
             <FormField
               control={form.control}
