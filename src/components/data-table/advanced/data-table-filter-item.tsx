@@ -1,5 +1,5 @@
 import * as React from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation"
 import type { DataTableFilterOption } from "@/types"
 import { TrashIcon } from "@radix-ui/react-icons"
 
@@ -41,6 +41,7 @@ export function DataTableFilterItem<TData>({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const safeSearchParams = (searchParams ?? (new URLSearchParams() as unknown as ReadonlyURLSearchParams)) as ReadonlyURLSearchParams
 
   const { tableInstance: table } = useTableInstanceContext()
 
@@ -76,7 +77,7 @@ export function DataTableFilterItem<TData>({
                 ? `${filterValues.join(".")}~${selectedOperator?.value}`
                 : null,
           },
-          searchParams
+          safeSearchParams
         )
         router.push(`${pathname}?${newSearchParams}`, {
           scroll: false,
@@ -88,7 +89,7 @@ export function DataTableFilterItem<TData>({
             [String(selectedOption.value)]:
               value.length > 0 ? `${value}~${selectedOperator?.value}` : null,
           },
-          searchParams
+          safeSearchParams
         )
         router.push(`${pathname}?${newSearchParams}`, {
           scroll: false,
@@ -187,7 +188,7 @@ export function DataTableFilterItem<TData>({
                 {
                   [String(selectedOption.value)]: null,
                 },
-                searchParams
+                safeSearchParams
               )
               router.push(`${pathname}?${newSearchParams}`, {
                 scroll: false,

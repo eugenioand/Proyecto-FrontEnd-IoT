@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation"
 import { CalendarIcon } from "@radix-ui/react-icons"
 import { addDays, format } from "date-fns"
 import type { DateRange } from "react-day-picker"
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/popover"
 
 interface DateRangePickerProps
-  extends React.ComponentPropsWithoutRef<typeof PopoverContent> {
+  extends Omit<React.ComponentPropsWithoutRef<typeof PopoverContent>, 'onChange'> {
   /**
    * The selected date range.
    * @default undefined
@@ -80,9 +80,10 @@ export function DateRangePicker({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const safeSearchParams = (searchParams ?? (new URLSearchParams() as unknown as ReadonlyURLSearchParams)) as ReadonlyURLSearchParams
 
-  const fromParam = searchParams.get("from")
-  const toParam = searchParams.get("to")
+  const fromParam = safeSearchParams.get("from")
+  const toParam = safeSearchParams.get("to")
 
   function calcDateRange() {
     let fromDay: Date | undefined
@@ -122,7 +123,7 @@ export function DateRangePicker({
 
   // Update query string
   React.useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams)
+    const newSearchParams = new URLSearchParams(safeSearchParams)
     if (date?.from) {
       try {
         newSearchParams.set("from", date.from.toISOString())

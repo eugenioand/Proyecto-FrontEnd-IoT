@@ -1,12 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter, type ReadonlyURLSearchParams } from 'next/navigation';
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Shell } from "@/components/shell";
 import { getUsers } from "@/services/users";
 import { toast } from "sonner";
 import { UsersTable } from "./components/Table";
+import { searchParamsSchema } from '@/lib/validations';
 interface UsersData {
     data: any[];
     pageCount: number;
@@ -40,11 +41,12 @@ const UsersPage = () => {
 
     const [usersData, setUsersData] = React.useState<UsersData | null>(null);
     const searchParams = useSearchParams();
+    const safeSearchParams = (searchParams ?? (new URLSearchParams() as unknown as ReadonlyURLSearchParams)) as ReadonlyURLSearchParams;
     const router = useRouter();
     
     React.useEffect(() => {
         // const params = Object.fromEntries(searchParams.entries());
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(safeSearchParams.toString());
         const { updated, params: updatedParams } = getDefaultParams(params);
     
         if (updated) {
@@ -52,9 +54,10 @@ const UsersPage = () => {
         } else {
             const fetchData = async () => {
                 try {
-                    const queryParams = Object.fromEntries(params.entries());   
-                    console.log("Making API request with query string:", queryParams);
-                    const data = await getUsers(queryParams);
+                    const queryParamsRaw = Object.fromEntries(params.entries()) as Record<string, string>;
+                    console.log("Making API request with query string:", queryParamsRaw);
+                    const parsedParams = searchParamsSchema.parse(queryParamsRaw);
+                    const data = await getUsers(parsedParams);
                     setUsersData(data);
                 } catch (error) {
                     const errorMsg = error?.message || "Ha ocurrido un error al cargar los usuarios. Por favor, intenta de nuevo.";

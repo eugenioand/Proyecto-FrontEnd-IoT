@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import type { DataTableFilterField } from "@/types";
 import {
   getCoreRowModel,
@@ -54,8 +54,9 @@ export function useDataTable<TData, TValue>({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const safeSearchParams = (searchParams ?? (new URLSearchParams() as unknown as ReadonlyURLSearchParams)) as ReadonlyURLSearchParams;
 
-  const search = schema.parse(Object.fromEntries(searchParams));
+  const search = schema.parse(Object.fromEntries(safeSearchParams));
   const page = search.page;
   const pageSize = search.page_size ?? defaultPerPage;
   const sort = search.sort ?? defaultSort;
@@ -69,7 +70,7 @@ export function useDataTable<TData, TValue>({
   }, [filterFields]);
 
   const initialColumnFilters: ColumnFiltersState = React.useMemo(() => {
-    return Array.from(searchParams.entries()).reduce<ColumnFiltersState>(
+    return Array.from(safeSearchParams.entries()).reduce<ColumnFiltersState>(
       (filters, [key, value]) => {
         const filterableColumn = filterableColumns.find(
           (column) => column.value === key
@@ -94,7 +95,7 @@ export function useDataTable<TData, TValue>({
       },
       []
     );
-  }, [filterableColumns, searchableColumns, searchParams]);
+  }, [filterableColumns, searchableColumns, safeSearchParams]);
 
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -163,7 +164,7 @@ export function useDataTable<TData, TValue>({
       }
     }
 
-    for (const key of searchParams.keys()) {
+    for (const key of safeSearchParams.keys()) {
       if (
         (searchableColumns.find((column) => column.value === key) &&
           !debouncedSearchableColumnFilters.find(
@@ -177,7 +178,7 @@ export function useDataTable<TData, TValue>({
     }
 
     router.push(
-      `${pathname}?${createQueryString(newParamsObject, searchParams)}`,
+      `${pathname}?${createQueryString(newParamsObject, safeSearchParams)}`,
       { scroll: false }
     );
 
@@ -212,7 +213,7 @@ export function useDataTable<TData, TValue>({
       }
     }
 
-    router.push(`${pathname}?${createQueryString(newParams, searchParams)}`, {
+    router.push(`${pathname}?${createQueryString(newParams, safeSearchParams)}`, {
       scroll: false,
     });
 

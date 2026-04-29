@@ -68,7 +68,7 @@ export function calcViewSearchParamsURL(view: any) {
 }
 
 export function getIsFiltered(searchParams: ReadonlyURLSearchParams) {
-  const filters = []
+  const filters: string[] = []
   const filterObj = Object.fromEntries(searchParams)
   for (const [key, value] of Object.entries(filterObj) as [
     keyof SearchParams,

@@ -1,4 +1,4 @@
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, type ReadonlyURLSearchParams } from "next/navigation"
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -25,11 +25,12 @@ export function DataTablePagination({
   pageSizeOptions = [10, 20, 30, 40, 50],
 }: DataTablePaginationProps) {
   const searchParams = useSearchParams()
+  const safeSearchParams = (searchParams ?? (new URLSearchParams() as unknown as ReadonlyURLSearchParams)) as ReadonlyURLSearchParams
 
   const { tableInstance: table } = useTableInstanceContext()
 
-  const page = searchParams.get("page") ?? 1
-  const perPage = searchParams.get("page_size") ?? 10
+  const page = Number(safeSearchParams.get("page") ?? 1)
+  const perPage = Number(safeSearchParams.get("page_size") ?? 10)
 
   return (
     <div className="flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto p-1 sm:flex-row sm:gap-8">
@@ -40,7 +41,7 @@ export function DataTablePagination({
       <div className="flex flex-col-reverse items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
         <div className="flex items-center space-x-2">
           <p className="whitespace-nowrap text-sm font-medium">Filas por página</p>
-          <Select
+            <Select
             value={`${perPage}`}
             onValueChange={(value) => {
               table.setPageIndex(0)

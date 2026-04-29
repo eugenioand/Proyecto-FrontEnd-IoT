@@ -158,7 +158,7 @@ export function getIsFiltered(
   searchParams: ReadonlyURLSearchParams,
   tableSchema: TableSchema
 ) {
-  const filters = [];
+  const filters: { key: string; value: string }[] = [];
   const filterObj = Object.fromEntries(searchParams);
   for (const [key, value] of Object.entries(filterObj)) {
     if (key === "sort" && value === "createdAt.desc") {

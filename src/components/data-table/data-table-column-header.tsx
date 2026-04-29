@@ -1,4 +1,4 @@
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, type ReadonlyURLSearchParams } from "next/navigation"
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -29,12 +29,13 @@ export function DataTableColumnHeader<TData, TValue>({
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   const searchParams = useSearchParams()
+  const safeSearchParams = (searchParams ?? (new URLSearchParams() as unknown as ReadonlyURLSearchParams)) as ReadonlyURLSearchParams
 
   if (!column.getCanSort() && !column.getCanHide()) {
     return <div className={cn(className)}>{title}</div>
   }
 
-  const [columnName, sortOrder] = searchParams.get("sort")?.split(".") ?? []
+  const [columnName, sortOrder] = safeSearchParams.get("sort")?.split(".") ?? []
   const isSorted = columnName === column.id
 
   return (

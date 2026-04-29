@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter, type ReadonlyURLSearchParams } from 'next/navigation';
+import { searchParamsSchema } from '@/lib/validations';
 // import { Suspense } from 'react';
 
 import { DataTableSkeleton } from '@/components/data-table/data-table-skeleton';
@@ -22,34 +23,36 @@ export default function AlarmPage() {
 
   const [sensorsData, setSensorsData] = React.useState<SensorsData | null>(null);
   const searchParams = useSearchParams();
+  const safeSearchParams = (searchParams ?? (new URLSearchParams() as unknown as ReadonlyURLSearchParams)) as ReadonlyURLSearchParams
   const router = useRouter();
 
   React.useEffect(() => {
-    const params = Object.fromEntries(searchParams.entries());
+    const paramsRaw = Object.fromEntries(safeSearchParams.entries()) as Record<string, string>;
     let updated = false;
 
     // Añadir parámetros por defecto si no están presentes
-    if (!params.page) {
-      params.page = '1';
+    if (!paramsRaw.page) {
+      paramsRaw.page = '1';
       updated = true;
     }
-    if (!params.page_size) {
-      params.page_size = '10';
+    if (!paramsRaw.page_size) {
+      paramsRaw.page_size = '10';
       updated = true;
     }
-    if (!params.sort) {
-      params.sort = 'created_at.desc';
+    if (!paramsRaw.sort) {
+      paramsRaw.sort = 'created_at.desc';
       updated = true;
     }
 
     if (updated) {
-      const newSearchParams = new URLSearchParams(params);
+      const newSearchParams = new URLSearchParams(paramsRaw);
       router.replace(`${window.location.pathname}?${newSearchParams.toString()}`);
     } else {
       const fetchData = async () => {
-      const queryString = new URLSearchParams(params).toString();
+      const queryString = new URLSearchParams(paramsRaw).toString();
         try {
-          const data = await getAlarms(params);
+          const parsed = searchParamsSchema.parse(paramsRaw);
+          const data = await getAlarms(parsed);
           setSensorsData(data);
         } catch (error) {
           toast.error(error?.message || '');

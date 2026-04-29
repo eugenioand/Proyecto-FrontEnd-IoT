@@ -9,6 +9,7 @@ import { DateRangePicker } from '@/components/date-range-picker';
 import { SensorsTable } from './components/table';
 import { Shell } from '@/components/shell';
 import { getSensors } from '@/services/sensors';
+import { searchParamsSchema } from '@/lib/validations';
 import { toast } from 'sonner';
 
 const SensorsPage = () => {
@@ -26,33 +27,35 @@ const SensorsPage = () => {
   const router = useRouter();
 
   React.useEffect(() => {
-    const params = Object.fromEntries(searchParams.entries());
-    console.log('params', params);
+    if (!searchParams) return;
+    const paramsRaw = Object.fromEntries(searchParams.entries()) as Record<string, string>;
+    console.log('params', paramsRaw);
     let updated = false;
 
     // Añadir parámetros por defecto si no están presentes
-    if (!params.page) {
-      params.page = '1';
+    if (!paramsRaw.page) {
+      paramsRaw.page = '1';
       updated = true;
     }
-    if (!params.page_size) {
-      params.page_size = '10';
+    if (!paramsRaw.page_size) {
+      paramsRaw.page_size = '10';
       updated = true;
     }
-    if (!params.sort) {
-      params.sort = 'created_at.desc';
+    if (!paramsRaw.sort) {
+      paramsRaw.sort = 'created_at.desc';
       updated = true;
     }
 
     if (updated) {
-      const newSearchParams = new URLSearchParams(params);
+      const newSearchParams = new URLSearchParams(paramsRaw);
       router.replace(`${window.location.pathname}?${newSearchParams.toString()}`);
     } else {
       const fetchData = async () => {
-        const queryString = new URLSearchParams(params).toString();
+        const queryString = new URLSearchParams(paramsRaw).toString();
         console.log("Making API request with query string:", queryString);
         try {
-          const data = await getSensors(params);
+          const parsed = searchParamsSchema.parse(paramsRaw);
+          const data = await getSensors(parsed);
           setSensorsData(data);
         } catch (error) {
           toast.error(error?.message || '');

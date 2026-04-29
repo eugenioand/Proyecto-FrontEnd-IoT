@@ -45,10 +45,10 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
-  const notificationsRef = useRef(null);
+  const notificationsRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const fetchNotifications = () => {
@@ -80,8 +80,8 @@ const Navbar = () => {
 
   useEffect(() => {
 
-    const handleClickOutside = (event) => {
-      if (notificationsRef.current && !notificationsRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }

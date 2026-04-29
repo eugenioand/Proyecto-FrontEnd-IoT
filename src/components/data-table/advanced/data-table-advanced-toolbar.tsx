@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import type { DataTableFilterField, DataTableFilterOption } from "@/types";
 import { CaretSortIcon, PlusIcon } from "@radix-ui/react-icons";
 import isEqual from "lodash.isequal";
@@ -34,6 +34,7 @@ export function DataTableAdvancedToolbar<TData>({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const safeSearchParams = (searchParams ?? (new URLSearchParams() as unknown as ReadonlyURLSearchParams)) as ReadonlyURLSearchParams;
 
   const { tableInstance: table } = useTableInstanceContext();
 
@@ -50,9 +51,9 @@ export function DataTableAdvancedToolbar<TData>({
 
   const initialSelectedOptions = React.useMemo(() => {
     return options
-      .filter((option) => searchParams.has(option.value as string))
+      .filter((option) => safeSearchParams.has(option.value as string))
       .map((option) => {
-        const value = searchParams.get(String(option.value)) as string;
+        const value = safeSearchParams.get(String(option.value)) as string;
         const [filterValue, filterOperator, isMulti] =
           value?.split("~").filter(Boolean) ?? [];
 
@@ -90,7 +91,7 @@ export function DataTableAdvancedToolbar<TData>({
       )
   );
 
-  const isFiltered = getIsFiltered(searchParams);
+  const isFiltered = getIsFiltered(safeSearchParams);
 
   const columns = table
     .getVisibleFlatColumns()
@@ -99,10 +100,10 @@ export function DataTableAdvancedToolbar<TData>({
         typeof column.accessorFn !== "undefined" && column.getCanHide()
     )
     .map((column) => column.id);
-  const filterParams = calcFilterParams(selectedOptions, searchParams);
+  const filterParams = calcFilterParams(selectedOptions, safeSearchParams);
 
   React.useEffect(() => {
-    const searchParamsObj = Object.fromEntries(searchParams);
+    const searchParamsObj = Object.fromEntries(safeSearchParams);
     const newSelectedOptions: DataTableFilterOption<TData>[] = [];
 
     for (const [key, value] of Object.entries(searchParamsObj) as [
@@ -126,7 +127,7 @@ export function DataTableAdvancedToolbar<TData>({
       setOpenFilterBuilder(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [safeSearchParams]);
 
   return (
     <div

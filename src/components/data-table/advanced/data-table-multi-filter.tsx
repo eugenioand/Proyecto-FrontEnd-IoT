@@ -1,5 +1,5 @@
 import * as React from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation"
 import type { DataTableFilterOption } from "@/types"
 import {
   CopyIcon,
@@ -57,9 +57,10 @@ export function DataTableMultiFilter<TData>({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const safeSearchParams = (searchParams ?? (new URLSearchParams() as unknown as ReadonlyURLSearchParams)) as ReadonlyURLSearchParams
 
   const currentOperator = dataTableConfig.logicalOperators.find(
-    (operator) => searchParams.get("operator") === operator.value
+    (operator) => safeSearchParams.get("operator") === operator.value
   )
 
   const [open, setOpen] = React.useState(defaultOpen)
@@ -113,7 +114,7 @@ export function DataTableMultiFilter<TData>({
               }
               paramsObj.operator = "and"
 
-              const newSearchParams = createQueryString(paramsObj, searchParams)
+              const newSearchParams = createQueryString(paramsObj, safeSearchParams)
               router.push(`${pathname}?${newSearchParams}`, {
                 scroll: false,
               })
@@ -153,6 +154,7 @@ export function MultiFilterRow<TData>({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const safeSearchParams = (searchParams ?? (new URLSearchParams() as unknown as ReadonlyURLSearchParams)) as ReadonlyURLSearchParams
 
   const value = option.filterValues?.[0] ?? ""
   const debounceValue = useDebounce(value, 500)
@@ -191,7 +193,7 @@ export function MultiFilterRow<TData>({
                 ? `${filterValues.join(".")}~${comparisonOperator?.value}~multi`
                 : null,
           },
-          searchParams
+          safeSearchParams
         )
         router.push(`${pathname}?${newSearchParams}`, {
           scroll: false,
@@ -205,7 +207,7 @@ export function MultiFilterRow<TData>({
                 ? `${debounceValue}~${comparisonOperator?.value}~multi`
                 : null,
           },
-          searchParams
+          safeSearchParams
         )
         router.push(`${pathname}?${newSearchParams}`, {
           scroll: false,
@@ -224,7 +226,7 @@ export function MultiFilterRow<TData>({
           {
             operator: operator.value,
           },
-          searchParams
+          safeSearchParams
         )}`,
         {
           scroll: false,
@@ -237,14 +239,14 @@ export function MultiFilterRow<TData>({
   // Update operator state when operator params is changed
   React.useEffect(() => {
     const newOperator = dataTableConfig.logicalOperators.find(
-      (operator) => searchParams.get("operator") === operator.value
+      (operator) => safeSearchParams.get("operator") === operator.value
     )
 
     if (newOperator) {
       setOperator(newOperator)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams.get("operator")])
+  }, [safeSearchParams.get("operator")])
 
   return (
     <div className="flex items-center space-x-2">
@@ -411,7 +413,7 @@ export function MultiFilterRow<TData>({
               if (selectedOptions.length === 1) {
                 paramsObj.operator = "and"
               }
-              const newSearchParams = createQueryString(paramsObj, searchParams)
+              const newSearchParams = createQueryString(paramsObj, safeSearchParams)
               router.push(`${pathname}?${newSearchParams}`, {
                 scroll: false,
               })
