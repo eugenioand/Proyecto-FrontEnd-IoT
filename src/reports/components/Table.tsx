@@ -91,8 +91,7 @@ const TableComponent = ({ filters }: TableProps) => {
 
       if (response.status === 200) {
         const transformedData = result.data.map((item: any) => {
-          const rawDate =
-            item?.sensor?.register_date ?? item?.register_date ?? item?.sensor?.registerDate ?? item?.registerDate;
+          const rawDate = item?.sensor?.register_date ?? item?.register_date ?? item?.sensor?.registerDate ?? item?.registerDate;
           const parsed = rawDate ? new Date(rawDate) : null;
 
           return {
