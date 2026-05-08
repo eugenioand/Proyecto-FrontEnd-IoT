@@ -30,9 +30,8 @@ export function Charts({ filters }: ChartsProps) {
     const fetchData = async () => {
       const { humedal, nodo, sensor } = filters;
 
-      // Calcular fechas dinámicamente
       let startDate: string | undefined;
-      const endDate: string | undefined = new Date().toISOString(); // Fecha actual
+      const endDate: string | undefined = new Date().toISOString();
 
       if (timeRange === "daily") {
         const yesterday = new Date();
@@ -57,7 +56,6 @@ export function Charts({ filters }: ChartsProps) {
         if (humedal) path += `/${humedal}`;
         if (nodo) path += `/${nodo}`;
         if (sensor) path += `/${sensor}`;
-
         return `${path}?${queryParams.toString()}`;
       };
 
@@ -71,7 +69,10 @@ export function Charts({ filters }: ChartsProps) {
             (entry: { sensor: { register_date: string; value: number } }) =>
               entry.sensor
           )
-          .filter(Boolean);
+          .filter(Boolean)
+          .sort((a: { register_date: string }, b: { register_date: string }) =>
+            new Date(a.register_date).getTime() - new Date(b.register_date).getTime()
+          ); // ← FIX: ordenar de más antiguo a más reciente
 
         const xAxisData = data.map(
           (sensor: { register_date: string; value: number }) =>
@@ -148,19 +149,14 @@ export function Charts({ filters }: ChartsProps) {
   });
 
   if (loading) return <p>Loading...</p>;
-  // if (chartData.seriesData.length === 0)
-  //   return (
-  //     <div className="bg-white p-4 rounded-lg text-center">
-  //       No hay datos disponibles para mostrar.
-  //     </div>
-  //   );
-  function sanitizeValue(value) {
-    if (typeof value === "number" || !isFinite(value) || isNaN(value)) {
+
+  function sanitizeValue(value: any) {
+    if (typeof value !== "number" || !isFinite(value) || isNaN(value)) {
       return "";
     }
-
     return value;
   }
+
   return (
     <div>
       <div className="bg-white p-4 rounded-lg">
@@ -202,12 +198,10 @@ export function Charts({ filters }: ChartsProps) {
             </button>
           </div>
         </div>
-
         <ReactECharts
           option={getOptions()}
           style={{ height: "350px", width: "100%" }}
         />
-
         <div className="mt-4 flex justify-between text-sm text-gray-600">
           <div>
             Valor Min:{" "}
